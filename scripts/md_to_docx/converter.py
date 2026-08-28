@@ -343,7 +343,7 @@ def convert_one(
     if not reference_doc.is_file():
         die(
             f"reference doc missing: {reference_doc}. "
-            "Run md-to-docx-build-reference first."
+            "Run python3 -m md_to_docx.reference first."
         )
     if not lua_filter.is_file():
         die(f"lua filter missing: {lua_filter}")
@@ -410,7 +410,7 @@ def ensure_bundled_assets() -> None:
         if not ref.is_file():
             die(
                 f"reference doc missing: {ref}. "
-                "Run md-to-docx-build-reference first."
+                "Run python3 -m md_to_docx.reference first."
             )
         if not lua.is_file():
             die(f"lua filter missing: {lua}")

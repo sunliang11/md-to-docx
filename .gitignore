@@ -22,4 +22,7 @@ venv/
 tests/fixtures/*.docx
 
 # Generated reference template (rebuilt via md-to-docx-build-reference)
-src/md_to_docx/data/reference-default.docx
+assets/reference-default.docx
+
+# Accidental nested clone directory
+md-to-docx/

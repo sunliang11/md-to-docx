@@ -241,3 +241,7 @@ def main() -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 1
     return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
