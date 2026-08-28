@@ -1,10 +1,6 @@
 # Installation
 
-## About
-
-Batch-convert Markdown to DOCX for **WeCom (企业微信) smart-document import** —「导入本地文档」. Tables, nested lists, heading hierarchy, and embedded images survive better than pasting raw Markdown.
-
-MIT licensed. Not published on PyPI (the PyPI name `md-to-docx` is a different project).
+See [README.md](../README.md) for a project overview.
 
 ## Requirements
 

@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Bilingual `README.md` for GitHub visitors (English + 中文)
+
 ### Changed
 
 - Align repository layout with skill-creator: Python package under `scripts/md_to_docx/`
-- Remove `README.md`; `SKILL.md` is the project readme for GitHub and agents
+- `SKILL.md` remains the Agent entry point; `README.md` is for human visitors
 - Move changelog to `.github/CHANGELOG.md`
 - SKILL.md frontmatter: only `name` and `description` (env requirements in description)
 - Remove duplicate assets under `src/md_to_docx/data/`
