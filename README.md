@@ -116,3 +116,9 @@ ln -sfn /path/to/md-to-docx ~/.cursor/skills/md-to-docx
 ### 许可证
 
 MIT — 见 [LICENSE](LICENSE)。
+
+---
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=sunliang11/md-to-docx&type=Date)](https://star-history.com/#sunliang11/md-to-docx&Date)
