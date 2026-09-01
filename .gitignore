@@ -15,6 +15,7 @@ venv/
 .vscode/
 *.swp
 *.swo
+.DS_Store
 
 # Conversion artifacts
 **/.__md_to_docx_tmp__.md

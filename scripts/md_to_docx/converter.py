@@ -7,7 +7,7 @@ Directory paths are processed recursively.
 
 from __future__ import annotations
 
-import argparse
+import fnmatch
 import hashlib
 import json
 import os
@@ -35,6 +35,14 @@ IMAGE_RE = re.compile(r"^!\[.*\]\(.*\)\s*$", re.MULTILINE)
 DEFAULT_MERMAID_SCALE = 4.0
 MERMAID_BACKGROUND = "white"
 
+DEFAULT_EXCLUDE_PATTERNS: tuple[str, ...] = (
+    "README.md",
+    "CHANGELOG.md",
+    "SKILL.md",
+    ".github/**",
+)
+ALWAYS_SKIP_DIRS: frozenset[str] = frozenset({".git", "node_modules"})
+
 # Prefer system browsers so mmdc works without puppeteer's chrome-headless-shell.
 _BROWSER_CANDIDATES = (
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -58,13 +66,58 @@ def require_cmd(name: str) -> str:
     return path
 
 
-def collect_md_files(path: Path) -> list[Path]:
+def _matches_exclude_pattern(rel_posix: str, name: str, pattern: str) -> bool:
+    if pattern.endswith("/**"):
+        prefix = pattern[:-3]
+        return rel_posix == prefix or rel_posix.startswith(f"{prefix}/")
+    return fnmatch.fnmatch(name, pattern) or fnmatch.fnmatch(rel_posix, pattern)
+
+
+def is_excluded(
+    md_path: Path,
+    base_dir: Path,
+    patterns: tuple[str, ...],
+) -> bool:
+    rel = md_path.relative_to(base_dir)
+    rel_posix = rel.as_posix()
+    name = md_path.name
+    return any(
+        _matches_exclude_pattern(rel_posix, name, pattern) for pattern in patterns
+    )
+
+
+def _should_skip_path(md_path: Path, base_dir: Path) -> bool:
+    rel_parts = md_path.relative_to(base_dir).parts
+    return any(part in ALWAYS_SKIP_DIRS for part in rel_parts[:-1])
+
+
+def collect_md_files(
+    path: Path,
+    *,
+    exclude_patterns: tuple[str, ...] = (),
+    apply_default_excludes: bool = False,
+) -> list[Path]:
     if path.is_file():
         if path.suffix.lower() != ".md":
             die(f"not a Markdown file: {path}")
         return [path.resolve()]
     if path.is_dir():
-        return sorted(p.resolve() for p in path.rglob("*.md") if p.is_file())
+        base = path.resolve()
+        patterns = (
+            DEFAULT_EXCLUDE_PATTERNS + exclude_patterns
+            if apply_default_excludes
+            else exclude_patterns
+        )
+        results: list[Path] = []
+        for candidate in base.rglob("*.md"):
+            if not candidate.is_file():
+                continue
+            if _should_skip_path(candidate, base):
+                continue
+            if patterns and is_excluded(candidate, base, patterns):
+                continue
+            results.append(candidate.resolve())
+        return sorted(results)
     die(f"path does not exist: {path}")
 
 
@@ -362,6 +415,8 @@ def convert_one(
     puppeteer_config: Path | None,
     scale: float,
     mermaid_width: int | None,
+    *,
+    out_docx: Path | None = None,
 ) -> None:
     if not reference_doc.is_file():
         die(
@@ -388,7 +443,10 @@ def convert_one(
         processed = text
 
     processed = normalize_md(processed)
-    out_docx = md_path.with_suffix(".docx")
+    if out_docx is None:
+        out_docx = md_path.with_suffix(".docx")
+    else:
+        out_docx.parent.mkdir(parents=True, exist_ok=True)
 
     # Temp md beside source so relative images (./img, mermaid PNGs) resolve.
     temp_md = md_path.parent / f".{md_path.stem}.__md_to_docx_tmp__.md"
@@ -461,81 +519,3 @@ def ensure_bundled_assets() -> None:
         with bundled_path("wecom-layout.lua") as lua:
             if not lua.is_file():
                 die(f"lua filter missing: {lua_path}")
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Convert Markdown to DOCX (pandoc + optional mermaid-cli).",
-    )
-    parser.add_argument(
-        "path",
-        type=Path,
-        help="Markdown file or directory (directories are scanned recursively)",
-    )
-    args = parser.parse_args(argv)
-
-    ensure_bundled_assets()
-
-    pandoc = require_cmd("pandoc")
-    mmdc = shutil.which("mmdc")
-
-    md_files = collect_md_files(args.path)
-    if not md_files:
-        print("no .md files found")
-        return 0
-
-    # Pre-check mmdc only if any file needs it
-    needs_mmdc = False
-    for md in md_files:
-        try:
-            sample = md.read_text(encoding="utf-8")
-        except OSError as exc:
-            print(f"error: cannot read {md}: {exc}", file=sys.stderr)
-            continue
-        if MERMAID_BLOCK_RE.search(sample):
-            needs_mmdc = True
-            break
-    if needs_mmdc and not mmdc:
-        die(
-            "one or more files contain mermaid blocks but `mmdc` not found. "
-            "Install @mermaid-js/mermaid-cli (npm i -g @mermaid-js/mermaid-cli)."
-        )
-
-    browser = find_browser_executable() if needs_mmdc else None
-    scale = resolve_mermaid_scale() if needs_mmdc else DEFAULT_MERMAID_SCALE
-    mermaid_width = resolve_mermaid_width() if needs_mmdc else None
-    if needs_mmdc and browser:
-        print(f"mermaid browser: {browser}")
-    if needs_mmdc:
-        print(f"mermaid scale: {scale}")
-        if mermaid_width is not None:
-            print(f"mermaid width: {mermaid_width}")
-        print(f"mermaid background: {MERMAID_BACKGROUND}")
-
-    failures = 0
-    with tempfile.TemporaryDirectory(prefix="md_to_docx_cfg_") as cfg_dir:
-        puppeteer_config: Path | None = None
-        if needs_mmdc:
-            puppeteer_config = Path(cfg_dir) / "puppeteer.json"
-            write_puppeteer_config(puppeteer_config, browser)
-
-        with bundled_conversion_assets() as (reference_doc, lua_filter):
-            for md in md_files:
-                try:
-                    convert_one(
-                        md,
-                        pandoc,
-                        reference_doc,
-                        lua_filter,
-                        mmdc,
-                        puppeteer_config,
-                        scale,
-                        mermaid_width,
-                    )
-                except Exception as exc:  # noqa: BLE001 — per-file isolation
-                    failures += 1
-                    print(f"fail: {md}: {exc}", file=sys.stderr)
-
-    total = len(md_files)
-    print(f"done: {total - failures}/{total} succeeded")
-    return 1 if failures else 0

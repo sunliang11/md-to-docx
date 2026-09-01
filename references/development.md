@@ -61,4 +61,4 @@ Content normalization fixes tables (separator row, column count), list spacing, 
 1. Edit code under `scripts/md_to_docx/`
 2. Add or update tests in `tests/`
 3. Run `pytest tests/ -v`
-4. Update `.github/CHANGELOG.md` for user-visible changes
+4. Update `CHANGELOG.md` for user-visible changes

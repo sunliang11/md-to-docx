@@ -13,14 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-build `reference-wecom.docx` on first run when missing (requires `python-docx`)
 - Bilingual `README.md` for GitHub visitors (English + 中文)
 - Agent troubleshooting table in `SKILL.md` (`No module named md_to_docx`, hatchling timeout)
+- CLI flags: `--version`, `--exclude`, `--output-dir`, `--skip-existing`, `--dry-run`
+- `CONTRIBUTING.md` for open-source contributors
 
 ### Changed
 
 - `SKILL.md` / `references/installation.md`: skill-first workflow; pip install is optional fallback
 - `SKILL.md` remains the Agent entry point; `README.md` is for human visitors
-- Move changelog to `.github/CHANGELOG.md`
+- Changelog moved to repository root `CHANGELOG.md`
 - SKILL.md frontmatter: only `name` and `description` (env requirements in description)
 - Remove duplicate assets under `src/md_to_docx/data/`
+- Extract CLI into `scripts/md_to_docx/cli.py`
 
 ### Previously (0.1.0 restructuring)
 

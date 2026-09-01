@@ -16,36 +16,7 @@ Converts Markdown files to Word documents optimized for WeCom「导入本地文�
 
 **Beta (0.1.0).** Not published on PyPI — the PyPI package name `md-to-docx` belongs to a different project. Install from source.
 
-<<<<<<< HEAD
-Pipeline:
-
-```
-.md → normalize → mermaid→PNG → pandoc + reference-wecom.docx + wecom-layout.lua → .docx
-```
-
-### Quick start
-
-**Cursor skill / git checkout (no pip):**
-
-```bash
-./bin/convert report.md
-./bin/convert ./docs          # directory (recursive)
-```
-
-**Editable install (optional):**
-
-```bash
-git clone https://github.com/sunliang11/md-to-docx.git
-cd md-to-docx
-pip install -e .
-python3 -m md_to_docx ./docs
-python3 -m md_to_docx report.md
-```
-
-> **Note:** Not published on PyPI. The PyPI package name `md-to-docx` belongs to a different project.
-=======
 ## Quick Start
->>>>>>> eeab434 (Improve WeCom conversion quality, add comprehensive tests, and enhance CLI)
 
 ### Requirements
 
@@ -55,14 +26,14 @@ python3 -m md_to_docx report.md
 
 ### Install
 
-**Cursor skill / 本地仓库（无需 pip）：**
+**Cursor skill / git checkout (no pip):**
 
 ```bash
 ./bin/convert report.md
-./bin/convert ./docs
+./bin/convert ./docs          # directory (recursive)
 ```
 
-**可编辑安装（可选）：**
+**Editable install (optional):**
 
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
@@ -99,6 +70,8 @@ By default, excludes `README.md`, `CHANGELOG.md`, `SKILL.md`, and `.github/**`. 
 - [Environment variables](references/configuration.md)
 - [WeCom import guide](references/wecom-import.md)
 - [Development & tests](references/development.md)
+
+**Entry points:** Human visitors use `README.md` / `README.zh.md`; Cursor agents use [SKILL.md](SKILL.md); detailed docs live under `references/`.
 
 ## Cursor Skill
 

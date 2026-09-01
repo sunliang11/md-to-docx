@@ -24,10 +24,10 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "python-docx>=1.0"]
+dev = ["pytest>=7.0", "python-docx>=1.0", "lxml>=4.9"]
 
 [project.scripts]
-md-to-docx = "md_to_docx.converter:main"
+md-to-docx = "md_to_docx.cli:main"
 md-to-docx-build-reference = "md_to_docx.reference:main"
 
 [tool.hatch.build]

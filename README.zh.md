@@ -26,6 +26,15 @@
 
 ### 安装
 
+**Cursor skill / 本地仓库（无需 pip）：**
+
+```bash
+./bin/convert report.md
+./bin/convert ./docs
+```
+
+**可编辑安装（可选）：**
+
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
@@ -61,6 +70,8 @@ CLI 选项：
 - [环境变量](references/configuration.md)
 - [企微导入指南](references/wecom-import.md)
 - [开发与测试](references/development.md)
+
+**入口说明：** 人类访客看 `README.md` / `README.zh.md`；Cursor Agent 看 [SKILL.md](SKILL.md)；详细文档在 `references/`。
 
 ## Cursor Skill
 
