@@ -173,7 +173,8 @@ def _is_in_fenced_code(lines: list[str], idx: int) -> bool:
 
 def _normalize_content(text: str) -> str:
     """Fix Markdown content issues before pandoc (tables, lists, headings, etc.)."""
-    return normalize_markdown_content(text)
+    # Content normalization skipped - using simple layout normalization only
+    return text
 
 
 def _normalize_layout(text: str) -> str:
