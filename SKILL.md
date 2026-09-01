@@ -3,7 +3,8 @@ name: md-to-docx
 description: >-
   Converts Markdown to DOCX via pandoc for WeCom (企微) smart-doc import.
   Renders Mermaid blocks to PNG, applies WeCom-like styles and layout normalization,
-  leaves original .md untouched, writes .docx and PNGs beside each source file.
+  leaves original .md untouched, writes .docx beside each source file and Mermaid PNGs
+  under ``{stem}mermaid图片/``.
   Requires Python 3.10+, pandoc 3.x, mmdc when Markdown contains mermaid blocks.
   Use when converting md to docx, batch Markdown for 企微导入, preprocess mermaid for pandoc,
   or migrating docs into WeCom smart documents.
@@ -41,7 +42,7 @@ System deps: **Python 3.10+**, **pandoc** on PATH. **mmdc** only when `.md` cont
 2. Confirm **pandoc** on PATH: `which pandoc`
 3. Run `"<skill-root>/bin/convert" <user's .md or directory>`
 4. If `reference-wecom.docx` missing, converter auto-builds it (needs `python-docx`; else restore from repo `assets/`)
-5. Summarize created `.docx` and any `*_mermaid_*.png` paths; **do not edit** source `.md`
+5. Summarize created `.docx` and any `{stem}mermaid图片/` PNG folder; **do not edit** source `.md`
 6. Remind user to import manually — [references/wecom-import.md](references/wecom-import.md)
 
 Do not automate WeCom upload.
@@ -50,7 +51,7 @@ Do not automate WeCom upload.
 
 - Original `.md` files are never modified
 - Output `.docx` is written next to each source file (`foo.md` → `foo.docx`)
-- Mermaid blocks become PNGs beside the source (`foo_mermaid_01.png`, …)
+- Mermaid blocks become PNGs under `{stem}mermaid图片/` (e.g. `foo.md` → `foomermaid图片/foo_mermaid_01.png`)
 - Per-file failures are reported; remaining files still convert; exit code is non-zero if any failed
 
 ## Troubleshooting (agents)

@@ -19,6 +19,7 @@ venv/
 # Conversion artifacts
 **/.__md_to_docx_tmp__.md
 **/*_mermaid_*.png
+**/*mermaid图片/
 tests/fixtures/*.docx
 
 # Generated reference template (rebuilt via md-to-docx-build-reference)

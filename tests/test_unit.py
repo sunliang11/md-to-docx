@@ -11,6 +11,7 @@ import pytest
 from md_to_docx.converter import (
     MERMAID_BLOCK_RE,
     collect_md_files,
+    mermaid_images_dir,
     resolve_mermaid_scale,
     resolve_mermaid_width,
 )
@@ -66,6 +67,18 @@ sequenceDiagram
 """
         matches = list(MERMAID_BLOCK_RE.finditer(text))
         assert len(matches) == 2
+
+
+class TestMermaidImagesDir:
+    """Tests for mermaid PNG output directory naming."""
+
+    def test_mermaid_images_dir_name(self, tmp_path: Path):
+        md_file = tmp_path / "LogCollectV2架构说明.md"
+        assert mermaid_images_dir(md_file) == tmp_path / "LogCollectV2架构说明mermaid图片"
+
+    def test_mermaid_images_dir_simple_stem(self, tmp_path: Path):
+        md_file = tmp_path / "foo.md"
+        assert mermaid_images_dir(md_file) == tmp_path / "foomermaid图片"
 
 
 class TestCollectMdFiles:

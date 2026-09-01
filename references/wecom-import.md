@@ -31,4 +31,4 @@ After converting a sample document, verify:
 
 ## Mermaid PNG files
 
-Mermaid blocks become PNGs beside the source file (`foo_mermaid_01.png`, …). These are referenced in a temporary copy used only during conversion; originals are not modified.
+Mermaid blocks become PNGs under `{stem}mermaid图片/` beside the source file (e.g. `foomermaid图片/foo_mermaid_01.png`). These are referenced in a temporary copy used only during conversion; originals are not modified.

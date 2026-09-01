@@ -1,7 +1,8 @@
 """Convert Markdown to DOCX via pandoc; Mermaid blocks → PNG first.
 
 Original .md files are never modified. Outputs (.docx, mermaid PNGs) land
-beside each source file. Directory paths are processed recursively.
+beside each source file; Mermaid PNGs go under ``{stem}mermaid图片/``.
+Directory paths are processed recursively.
 """
 
 from __future__ import annotations
@@ -270,6 +271,11 @@ def normalize_md(text: str) -> str:
     return result
 
 
+def mermaid_images_dir(source_md: Path) -> Path:
+    """Subfolder beside source_md for rendered Mermaid PNGs."""
+    return source_md.parent / f"{source_md.stem}mermaid图片"
+
+
 def render_mermaid_blocks(
     source_md: Path,
     text: str,
@@ -278,12 +284,13 @@ def render_mermaid_blocks(
     scale: float,
     width: int | None,
 ) -> tuple[str, list[Path]]:
-    """Replace mermaid fences with image links; write PNGs next to source_md."""
+    """Replace mermaid fences with image links; write PNGs under ``{stem}mermaid图片/``."""
     matches = list(MERMAID_BLOCK_RE.finditer(text))
     if not matches:
         return text, []
 
-    out_dir = source_md.parent
+    out_dir = mermaid_images_dir(source_md)
+    out_dir.mkdir(parents=True, exist_ok=True)
     stem = source_md.stem
     png_paths: list[Path] = []
     pieces: list[str] = []
@@ -338,7 +345,8 @@ def render_mermaid_blocks(
             mmd_path.unlink(missing_ok=True)
 
         png_paths.append(png_path)
-        pieces.append(f"\n![{stem} mermaid {idx}]({png_name})\n")
+        rel_png = f"{out_dir.name}/{png_name}"
+        pieces.append(f"\n![{stem} mermaid {idx}]({rel_png})\n")
         last = match.end()
 
     pieces.append(text[last:])
