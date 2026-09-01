@@ -26,11 +26,27 @@ jobs:
       - name: Install package and dev dependencies
         run: pip install -e ".[dev]"
 
+      - name: Install lxml for docx XML tests
+        run: pip install lxml
+
       - name: Run tests
         run: pytest tests/ -v
 
-      - name: Verify module entry point
+      - name: Verify --version flag
+        run: python -m md_to_docx --version
+
+      - name: Verify --help flag
         run: python -m md_to_docx --help
 
-      - name: Sample conversion
-        run: python -m md_to_docx tests/fixtures/sample.md
+      - name: Sample conversion and XML assertions
+        run: |
+          python -m md_to_docx tests/fixtures/sample.md
+          python -m md_to_docx tests/fixtures/comprehensive.md
+          
+          # Verify output files exist and are not empty
+          test -f tests/fixtures/sample.docx
+          test -f tests/fixtures/comprehensive.docx
+          test -s tests/fixtures/sample.docx
+          test -s tests/fixtures/comprehensive.docx
+          
+          echo "✓ Sample conversions succeeded and produced non-empty output"
