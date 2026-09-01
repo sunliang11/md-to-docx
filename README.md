@@ -22,12 +22,21 @@ Pipeline:
 
 ### Quick start
 
+**Cursor skill / git checkout (no pip):**
+
+```bash
+./bin/convert report.md
+./bin/convert ./docs          # directory (recursive)
+```
+
+**Editable install (optional):**
+
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
 pip install -e .
-python3 -m md_to_docx ./docs          # directory (recursive)
-python3 -m md_to_docx report.md      # single file
+python3 -m md_to_docx ./docs
+python3 -m md_to_docx report.md
 ```
 
 > **Note:** Not published on PyPI. The PyPI package name `md-to-docx` belongs to a different project.
@@ -77,6 +86,15 @@ MIT — see [LICENSE](LICENSE).
 ```
 
 ### 快速开始
+
+**Cursor skill / 本地仓库（无需 pip）：**
+
+```bash
+./bin/convert report.md
+./bin/convert ./docs
+```
+
+**可编辑安装（可选）：**
 
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git

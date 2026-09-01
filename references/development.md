@@ -43,8 +43,10 @@ md-to-docx/
 ## Conversion pipeline
 
 ```
-.md → normalize spacing → mermaid → PNG (optional) → pandoc + reference-wecom.docx + wecom-layout.lua → .docx
+.md → content normalize → layout spacing → mermaid → PNG (optional) → pandoc + reference-wecom.docx + wecom-layout.lua → .docx
 ```
+
+Content normalization fixes tables (separator row, column count), list spacing, heading levels, unclosed code blocks, inline formatting, and similar issues before pandoc runs.
 
 ## Contributing
 

@@ -17,7 +17,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from md_to_docx.paths import bundled_conversion_assets, bundled_path
+from md_to_docx.normalizer import normalize_markdown_content
+from md_to_docx.paths import assets_dir, bundled_conversion_assets, bundled_path
 
 MERMAID_BLOCK_RE = re.compile(
     r"```mermaid\s*\n(.*?)```",
@@ -170,7 +171,12 @@ def _is_in_fenced_code(lines: list[str], idx: int) -> bool:
     return in_fence
 
 
-def normalize_md(text: str) -> str:
+def _normalize_content(text: str) -> str:
+    """Fix Markdown content issues before pandoc (tables, lists, headings, etc.)."""
+    return normalize_markdown_content(text)
+
+
+def _normalize_layout(text: str) -> str:
     """Normalize spacing so pandoc produces cleaner DOCX layout."""
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     lines = text.split("\n")
@@ -253,6 +259,15 @@ def normalize_md(text: str) -> str:
     if text.endswith("\n") and not normalized.endswith("\n"):
         normalized += "\n"
     return normalized
+
+
+def normalize_md(text: str) -> str:
+    """Content fixes plus pandoc-friendly structural spacing."""
+    had_trailing_newline = text.endswith("\n")
+    result = _normalize_layout(_normalize_content(text))
+    if had_trailing_newline and not result.endswith("\n"):
+        result += "\n"
+    return result
 
 
 def render_mermaid_blocks(
@@ -402,18 +417,42 @@ def convert_one(
     print(f"ok: {md_path} -> {out_docx}")
 
 
+def _try_build_reference_doc(output_dir: Path) -> bool:
+    """Build reference-wecom.docx when missing. Returns True if file exists after."""
+    try:
+        from md_to_docx.reference import build_reference_doc
+    except ImportError:
+        die(
+            "reference-wecom.docx is missing and python-docx is not installed. "
+            "Either: pip install python-docx && "
+            "PYTHONPATH=<skill-root>/scripts python3 -m md_to_docx.reference "
+            "or restore assets/reference-wecom.docx from the repo."
+        )
+    try:
+        build_reference_doc(output_dir)
+    except Exception as exc:  # noqa: BLE001
+        die(f"failed to build reference-wecom.docx: {exc}")
+    return (output_dir / "reference-wecom.docx").is_file()
+
+
 def ensure_bundled_assets() -> None:
-    """Fail fast when package data is missing."""
-    with bundled_path("reference-wecom.docx") as ref, bundled_path(
-        "wecom-layout.lua"
-    ) as lua:
-        if not ref.is_file():
-            die(
-                f"reference doc missing: {ref}. "
-                "Run python3 -m md_to_docx.reference first."
-            )
-        if not lua.is_file():
-            die(f"lua filter missing: {lua}")
+    """Fail fast when package data is missing; auto-build reference doc if possible."""
+    assets = assets_dir()
+    ref_path = assets / "reference-wecom.docx"
+    lua_path = assets / "wecom-layout.lua"
+
+    if not ref_path.is_file():
+        print(
+            f"reference-wecom.docx missing at {ref_path}; building…",
+            file=sys.stderr,
+        )
+        if not _try_build_reference_doc(assets):
+            die(f"reference doc still missing after build: {ref_path}")
+
+    if not lua_path.is_file():
+        with bundled_path("wecom-layout.lua") as lua:
+            if not lua.is_file():
+                die(f"lua filter missing: {lua_path}")
 
 
 def main(argv: list[str] | None = None) -> int:

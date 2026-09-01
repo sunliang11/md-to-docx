@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `bin/convert` — run converter without `pip install -e` (sets `PYTHONPATH` for Cursor skill checkouts)
+- Auto-build `reference-wecom.docx` on first run when missing (requires `python-docx`)
 - Bilingual `README.md` for GitHub visitors (English + 中文)
+- Agent troubleshooting table in `SKILL.md` (`No module named md_to_docx`, hatchling timeout)
 
 ### Changed
 
-- Align repository layout with skill-creator: Python package under `scripts/md_to_docx/`
+- `SKILL.md` / `references/installation.md`: skill-first workflow; pip install is optional fallback
 - `SKILL.md` remains the Agent entry point; `README.md` is for human visitors
 - Move changelog to `.github/CHANGELOG.md`
 - SKILL.md frontmatter: only `name` and `description` (env requirements in description)
