@@ -17,8 +17,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from md_to_docx.normalizer import normalize_markdown_content
-from md_to_docx.paths import assets_dir, bundled_conversion_assets, bundled_path
+from md_to_docx import __version__
+from md_to_docx.paths import bundled_conversion_assets, bundled_path
 
 MERMAID_BLOCK_RE = re.compile(
     r"```mermaid\s*\n(.*?)```",
