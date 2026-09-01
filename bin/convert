@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Run md_to_docx without pip install (Cursor skill / git checkout).
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+export PYTHONPATH="${ROOT}/scripts${PYTHONPATH:+:$PYTHONPATH}"
+
+exec python3 -m md_to_docx "$@"
