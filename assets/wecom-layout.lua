@@ -4,10 +4,8 @@ local COMPACT_TABLE_COLS = 6
 local DEFAULT_IMAGE_WIDTH = "95%"
 
 function CodeBlock(el)
-  if not el.classes or #el.classes == 0 then
-    el.attributes = el.attributes or {}
-    el.attributes["custom-style"] = "Source Code"
-  end
+  el.attributes = el.attributes or {}
+  el.attributes["custom-style"] = "Source Code"
   return el
 end
 
@@ -36,7 +34,7 @@ function Table(el)
   end
   if ncol > COMPACT_TABLE_COLS then
     el.attributes = el.attributes or {}
-    el.attributes["custom-style"] = "Compact Table"
+    el.attributes["custom-style"] = "CompactTable"
   end
   return el
 end

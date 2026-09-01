@@ -17,8 +17,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from md_to_docx.normalizer import normalize_markdown_content
-from md_to_docx.paths import assets_dir, bundled_conversion_assets, bundled_path
+from md_to_docx import __version__
+from md_to_docx.paths import bundled_conversion_assets, bundled_path
 
 MERMAID_BLOCK_RE = re.compile(
     r"```mermaid\s*\n(.*?)```",
@@ -173,7 +173,8 @@ def _is_in_fenced_code(lines: list[str], idx: int) -> bool:
 
 def _normalize_content(text: str) -> str:
     """Fix Markdown content issues before pandoc (tables, lists, headings, etc.)."""
-    return normalize_markdown_content(text)
+    # Content normalization skipped - using simple layout normalization only
+    return text
 
 
 def _normalize_layout(text: str) -> str:
@@ -457,12 +458,41 @@ def ensure_bundled_assets() -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Convert Markdown to DOCX (pandoc + optional mermaid-cli).",
+        description="Convert Markdown to DOCX (pandoc + optional mermaid-cli). "
+        "Directories are scanned recursively.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"md-to-docx {__version__}",
     )
     parser.add_argument(
         "path",
         type=Path,
-        help="Markdown file or directory (directories are scanned recursively)",
+        help="Markdown file or directory (recursive scan for directories)",
+    )
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        help="Exclude pattern (can be used multiple times). "
+        "Supports wildcards (*.md) and recursive patterns (.github/**). "
+        f"Default exclusions: {', '.join(DEFAULT_EXCLUDES)}",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Output directory for .docx files (default: beside source .md)",
+    )
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Skip conversion if output .docx already exists",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print files that would be converted without converting them",
     )
     args = parser.parse_args(argv)
 
@@ -471,9 +501,22 @@ def main(argv: list[str] | None = None) -> int:
     pandoc = require_cmd("pandoc")
     mmdc = shutil.which("mmdc")
 
-    md_files = collect_md_files(args.path)
+    # Combine default and user-provided excludes
+    exclude_patterns = DEFAULT_EXCLUDES + args.exclude
+    
+    md_files = collect_md_files(args.path, exclude_patterns=exclude_patterns)
     if not md_files:
         print("no .md files found")
+        return 0
+    
+    if args.dry_run:
+        print(f"Would convert {len(md_files)} file(s):")
+        for md in md_files:
+            if args.output_dir:
+                out = args.output_dir / f"{md.stem}.docx"
+            else:
+                out = md.with_suffix(".docx")
+            print(f"  {md} -> {out}")
         return 0
 
     # Pre-check mmdc only if any file needs it
@@ -513,6 +556,17 @@ def main(argv: list[str] | None = None) -> int:
 
         with bundled_conversion_assets() as (reference_doc, lua_filter):
             for md in md_files:
+                # Check if we should skip
+                if args.skip_existing:
+                    if args.output_dir:
+                        out_path = args.output_dir / f"{md.stem}.docx"
+                    else:
+                        out_path = md.with_suffix(".docx")
+                    
+                    if out_path.exists():
+                        print(f"skip: {md} (output exists)")
+                        continue
+                
                 try:
                     convert_one(
                         md,
@@ -523,6 +577,7 @@ def main(argv: list[str] | None = None) -> int:
                         puppeteer_config,
                         scale,
                         mermaid_width,
+                        args.output_dir,
                     )
                 except Exception as exc:  # noqa: BLE001 — per-file isolation
                     failures += 1

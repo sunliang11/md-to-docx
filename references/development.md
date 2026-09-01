@@ -16,6 +16,14 @@ pip install -e ".[dev]"
 pytest tests/ -v
 ```
 
+Test suite includes:
+- `test_normalize.py` — Markdown normalization functions
+- `test_unit.py` — Unit tests for mermaid regex, file collection, env parsing
+- `test_cli.py` — CLI flags (--version, --help, sample conversion)
+- `test_docx_output.py` — XML assertions on generated .docx (code styles, table borders, fonts, H5/H6)
+
+Requirements: `pytest`, `python-docx`, `lxml`, and `pandoc` must be available.
+
 ## Rebuild the Word reference template
 
 When changing fonts, heading sizes, or table borders:
