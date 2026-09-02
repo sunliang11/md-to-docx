@@ -10,7 +10,7 @@
 
 **AI 时代的开源文档编译器。**
 
-把 Markdown / AI 生成内容，编译成可交付的专业 Word 文档。
+把 Markdown 与 AI 生成内容编译成可交付的专业 Word 文档。
 
 [文档](references/installation.md) · [示例](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
 
@@ -25,56 +25,81 @@
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
-./bin/convert path/to/report.md
+./bin/convert path/to/report.md --preset technical
 ```
 
-**处理流程：** Markdown / AI 输出 → md-to-docx → 专业 DOCX
+无需安装 Python，可用 Docker 试用 Playground：
+
+```bash
+docker compose -f web/docker-compose.yml up --build
+# 浏览器打开 http://localhost:8080
+```
+
+**处理流程：** Markdown / AI 输出 → Document AST → 专业 DOCX
+
+**状态：1.0 引擎 + v2 AI 入口** — 默认 native Document AST；MCP、Web Playground、浏览器扩展，本地 AI → Word，无需 API Key。企微导入：`--preset wecom`。
 
 ## 功能特性
 
-- 标题、列表、表格、代码块、引用块、图片
-- CJK 中文排版参考模板
-- Mermaid 图表 → PNG
+- 原生 Document AST 引擎（默认）— 多数场景无需 pandoc
+- 标题、列表、表格、代码块、引用块、图片、脚注
+- CJK 中文模板（微软雅黑 / 宋体）
+- Mermaid 图表 → PNG（需 `mmdc`；亦支持 pandoc 引擎）
+- 数学公式 → OMML（基础 LaTeX）
+- 图/表题注与交叉引用
+- 模板预设：`--preset technical|academic|business|professional|report`
+- Word 原生目录（`--toc`）、页码、页眉页脚
+- `--check` 文档校验（不生成 docx）
 - 批量目录转换
 - Cursor Agent Skill
-- 企业微信智能文档导入（可选工作流）
+- 企业微信智能文档导入（`--preset wecom` 或 `--engine pandoc`）
+- MCP 服务（`md-to-docx-mcp`）— 见 [配合 AI 使用](#配合-ai-使用)
+- Web Playground（Docker）— 浏览器编辑并下载 DOCX
+- 浏览器扩展 — 从 AI 对话导出 Word
 
-## 使用场景
+## 配合 AI 使用
 
-- 把 ChatGPT / Claude / Cursor 的 Markdown 变成可提交的 Word
-- 技术方案、周报、API 文档、会议纪要
-- 企业微信智能文档导入（保留原有优化管道）
+把 AI 写的 Markdown 转成 Word — **无需 API Key**，全部本地：
+
+| 入口 | 文档 |
+|------|------|
+| Cursor Skill | [SKILL.md](SKILL.md) |
+| Claude Code / Codex | [skills/](skills/) |
+| MCP | [references/mcp.md](references/mcp.md) — `pip install .[mcp]` |
+| Web Playground | [web/README.md](web/README.md) — Docker |
+| 浏览器扩展 | [browser-extension/README.md](browser-extension/README.md) |
+| ChatGPT 提示词 | [references/agents.md](references/agents.md) |
 
 ## 后续规划
 
-- **v0.2** — 原生 Document AST（[路线图](references/roadmap.md)）
-- **v0.3** — 模板预设（学术、商务、API）
-- **v0.4+** — AI 原生入口（规划中，尚未提供）
+- **v3.0** — DOCX 往返 + GitHub Action（[路线图](references/roadmap.md)）
 
 ## 安装
 
 ### 环境要求
 
 - **Python 3.10+**
-- **pandoc 3.x** —— Markdown → DOCX 转换
-- **mmdc**（可选）—— 仅当 `.md` 包含 ` ```mermaid ` 代码块时需要
+- **pandoc 3.x** — 仅 `--engine pandoc` / `--preset wecom` 需要
+- **mmdc**（可选）— Markdown 中含 Mermaid 代码块时需要
 
-### 从源码安装（推荐）
+### 从源码运行（推荐）
 
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
 ./bin/convert report.md
-./bin/convert ./docs          # 目录（递归扫描）
+./bin/convert ./docs          # 目录（递归）
 ```
 
 ### 可编辑安装（可选）
 
 ```bash
 pip install -e .
+pip install -e ".[mcp]"   # MCP 服务
+pip install -e ".[web]"   # Playground API
 ```
 
-未发布到 PyPI —— PyPI 上的 `md-to-docx` 包名属于另一个项目。
+PyPI 包名：`md2docx-compiler`（命令行仍为 `md-to-docx`）。
 
 ## 运行
 
@@ -82,37 +107,43 @@ pip install -e .
 # 转换单个文件
 python -m md_to_docx report.md
 
-# 转换目录（递归扫描）
+# 转换目录（递归）
 python -m md_to_docx ./docs
 
-# 使用选项
+# 带选项
 python -m md_to_docx ./docs --exclude "README.md" --output-dir ./output
 ```
 
 CLI 选项：
 
-- `--version` —— 显示版本
-- `--exclude PATTERN` —— 排除匹配模式的文件（可多次使用）
-- `--output-dir DIR` —— 将 .docx 文件写入指定目录
-- `--skip-existing` —— 跳过已存在的输出文件
-- `--dry-run` —— 预览将要转换的文件
+- `--version` — 显示版本
+- `--exclude PATTERN` — 排除匹配模式的文件（可多次使用）
+- `--output-dir DIR` — 将 .docx 写入指定目录
+- `--skip-existing` — 跳过已存在的输出
+- `--dry-run` — 预览将要转换的文件
 
 默认排除 `README.md`、`CHANGELOG.md`、`SKILL.md` 和 `.github/**`。自动跳过 `.git` 和 `node_modules`。
 
 ## 文档
 
 - [安装与排错](references/installation.md)
+- [预设模板](references/presets.md)
+- [文档校验](references/validation.md)
+- [MCP 服务](references/mcp.md)
+- [配合 AI 使用](references/agents.md)
+- [Web Playground](web/README.md)
+- [浏览器扩展](browser-extension/README.md)
 - [示例库](examples/README.md)
 - [路线图](references/roadmap.md)
 - [环境变量](references/configuration.md)
 - [企微导入指南](references/wecom-import.md)
 - [开发与测试](references/development.md)
 
-**入口说明：** 人类访客看 `README.md` / `README.zh.md`；Cursor Agent 看 [SKILL.md](SKILL.md)；详细文档在 `references/`。
+**入口说明：** 人类访客：`README.md` / `README.zh.md`；Cursor：[SKILL.md](SKILL.md)；MCP：[references/mcp.md](references/mcp.md)；Playground：[web/README.md](web/README.md)；扩展：[browser-extension/README.md](browser-extension/README.md)。
 
 ## Cursor Skill
 
-将本仓库软链接到 `~/.cursor/skills/md-to-docx` 即可用作 Cursor Agent 技能：
+将本仓库软链接到 `~/.cursor/skills/md-to-docx`：
 
 ```bash
 ln -sfn /path/to/md-to-docx ~/.cursor/skills/md-to-docx
@@ -122,7 +153,7 @@ ln -sfn /path/to/md-to-docx ~/.cursor/skills/md-to-docx
 
 ## License
 
-MIT —— 见 [LICENSE](LICENSE)。
+MIT — 见 [LICENSE](LICENSE)。
 
 ---
 

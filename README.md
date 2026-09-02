@@ -28,9 +28,16 @@ cd md-to-docx
 ./bin/convert path/to/report.md --preset technical
 ```
 
+Try without installing Python (Docker Playground):
+
+```bash
+docker compose -f web/docker-compose.yml up --build
+# open http://localhost:8080
+```
+
 **Pipeline:** Markdown / AI output → Document AST → Professional DOCX
 
-**Status: 1.0** — Professional Markdown → DOCX. Default engine: native Document AST. WeCom import: `--preset wecom`.
+**Status: 1.0 engine + v2 AI entry points** — Native Document AST; MCP, Web Playground, and browser extension for AI → Word (all local, no API keys). WeCom import: `--preset wecom`.
 
 ## Features
 
@@ -46,6 +53,9 @@ cd md-to-docx
 - Batch directory conversion
 - Cursor Agent Skill
 - WeCom smart-doc import (`--preset wecom` or `--engine pandoc`)
+- MCP server (`md-to-docx-mcp`) — see [Use with AI](#use-with-ai)
+- Web Playground (Docker) — browser editor + DOCX download
+- Browser extension — Export AI chat replies to Word
 
 ## Use with AI
 
@@ -85,6 +95,8 @@ cd md-to-docx
 
 ```bash
 pip install -e .
+pip install -e ".[mcp]"   # MCP server
+pip install -e ".[web]"   # Playground API
 ```
 
 PyPI package name: `md2docx-compiler` (console command remains `md-to-docx`).
@@ -117,13 +129,17 @@ By default, excludes `README.md`, `CHANGELOG.md`, `SKILL.md`, and `.github/**`. 
 - [Installation & troubleshooting](references/installation.md)
 - [Presets](references/presets.md)
 - [Validation](references/validation.md)
+- [MCP server](references/mcp.md)
+- [Use with AI agents](references/agents.md)
+- [Web Playground](web/README.md)
+- [Browser extension](browser-extension/README.md)
 - [Examples gallery](examples/README.md)
 - [Roadmap](references/roadmap.md)
 - [Environment variables](references/configuration.md)
 - [WeCom import guide](references/wecom-import.md)
 - [Development & tests](references/development.md)
 
-**Entry points:** Human visitors use `README.md` / `README.zh.md`; Cursor agents use [SKILL.md](SKILL.md); detailed docs live under `references/`.
+**Entry points:** Humans: `README.md` / `README.zh.md`; Cursor: [SKILL.md](SKILL.md); MCP: [references/mcp.md](references/mcp.md); Playground: [web/README.md](web/README.md); extension: [browser-extension/README.md](browser-extension/README.md).
 
 ## Cursor Skill
 
