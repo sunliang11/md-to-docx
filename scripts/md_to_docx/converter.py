@@ -519,3 +519,55 @@ def ensure_bundled_assets() -> None:
         with bundled_path("wecom-layout.lua") as lua:
             if not lua.is_file():
                 die(f"lua filter missing: {lua_path}")
+
+
+def convert_file(
+    md_path: Path,
+    out_docx: Path,
+    *,
+    engine: str = "native",
+    normalize: bool = True,
+    template_path: Path | None = None,
+    toc: bool = False,
+    toc_title: str = "Contents",
+    numbering: bool = False,
+    title: str | None = None,
+    author: str | None = None,
+    date: str | None = None,
+    doc_version: str | None = None,
+    page_numbers: bool = True,
+    strict_mermaid: bool = False,
+    figure_label: str = "Figure",
+    table_label: str = "Table",
+    section_label: str = "Section",
+) -> None:
+    """Convert a single markdown file using the selected engine."""
+    if engine == "native":
+        from md_to_docx.engine.native import NativeOptions, convert_native
+
+        convert_native(
+            md_path,
+            out_docx,
+            options=NativeOptions(
+                normalize=normalize,
+                template_path=template_path,
+                toc=toc,
+                toc_title=toc_title,
+                numbering=numbering,
+                title=title,
+                author=author,
+                date=date,
+                doc_version=doc_version,
+                page_numbers=page_numbers,
+                strict_mermaid=strict_mermaid,
+                figure_label=figure_label,
+                table_label=table_label,
+                section_label=section_label,
+            ),
+        )
+    elif engine == "pandoc":
+        from md_to_docx.engine.pandoc import convert_pandoc
+
+        convert_pandoc(md_path, out_docx)
+    else:
+        die(f"unknown engine: {engine}")

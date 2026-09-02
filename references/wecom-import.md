@@ -1,5 +1,12 @@
 # WeCom import guide
 
+For best WeCom layout, convert with the pandoc engine:
+
+```bash
+./bin/convert report.md --preset wecom
+# or: ./bin/convert report.md --engine pandoc
+```
+
 ## Manual import steps
 
 WeCom does not support automated upload from this tool. After conversion:

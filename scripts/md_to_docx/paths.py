@@ -73,3 +73,23 @@ def bundled_conversion_assets() -> Iterator[tuple[Path, Path]]:
         "wecom-layout.lua"
     ) as lua:
         yield ref, lua
+
+
+def native_reference_doc() -> Path:
+    """Path to built-in native reference template."""
+    path = _resolve_asset_path("reference-native.docx")
+    if path is not None:
+        return path
+    out = assets_dir() / "reference-native.docx"
+    if not out.is_file():
+        from md_to_docx.reference_native import build_native_reference
+
+        build_native_reference(out.parent)
+    return out
+
+
+def preset_template(name: str) -> Path:
+    path = _resolve_asset_path(f"presets/{name}.docx")
+    if path is not None:
+        return path
+    return assets_dir() / "presets" / f"{name}.docx"

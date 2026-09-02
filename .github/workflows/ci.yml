@@ -7,6 +7,30 @@ on:
     branches: [main, master]
 
 jobs:
+  test-native:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build template assets
+        run: |
+          pip install markdown-it-py mdit-py-plugins python-docx latex2mathml pillow
+          PYTHONPATH=scripts python -m md_to_docx.presets_build
+      - name: Install package (dev)
+        run: pip install -e ".[dev]"
+      - name: Native tests (no pandoc)
+        run: |
+          pytest tests/test_ast.py tests/test_parse_frontmatter.py tests/test_parse_markdown.py \
+            tests/test_native_docx.py tests/test_native_no_pandoc.py tests/test_parse_containers.py \
+            tests/test_toc.py tests/test_cjk.py tests/test_preset.py tests/test_validate.py \
+            tests/test_examples_smoke.py -v
+
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -22,6 +46,11 @@ jobs:
 
       - name: Install pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Build template assets
+        run: |
+          pip install markdown-it-py mdit-py-plugins python-docx latex2mathml pillow
+          PYTHONPATH=scripts python -m md_to_docx.presets_build
 
       - name: Install package and dev dependencies
         run: pip install -e ".[dev]"
@@ -40,8 +69,8 @@ jobs:
 
       - name: Sample conversion and XML assertions
         run: |
-          python -m md_to_docx tests/fixtures/sample.md
-          python -m md_to_docx tests/fixtures/comprehensive.md
+          python -m md_to_docx tests/fixtures/sample.md --engine pandoc
+          python -m md_to_docx tests/fixtures/comprehensive.md --engine pandoc
           
           # Verify output files exist and are not empty
           test -f tests/fixtures/sample.docx
@@ -51,9 +80,7 @@ jobs:
           
           echo "✓ Sample conversions succeeded and produced non-empty output"
 
-      - name: Convert examples (pandoc only)
+      - name: Convert examples (native)
         run: |
-          for f in examples/*/example.md; do
-            python -m md_to_docx "$f"
-            test -s "${f%.md}.docx"
-          done
+          bash scripts/demo/build_examples.sh
+          for f in examples/*/example.docx; do test -s "$f"; done

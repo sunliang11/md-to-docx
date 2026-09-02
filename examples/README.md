@@ -1,7 +1,7 @@
 # Examples
 
-These examples are converted with the current pandoc pipeline (v0.1).
-Native Document AST lands in v0.2 (see [aim/P1A-document-engine.md](../aim/P1A-document-engine.md)).
+These examples are converted with the native engine and presets (v1.0).
+Pandoc fallback: `--engine pandoc`. See [aim/P1A-document-engine.md](../aim/P1A-document-engine.md).
 
 ## Gallery
 

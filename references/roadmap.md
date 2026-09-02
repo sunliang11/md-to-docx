@@ -1,19 +1,15 @@
 # Roadmap
 
-md-to-docx is evolving from a pandoc-based CLI into a full document compiler. The current release (v0.1) focuses on reliable Markdown → DOCX conversion with CJK support.
-
-## Planned phases
+**Current release: v1.0** — Native Document AST, presets, TOC, Mermaid, math, validation.
 
 | Phase | Focus | Status |
 |-------|-------|--------|
-| **P0** | Productization — README, examples, GitHub hygiene | Current |
-| **P1A** | Native Document AST | Planned (v0.2) |
-| **P1B** | Template presets (`--preset`) | Planned |
-| **P1C** | Mermaid, math, captions | Planned |
-| **P2+** | Web playground, plugins, MCP | Future |
+| P0 | Productization | Done |
+| P1A–P1D | Engine, templates, Mermaid/math, v1.0 | Done |
+| P2A | Agent Skill + MCP | Planned |
+| P2B | Web Playground | Planned |
+| P3A | Roundtrip + GitHub Action | Planned |
 
-## Full plan index
+See [`aim/00-INDEX.md`](../aim/00-INDEX.md) for the full plan index.
 
-See [`aim/00-INDEX.md`](../aim/00-INDEX.md) for the complete roadmap with dependencies and scope.
-
-**Note:** There is no online playground or web UI yet. Use `./bin/convert` or `python -m md_to_docx` for all conversions.
+There is no online playground yet. Use `./bin/convert` or `python -m md_to_docx`.

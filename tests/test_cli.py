@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+from md_to_docx import __version__
+
 
 def run_cli(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
@@ -23,7 +25,7 @@ def test_version_flag():
     """Test --version flag displays version."""
     result = run_cli("--version")
     assert result.returncode == 0
-    assert "0.1.0" in result.stdout or "0.1.0" in result.stderr
+    assert __version__ in result.stdout or __version__ in result.stderr
 
 
 def test_help_flag():

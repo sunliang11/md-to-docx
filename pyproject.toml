@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "md-to-docx"
-version = "0.1.0"
+name = "md2docx-compiler"
+version = "1.0.0"
 description = "The open-source document compiler for the AI era. Markdown / AI output → professional DOCX."
 readme = "README.md"
 license = "MIT"
@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 authors = [{ name = "md-to-docx contributors" }]
 keywords = ["markdown", "docx", "word", "pandoc", "ai", "document-compiler", "mermaid", "wecom"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
@@ -22,6 +22,12 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Text Processing :: Markup",
 ]
+dependencies = [
+    "markdown-it-py>=3.0",
+    "mdit-py-plugins>=0.4",
+    "python-docx>=1.0",
+    "latex2mathml>=3.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/sunliang11/md-to-docx"
@@ -29,11 +35,13 @@ Documentation = "https://github.com/sunliang11/md-to-docx#readme"
 Issues = "https://github.com/sunliang11/md-to-docx/issues"
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "python-docx>=1.0", "lxml>=4.9", "pillow>=10.0"]
+dev = ["pytest>=7.0", "lxml>=4.9", "pillow>=10.0"]
 
 [project.scripts]
 md-to-docx = "md_to_docx.cli:main"
 md-to-docx-build-reference = "md_to_docx.reference:main"
+md-to-docx-build-native-reference = "md_to_docx.reference_native:main"
+md-to-docx-build-presets = "md_to_docx.presets_build:main"
 
 [tool.hatch.build]
 dev-mode-dirs = ["scripts"]
@@ -44,6 +52,12 @@ packages = ["scripts/md_to_docx"]
 [tool.hatch.build.targets.wheel.force-include]
 "assets/wecom-layout.lua" = "md_to_docx/data/wecom-layout.lua"
 "assets/reference-wecom.docx" = "md_to_docx/data/reference-wecom.docx"
+"assets/reference-native.docx" = "md_to_docx/data/reference-native.docx"
+"assets/presets/professional.docx" = "md_to_docx/data/presets/professional.docx"
+"assets/presets/technical.docx" = "md_to_docx/data/presets/technical.docx"
+"assets/presets/academic.docx" = "md_to_docx/data/presets/academic.docx"
+"assets/presets/business.docx" = "md_to_docx/data/presets/business.docx"
+"assets/presets/report.docx" = "md_to_docx/data/presets/report.docx"
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -58,3 +72,6 @@ include = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "mermaid: needs mmdc on PATH",
+]

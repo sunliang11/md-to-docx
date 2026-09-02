@@ -1,3 +1,3 @@
-"""Convert Markdown to DOCX for WeCom smart-doc import."""
+"""Convert Markdown to professional DOCX — document compiler."""
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"

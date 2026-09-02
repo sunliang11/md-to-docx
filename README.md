@@ -25,33 +25,41 @@ Turn Markdown and AI-generated content into professional Word documents.
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
-./bin/convert path/to/report.md
+./bin/convert path/to/report.md --preset technical
 ```
 
-**Pipeline:** Markdown / AI output → md-to-docx → Professional DOCX
+**Pipeline:** Markdown / AI output → Document AST → Professional DOCX
+
+**Status: 1.0** — Professional Markdown → DOCX. Default engine: native Document AST. WeCom import: `--preset wecom`.
 
 ## Features
 
-- Headings, lists, tables, code blocks, blockquotes, images
-- CJK-aware reference template
-- Mermaid diagrams → PNG
+- Native Document AST engine (default) — no pandoc required for most conversions
+- Headings, lists, tables, code blocks, blockquotes, images, footnotes
+- CJK-aware templates (Microsoft YaHei / SimSun)
+- Mermaid diagrams → PNG (requires `mmdc`; pandoc engine also supported)
+- Math formulas → OMML (basic LaTeX coverage)
+- Figure/table captions and cross-references
+- Template presets: `--preset technical|academic|business|professional|report`
+- Word-native TOC (`--toc`), page numbers, header/footer
+- `--check` document validation without converting
 - Batch directory conversion
 - Cursor Agent Skill
-- WeCom smart-doc import (optional workflow)
+- WeCom smart-doc import (`--preset wecom` or `--engine pandoc`)
 
 ## What's next
 
-- **v0.2** — Native Document AST ([roadmap](references/roadmap.md))
-- **v0.3** — Template presets (academic, business, API)
-- **v0.4+** — AI-native entry points (planned, not yet available)
+- **v1.5** — Web Playground ([roadmap](references/roadmap.md))
+- **v2.0** — Agent Skill matrix + MCP
+- **v3.0** — DOCX roundtrip + GitHub Action
 
 ## Install
 
 ### Requirements
 
 - **Python 3.10+**
-- **pandoc 3.x** — Markdown → DOCX conversion
-- **mmdc** (optional) — Only when `.md` contains ` ```mermaid ` blocks
+- **pandoc 3.x** — only for `--engine pandoc` / `--preset wecom`
+- **mmdc** (optional) — Mermaid blocks (native or pandoc engine)
 
 ### From source (recommended)
 
@@ -68,7 +76,7 @@ cd md-to-docx
 pip install -e .
 ```
 
-Not published on PyPI — the package name `md-to-docx` belongs to a different project.
+PyPI package name: `md2docx-compiler` (console command remains `md-to-docx`).
 
 ## Run
 
@@ -96,6 +104,8 @@ By default, excludes `README.md`, `CHANGELOG.md`, `SKILL.md`, and `.github/**`. 
 ## Documentation
 
 - [Installation & troubleshooting](references/installation.md)
+- [Presets](references/presets.md)
+- [Validation](references/validation.md)
 - [Examples gallery](examples/README.md)
 - [Roadmap](references/roadmap.md)
 - [Environment variables](references/configuration.md)

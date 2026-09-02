@@ -1,21 +1,24 @@
 ---
 name: md-to-docx
 description: >-
-  Converts Markdown and AI-generated content to professional Word DOCX (pandoc + optional mermaid-cli).
-  WeCom smart-doc import remains a supported workflow. Use when the user wants md→docx, batch convert, or 企微导入.
+  Converts Markdown and AI-generated content to professional Word DOCX (native AST engine by default).
+  Use --preset technical for formal reports; --preset wecom for 企微导入 (pandoc). Batch convert, mermaid, math.
 ---
 
 # md-to-docx
 
-The open-source document compiler for the AI era — converts Markdown and AI-generated content to professional Word DOCX. WeCom smart-doc import remains a supported workflow.
+The open-source document compiler for the AI era. Default engine is **native** (no pandoc). For WeCom smart-doc import use `--preset wecom`.
 
 ## Quick start (Cursor skill — **no pip install**)
 
 Skill root = directory containing this `SKILL.md` file (may be `~/.cursor/skills/md_to_docx` or `md-to-docx`).
 
 ```bash
-# Preferred: wrapper script (sets PYTHONPATH automatically)
-"<skill-root>/bin/convert" <path>          # .md file or directory (recursive)
+# Preferred: wrapper (native engine, no pandoc)
+"<skill-root>/bin/convert" report.md --preset technical
+
+# WeCom import (pandoc + Lua layout)
+"<skill-root>/bin/convert" report.md --preset wecom
 
 # Fallback: explicit PYTHONPATH
 PYTHONPATH="<skill-root>/scripts" python3 -m md_to_docx <path>
