@@ -37,7 +37,7 @@ docker compose -f web/docker-compose.yml up --build
 
 **Pipeline:** Markdown / AI output → Document AST → Professional DOCX
 
-**Status: 1.0 engine + v2 AI entry points** — Native Document AST; MCP, Web Playground, and browser extension for AI → Word (all local, no API keys). WeCom import: `--preset wecom`.
+**Status: v1.1 engine + v2 AI entry points + v3 roundtrip** — Native Document AST; MCP, Web Playground, browser extension; **reverse/diff**, GitHub Action, Plugin API, VS Code & Obsidian. WeCom import: `--preset wecom`.
 
 ## Features
 
@@ -56,6 +56,11 @@ docker compose -f web/docker-compose.yml up --build
 - MCP server (`md-to-docx-mcp`) — see [Use with AI](#use-with-ai)
 - Web Playground (Docker) — browser editor + DOCX download
 - Browser extension — Export AI chat replies to Word
+- **DOCX reverse** — `md-to-docx reverse in.docx -o out.md` (native AST)
+- **AST diff** — `md-to-docx diff a.md b.md [--format text|json|md]`
+- **GitHub Action** — `uses: sunliang11/md-to-docx/action@v3` for CI DOCX builds
+- **Plugin API** — `--plugin path/to/plugin.py`, `--no-plugins`
+- **VS Code / Obsidian** — one-click export from your editor
 
 ## Use with AI
 
@@ -70,9 +75,43 @@ Turn AI-written Markdown into Word — **no API keys**, all local:
 | Browser extension | [browser-extension/README.md](browser-extension/README.md) |
 | ChatGPT prompt | [references/agents.md](references/agents.md) |
 
+## Editors
+
+| Entry | Docs |
+|-------|------|
+| CLI | This README |
+| VS Code | [editors/vscode/README.md](editors/vscode/README.md) |
+| Obsidian | [editors/obsidian/README.md](editors/obsidian/README.md) |
+| MCP | [references/mcp.md](references/mcp.md) |
+| Browser | [browser-extension/README.md](browser-extension/README.md) |
+
+## Git workflow
+
+Keep **Markdown in Git**; treat **DOCX as a build artifact**:
+
+```gitignore
+dist/docx/
+*.docx
+```
+
+Example CI job:
+
+```yaml
+- uses: sunliang11/md-to-docx/action@v3
+  with:
+    input: docs/report.md
+    preset: technical
+- uses: actions/upload-artifact@v4
+  with:
+    name: docx
+    path: dist/docx
+```
+
+See [action/README.md](action/README.md) and [Roundtrip](references/roundtrip.md).
+
 ## What's next
 
-- **v3.0** — DOCX roundtrip + GitHub Action ([roadmap](references/roadmap.md))
+- **P4** — Plugin marketplace, Document Standard ([roadmap](references/roadmap.md))
 
 ## Install
 
@@ -143,7 +182,18 @@ python -m md_to_docx ./docs
 
 # With options
 python -m md_to_docx ./docs --exclude "README.md" --output-dir ./output
+
+# Reverse: DOCX → Markdown
+md-to-docx reverse report.docx -o report.md
+
+# Diff two documents
+md-to-docx diff v1.md v2.md --format md
+
+# Custom plugin
+md-to-docx report.md --plugin examples/plugins/uppercase_headings.py
 ```
+
+Subcommands: `convert` (default), `reverse`, `diff`. Legacy `md-to-docx file.md` still works.
 
 CLI options:
 
@@ -165,6 +215,9 @@ By default, excludes `README.md`, `CHANGELOG.md`, `SKILL.md`, and `.github/**`. 
 - [Web Playground](web/README.md)
 - [Browser extension](browser-extension/README.md)
 - [Examples gallery](examples/README.md)
+- [Roundtrip / reverse / diff](references/roundtrip.md)
+- [Plugin API](references/plugins.md)
+- [GitHub Action](action/README.md)
 - [Roadmap](references/roadmap.md)
 - [Environment variables](references/configuration.md)
 - [WeCom import guide](references/wecom-import.md)

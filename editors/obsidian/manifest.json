@@ -1,0 +1,9 @@
+{
+  "id": "md-to-docx",
+  "name": "md-to-docx",
+  "version": "0.1.0",
+  "minAppVersion": "1.0.0",
+  "description": "Export Markdown to professional Word (DOCX) via md-to-docx CLI",
+  "author": "md-to-docx contributors",
+  "isDesktopOnly": true
+}

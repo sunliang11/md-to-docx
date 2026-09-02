@@ -41,6 +41,8 @@ PYTHONPATH="<skill-root>/scripts" python3 -m md_to_docx report.md --preset techn
 4. Report output `.docx` path to the user.
 5. If markdown contains ` ```mermaid ` blocks, ensure `mmdc` is on PATH or warn user.
 6. For MCP clients: see [references/mcp.md](references/mcp.md) (`pip install .[mcp]`, `md-to-docx-mcp`).
+7. **Reverse** (user gives DOCX, wants Markdown source): `md-to-docx reverse file.docx -o file.md` — see [references/roundtrip.md](references/roundtrip.md).
+8. **Diff** two report versions: `md-to-docx diff v1.md v2.md --format md`.
 
 Do not automate WeCom upload.
 
@@ -62,6 +64,8 @@ Do not automate WeCom upload.
 
 ## Resources
 
+- [Roundtrip / reverse / diff](references/roundtrip.md)
+- [Plugin API](references/plugins.md)
 - [MCP setup](references/mcp.md)
 - [Use with ChatGPT](references/agents.md)
 - [Presets](references/presets.md)

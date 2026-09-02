@@ -1,0 +1,70 @@
+{
+  "name": "md-to-docx",
+  "displayName": "md-to-docx",
+  "description": "Export Markdown to professional Word (DOCX) via md-to-docx CLI",
+  "version": "0.1.0",
+  "publisher": "md-to-docx",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onCommand:md-to-docx.export"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "md-to-docx.export",
+        "title": "MD: Export to DOCX",
+        "category": "md-to-docx"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "md-to-docx.export",
+          "when": "resourceLangId == markdown",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "md-to-docx",
+      "properties": {
+        "md-to-docx.path": {
+          "type": "string",
+          "default": "md-to-docx",
+          "description": "Path to md-to-docx CLI executable"
+        },
+        "md-to-docx.preset": {
+          "type": "string",
+          "default": "technical",
+          "description": "Template preset passed to --preset"
+        },
+        "md-to-docx.extraArgs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Extra CLI arguments"
+        },
+        "md-to-docx.outputDir": {
+          "type": "string",
+          "default": "",
+          "description": "Optional --output-dir (empty = beside source file)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  }
+}

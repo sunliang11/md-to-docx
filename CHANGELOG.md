@@ -25,6 +25,30 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-02
+
+### Added (P3A)
+
+- **DOCX reverse** — `md-to-docx reverse in.docx -o out.md` (native AST parser; `--engine pandoc` fallback)
+- **AST diff** — `md-to-docx diff a b [--format text|json|md]`
+- **GitHub Action** — `action/action.yml` composite action for CI DOCX builds
+- `references/roundtrip.md` — support matrix and limitations
+- `lxml` promoted to runtime dependency
+
+### Added (P3B)
+
+- **Plugin API** — `--plugin PATH`, `--no-plugins`; built-in mermaid/math/captions plugins
+- **VS Code extension** — `editors/vscode/` (`MD: Export to DOCX`)
+- **Obsidian plugin** — `editors/obsidian/` (desktop CLI spawn)
+- `examples/plugins/uppercase_headings.py` — third-party plugin sample
+- `references/plugins.md`
+
+### Changed
+
+- Mermaid/captions transforms migrated to plugin hooks (behavior compatible with P1C)
+
+## [Unreleased — P2 archive]
+
 ### Added (P2)
 
 - **Python API** (`md_to_docx.api.convert`) for Skill, MCP, and Web

@@ -29,7 +29,9 @@ jobs:
           pytest tests/test_ast.py tests/test_parse_frontmatter.py tests/test_parse_markdown.py \
             tests/test_native_docx.py tests/test_native_no_pandoc.py tests/test_parse_containers.py \
             tests/test_toc.py tests/test_cjk.py tests/test_preset.py tests/test_validate.py \
-            tests/test_examples_smoke.py tests/test_api.py tests/test_mcp.py tests/test_web_api.py -v
+            tests/test_examples_smoke.py tests/test_api.py tests/test_mcp.py tests/test_web_api.py \
+            tests/test_parse_docx.py tests/test_write_markdown.py tests/test_diff.py \
+            tests/test_roundtrip.py tests/test_plugin_loader.py -v
 
   test:
     runs-on: ubuntu-latest
@@ -87,6 +89,24 @@ jobs:
         run: |
           bash scripts/demo/build_examples.sh
           for f in examples/*/example.docx; do test -s "$f"; done
+
+      - name: Validate GitHub Action (local)
+        run: |
+          pip install -e .
+          md-to-docx examples/meeting-notes/example.md --preset technical --output-dir dist/docx
+          test -s dist/docx/example.docx
+
+      - name: Validate plugin example
+        run: |
+          md-to-docx tests/fixtures/sample.md \
+            --plugin examples/plugins/uppercase_headings.py \
+            --output-dir /tmp/p3b-plugin-test
+          test -s /tmp/p3b-plugin-test/sample.docx
+
+      - name: Validate editor manifests
+        run: |
+          python -m json.tool editors/vscode/package.json > /dev/null
+          python -m json.tool editors/obsidian/manifest.json > /dev/null
 
   extension:
     runs-on: ubuntu-latest

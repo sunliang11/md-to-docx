@@ -540,6 +540,8 @@ def convert_file(
     figure_label: str = "Figure",
     table_label: str = "Table",
     section_label: str = "Section",
+    plugin_paths: tuple[str | Path, ...] = (),
+    no_plugins: bool = False,
 ) -> None:
     """Convert a single markdown file using the selected engine."""
     if engine == "native":
@@ -563,6 +565,8 @@ def convert_file(
                 figure_label=figure_label,
                 table_label=table_label,
                 section_label=section_label,
+                plugin_paths=plugin_paths,
+                no_plugins=no_plugins,
             ),
         )
     elif engine == "pandoc":

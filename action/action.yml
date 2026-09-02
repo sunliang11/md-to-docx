@@ -1,0 +1,34 @@
+name: md-to-docx
+description: Compile Markdown to professional DOCX
+inputs:
+  input:
+    description: Markdown file or directory to convert
+    required: true
+  preset:
+    description: Template preset
+    required: false
+    default: technical
+  output-dir:
+    description: Output directory for .docx files
+    required: false
+    default: dist/docx
+  engine:
+    description: Conversion engine (native or pandoc)
+    required: false
+    default: native
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install md-to-docx
+      run: pip install "${{ github.action_path }}/.."
+      shell: bash
+    - name: Convert Markdown to DOCX
+      run: |
+        md-to-docx "${{ inputs.input }}" \
+          --preset "${{ inputs.preset }}" \
+          --output-dir "${{ inputs.output-dir }}" \
+          --engine "${{ inputs.engine }}"
+      shell: bash

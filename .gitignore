@@ -31,3 +31,9 @@ md-to-docx/
 
 # Browser extension
 browser-extension/node_modules/
+
+# Editor extensions
+editors/vscode/node_modules/
+
+# CI / Action build output
+dist/docx/

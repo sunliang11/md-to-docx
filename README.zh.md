@@ -37,7 +37,7 @@ docker compose -f web/docker-compose.yml up --build
 
 **处理流程：** Markdown / AI 输出 → Document AST → 专业 DOCX
 
-**状态：1.0 引擎 + v2 AI 入口** — 默认 native Document AST；MCP、Web Playground、浏览器扩展，本地 AI → Word，无需 API Key。企微导入：`--preset wecom`。
+**状态：v1.1 引擎 + v2 AI 入口 + v3 往返** — 默认 native Document AST；MCP、Web Playground、浏览器扩展；**reverse/diff**、GitHub Action、Plugin API、VS Code 与 Obsidian。企微导入：`--preset wecom`。
 
 ## 功能特性
 
@@ -56,6 +56,11 @@ docker compose -f web/docker-compose.yml up --build
 - MCP 服务（`md-to-docx-mcp`）— 见 [配合 AI 使用](#配合-ai-使用)
 - Web Playground（Docker）— 浏览器编辑并下载 DOCX
 - 浏览器扩展 — 从 AI 对话导出 Word
+- **DOCX 反向** — `md-to-docx reverse in.docx -o out.md`（native AST）
+- **AST diff** — `md-to-docx diff a.md b.md [--format text|json|md]`
+- **GitHub Action** — `uses: sunliang11/md-to-docx/action@v3` 在 CI 中构建 DOCX
+- **Plugin API** — `--plugin path/to/plugin.py`、`--no-plugins`
+- **VS Code / Obsidian** — 编辑器内一键导出
 
 ## 配合 AI 使用
 
@@ -70,9 +75,43 @@ docker compose -f web/docker-compose.yml up --build
 | 浏览器扩展 | [browser-extension/README.md](browser-extension/README.md) |
 | ChatGPT 提示词 | [references/agents.md](references/agents.md) |
 
+## 编辑器入口
+
+| 入口 | 文档 |
+|------|------|
+| CLI | 本 README |
+| VS Code | [editors/vscode/README.md](editors/vscode/README.md) |
+| Obsidian | [editors/obsidian/README.md](editors/obsidian/README.md) |
+| MCP | [references/mcp.md](references/mcp.md) |
+| 浏览器 | [browser-extension/README.md](browser-extension/README.md) |
+
+## Git 工作流
+
+**Markdown 进 Git，DOCX 当构建产物：**
+
+```gitignore
+dist/docx/
+*.docx
+```
+
+CI 示例：
+
+```yaml
+- uses: sunliang11/md-to-docx/action@v3
+  with:
+    input: docs/report.md
+    preset: technical
+- uses: actions/upload-artifact@v4
+  with:
+    name: docx
+    path: dist/docx
+```
+
+详见 [action/README.md](action/README.md) 与 [往返转换](references/roundtrip.md)。
+
 ## 后续规划
 
-- **v3.0** — DOCX 往返 + GitHub Action（[路线图](references/roadmap.md)）
+- **P4** — 插件市场、Document Standard（[路线图](references/roadmap.md)）
 
 ## 安装
 
@@ -143,7 +182,18 @@ python -m md_to_docx ./docs
 
 # 带选项
 python -m md_to_docx ./docs --exclude "README.md" --output-dir ./output
+
+# 反向：DOCX → Markdown
+md-to-docx reverse report.docx -o report.md
+
+# 对比两份文档
+md-to-docx diff v1.md v2.md --format md
+
+# 自定义插件
+md-to-docx report.md --plugin examples/plugins/uppercase_headings.py
 ```
+
+子命令：`convert`（默认）、`reverse`、`diff`。仍支持 `md-to-docx file.md` 旧写法。
 
 CLI 选项：
 
@@ -165,12 +215,15 @@ CLI 选项：
 - [Web Playground](web/README.md)
 - [浏览器扩展](browser-extension/README.md)
 - [示例库](examples/README.md)
+- [往返 / reverse / diff](references/roundtrip.md)
+- [Plugin API](references/plugins.md)
+- [GitHub Action](action/README.md)
 - [路线图](references/roadmap.md)
 - [环境变量](references/configuration.md)
 - [企微导入指南](references/wecom-import.md)
 - [开发与测试](references/development.md)
 
-**入口说明：** 人类访客：`README.md` / `README.zh.md`；Cursor：[SKILL.md](SKILL.md)；MCP：[references/mcp.md](references/mcp.md)；Playground：[web/README.md](web/README.md)；扩展：[browser-extension/README.md](browser-extension/README.md)。
+**入口说明：** 人类访客：`README.md` / `README.zh.md`；Cursor：[SKILL.md](SKILL.md)；MCP：[references/mcp.md](references/mcp.md)；Playground：[web/README.md](web/README.md)；扩展：[browser-extension/README.md](browser-extension/README.md)；VS Code：[editors/vscode/README.md](editors/vscode/README.md)；Obsidian：[editors/obsidian/README.md](editors/obsidian/README.md)。
 
 ## Cursor Skill
 

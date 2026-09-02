@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "md2docx-compiler"
-version = "1.0.0"
+version = "1.1.0"
 description = "The open-source document compiler for the AI era. Markdown / AI output → professional DOCX."
 readme = "README.md"
 license = "MIT"
@@ -27,6 +27,7 @@ dependencies = [
     "mdit-py-plugins>=0.4",
     "python-docx>=1.0",
     "latex2mathml>=3.0",
+    "lxml>=4.9",
 ]
 
 [project.urls]
@@ -35,7 +36,7 @@ Documentation = "https://github.com/sunliang11/md-to-docx#readme"
 Issues = "https://github.com/sunliang11/md-to-docx/issues"
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "lxml>=4.9", "pillow>=10.0"]
+dev = ["pytest>=7.0", "pillow>=10.0"]
 mcp = ["mcp>=1.0"]
 web = ["fastapi>=0.100", "uvicorn[standard]>=0.23", "httpx>=0.24"]
 

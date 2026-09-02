@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from md_to_docx.parse.markdown import parse_markdown
+from md_to_docx.plugin.base import PluginContext
+from md_to_docx.plugin.loader import load_plugins
 from md_to_docx.render.docx_renderer import render_docx
-from md_to_docx.transform.captions import assign_caption_numbers
-from md_to_docx.transform.mermaid import transform_mermaid
 from md_to_docx.transform.numbering import apply_heading_numbers
 from md_to_docx.transform.outline import insert_toc
 from md_to_docx.transform.xrefs import resolve_xrefs
@@ -30,6 +30,8 @@ class NativeOptions:
     figure_label: str = "Figure"
     table_label: str = "Table"
     section_label: str = "Section"
+    plugin_paths: tuple[str | Path, ...] = ()
+    no_plugins: bool = False
 
 
 def convert_native(md_path: Path, out_docx: Path, *, options: NativeOptions | None = None) -> None:
@@ -48,9 +50,26 @@ def convert_native(md_path: Path, out_docx: Path, *, options: NativeOptions | No
     if opts.numbering:
         doc = apply_heading_numbers(doc, enabled=True)
 
-    doc, media_paths = transform_mermaid(doc, md_path=md_path, strict=opts.strict_mermaid)
-    doc, xref_map = assign_caption_numbers(doc, figure_label=opts.figure_label)
-    doc = resolve_xrefs(doc, xref_map)
+    plugins = load_plugins(
+        extra_paths=opts.plugin_paths,
+        use_builtin=not opts.no_plugins,
+    )
+    ctx = PluginContext(
+        base_dir=md_path.parent,
+        config={"md_path": str(md_path)},
+        strict_mermaid=opts.strict_mermaid,
+        figure_label=opts.figure_label,
+        table_label=opts.table_label,
+    )
+    media_paths: dict[str, Path] = {}
+    for plugin in plugins:
+        doc, new_media = plugin.render_assets(doc, ctx)
+        media_paths.update(new_media)
+        doc = plugin.transform(doc, ctx)
+
+    xref_map = ctx.config.get("xref_map", {})
+    if not opts.no_plugins:
+        doc = resolve_xrefs(doc, xref_map)
 
     render_docx(
         doc,
