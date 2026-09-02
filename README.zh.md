@@ -102,6 +102,15 @@ docker compose -f web/docker-compose.yml up --build
 
 点击上方 **Open in GitHub Codespaces** — Web Playground 会在 8080 端口自动启动。
 
+**方式 D — 本地 Web Playground（pip + uvicorn）**
+
+```bash
+pip install -e ".[web]"
+PYTHONPATH=scripts python -m md_to_docx.presets_build
+uvicorn web.app:app --reload --port 8080
+# 浏览器打开 http://localhost:8080
+```
+
 ## 命令
 
 ```bash
