@@ -25,6 +25,45 @@ for i in range(1, 7):
     HEADING_STYLES[f"Heading {i}"] = i
     HEADING_STYLES[f"Heading{i}"] = i
 TOC_INSTR_RE = re.compile(r"\bTOC\b", re.I)
+HEADING_NAME_RE = re.compile(r"^(?:heading|标题)\s*(\d+)$", re.IGNORECASE)
+
+
+def _heading_level_from_name(name: str | None) -> int | None:
+    if not name:
+        return None
+    if name in HEADING_STYLES:
+        return HEADING_STYLES[name]
+    match = HEADING_NAME_RE.match(name.strip())
+    if match:
+        level = int(match.group(1))
+        if 1 <= level <= 6:
+            return level
+    return None
+
+
+def _outline_lvl_to_heading(val: str | None) -> int | None:
+    if val is None:
+        return None
+    try:
+        outline = int(val)
+    except ValueError:
+        return None
+    if 0 <= outline <= 5:
+        return outline + 1
+    return None
+
+
+def _builtin_heading_level(style_id: str) -> int | None:
+    if style_id in HEADING_STYLES:
+        return HEADING_STYLES[style_id]
+    level = _heading_level_from_name(style_id)
+    if level is not None:
+        return level
+    if style_id.isdigit():
+        numeric = int(style_id)
+        if 1 <= numeric <= 6:
+            return numeric
+    return None
 
 
 def _w(tag: str) -> str:
@@ -50,6 +89,7 @@ class DocxParser:
         self._rels: dict[str, str] = {}
         self._footnotes: dict[str, list[n.Block]] = {}
         self._warnings: list[str] = []
+        self._style_heading_levels: dict[str, int] = {}
 
     def warn(self, msg: str) -> None:
         self._warnings.append(msg)
@@ -58,6 +98,7 @@ class DocxParser:
     def parse(self) -> n.Document:
         with zipfile.ZipFile(self.docx_path, "r") as zf:
             self._load_relationships(zf)
+            self._load_styles(zf)
             self._load_footnotes(zf)
             with zf.open("word/document.xml") as f:
                 root = etree.parse(f).getroot()
@@ -103,6 +144,104 @@ class DocxParser:
                     self._rels[rid] = target
         except KeyError:
             pass
+
+    def _load_styles(self, zf: zipfile.ZipFile) -> None:
+        try:
+            with zf.open("word/styles.xml") as f:
+                root = etree.parse(f).getroot()
+        except KeyError:
+            return
+
+        styles: dict[str, dict[str, str | int | None]] = {}
+        for style_el in root.findall("w:style", NS):
+            style_id = style_el.get(_w("styleId"))
+            if not style_id:
+                continue
+            name_el = style_el.find("w:name", NS)
+            name = name_el.get(_w("val")) if name_el is not None else None
+            based_on_el = style_el.find("w:basedOn", NS)
+            based_on = based_on_el.get(_w("val")) if based_on_el is not None else None
+            link_el = style_el.find("w:link", NS)
+            link = link_el.get(_w("val")) if link_el is not None else None
+            outline = None
+            ppr = style_el.find("w:pPr", NS)
+            if ppr is not None:
+                outline_el = ppr.find("w:outlineLvl", NS)
+                if outline_el is not None:
+                    outline = _outline_lvl_to_heading(outline_el.get(_w("val")))
+            styles[style_id] = {
+                "name": name,
+                "based_on": based_on,
+                "link": link,
+                "outline": outline,
+            }
+
+        self._style_heading_levels = {}
+        for style_id in styles:
+            level = self._resolve_style_heading_level(style_id, styles)
+            if level is not None:
+                self._style_heading_levels[style_id] = level
+
+    def _resolve_style_heading_level(
+        self,
+        style_id: str,
+        styles: dict[str, dict[str, str | int | None]],
+        *,
+        seen: set[str] | None = None,
+    ) -> int | None:
+        if style_id in HEADING_STYLES:
+            return HEADING_STYLES[style_id]
+
+        if seen is None:
+            seen = set()
+        if style_id in seen:
+            return None
+        seen.add(style_id)
+
+        info = styles.get(style_id)
+        if info is None:
+            return _builtin_heading_level(style_id)
+
+        level = _heading_level_from_name(info.get("name"))  # type: ignore[arg-type]
+        if level is not None:
+            return level
+
+        outline = info.get("outline")
+        if isinstance(outline, int):
+            return outline
+
+        based_on = info.get("based_on")
+        if isinstance(based_on, str):
+            level = self._resolve_style_heading_level(based_on, styles, seen=seen)
+            if level is not None:
+                return level
+
+        link = info.get("link")
+        if isinstance(link, str):
+            level = self._resolve_style_heading_level(link, styles, seen=seen)
+            if level is not None:
+                return level
+
+        return None
+
+    def _paragraph_outline_level(self, p: etree._Element) -> int | None:
+        ppr = p.find("w:pPr", NS)
+        if ppr is None:
+            return None
+        outline_el = ppr.find("w:outlineLvl", NS)
+        if outline_el is None:
+            return None
+        return _outline_lvl_to_heading(outline_el.get(_w("val")))
+
+    def _heading_level_for_paragraph(
+        self, p: etree._Element, style: str | None
+    ) -> int | None:
+        level = None
+        if style:
+            level = HEADING_STYLES.get(style) or self._style_heading_levels.get(style)
+        if level is None:
+            level = self._paragraph_outline_level(p)
+        return level
 
     def _load_footnotes(self, zf: zipfile.ZipFile) -> None:
         try:
@@ -178,8 +317,11 @@ class DocxParser:
                 return None
             return n.CodeBlock(text.rstrip("\n"), lang=None)
 
-        if style and style in HEADING_STYLES:
-            return n.Heading(HEADING_STYLES[style], inlines)
+        level = self._heading_level_for_paragraph(p, style)
+        if level is not None:
+            if not inlines:
+                return None
+            return n.Heading(level, inlines)
 
         if style in ("List Number", "List Bullet"):
             ordered = style == "List Number"
@@ -214,6 +356,11 @@ class DocxParser:
             if not blocks:
                 return None
             return blocks[0] if len(blocks) == 1 else blocks
+
+        if style and style in self._style_heading_levels:
+            if not inlines:
+                return None
+            return n.Heading(self._style_heading_levels[style], inlines)
 
         self.warn(f"unhandled paragraph style: {style}")
         if inlines:
