@@ -30,9 +30,17 @@ When changing fonts, heading sizes, or table borders:
 
 ```bash
 pip install python-docx   # if not already installed via [dev]
+md-to-docx build reference
+# or:
 python3 -m md_to_docx.reference
-# or (legacy alias):
-md-to-docx-build-reference
+```
+
+Rebuild preset and native templates:
+
+```bash
+md-to-docx build presets
+# or:
+python3 -m md_to_docx.presets_build
 ```
 
 Regenerates `assets/reference-wecom.docx`. A temporary `assets/reference-default.docx` may be created (gitignored). Requires `pandoc` on PATH.

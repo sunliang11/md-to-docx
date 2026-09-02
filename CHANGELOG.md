@@ -25,6 +25,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- **CLI consolidation** — removed pip entry points `md-to-docx-build-reference`, `md-to-docx-build-native-reference`, and `md-to-docx-build-presets`. Use `md-to-docx build reference|presets|all` instead. Module entry points (`python -m md_to_docx.presets_build`, etc.) unchanged.
+
 ### Added (P4 Gate A)
 
 - **Open Document Markdown spec** — `spec/document-markdown.md` (`odm-0.1`)

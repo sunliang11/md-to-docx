@@ -23,7 +23,7 @@ venv/
 **/*mermaid图片/
 tests/fixtures/*.docx
 
-# Generated reference template (rebuilt via md-to-docx-build-reference)
+# Generated reference template (rebuilt via md-to-docx build reference)
 assets/reference-default.docx
 
 # Accidental nested clone directory

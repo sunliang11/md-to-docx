@@ -51,7 +51,7 @@ def missing_template(path: str) -> MdToDocxError:
     return MdToDocxError(
         "Template not found",
         f"template file missing: {path}",
-        "Rebuild presets with python -m md_to_docx.presets_build or pass a valid --template path",
+        "Rebuild presets with md-to-docx build presets or pass a valid --template path",
     )
 
 

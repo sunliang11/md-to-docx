@@ -42,9 +42,6 @@ web = ["fastapi>=0.100", "uvicorn[standard]>=0.23", "httpx>=0.24"]
 
 [project.scripts]
 md-to-docx = "md_to_docx.cli:main"
-md-to-docx-build-reference = "md_to_docx.reference:main"
-md-to-docx-build-native-reference = "md_to_docx.reference_native:main"
-md-to-docx-build-presets = "md_to_docx.presets_build:main"
 md-to-docx-mcp = "md_to_docx.mcp.server:main"
 
 [tool.hatch.build]

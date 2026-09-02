@@ -148,3 +148,17 @@ def test_convert_explicit_subcommand(tmp_path: Path) -> None:
     result = run_cli("convert", str(sample_dst), "--dry-run")
     assert result.returncode == 0
     assert "would convert" in result.stdout
+
+
+def test_build_help():
+    result = run_cli("build", "--help")
+    assert result.returncode == 0
+    output = result.stdout + result.stderr
+    assert "presets" in output
+    assert "reference" in output
+    assert "all" in output
+
+
+def test_build_missing_target():
+    result = run_cli("build")
+    assert result.returncode != 0

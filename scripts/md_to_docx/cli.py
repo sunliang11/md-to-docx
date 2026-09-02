@@ -17,7 +17,7 @@ from md_to_docx.preset import load_preset, preset_template_path
 from md_to_docx.reverse import reverse_docx
 from md_to_docx.validate import validate_file
 
-SUBCOMMANDS = frozenset({"convert", "reverse", "diff"})
+SUBCOMMANDS = frozenset({"convert", "reverse", "diff", "build"})
 
 
 def resolve_output_docx(
@@ -120,6 +120,19 @@ def build_diff_parser() -> argparse.ArgumentParser:
         choices=["text", "json", "md"],
         default="text",
         dest="diff_format",
+    )
+    return parser
+
+
+def build_build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Rebuild bundled Word template assets (developer / release use).",
+    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument(
+        "target",
+        choices=["presets", "reference", "all"],
+        help="presets: preset + native templates; reference: WeCom/pandoc template; all: both",
     )
     return parser
 
@@ -295,6 +308,20 @@ def _run_diff(args: argparse.Namespace) -> int:
         return 1
 
 
+def _run_build(args: argparse.Namespace) -> int:
+    from md_to_docx import presets_build, reference
+
+    try:
+        if args.target in ("reference", "all"):
+            reference.build_reference_doc()
+        if args.target in ("presets", "all"):
+            presets_build.main()
+    except Exception as exc:  # noqa: BLE001
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args_list = list(argv) if argv is not None else sys.argv[1:]
 
@@ -307,5 +334,7 @@ def main(argv: list[str] | None = None) -> int:
             return _run_reverse(build_reverse_parser().parse_args(rest))
         if command == "diff":
             return _run_diff(build_diff_parser().parse_args(rest))
+        if command == "build":
+            return _run_build(build_build_parser().parse_args(rest))
 
     return _run_convert(build_convert_parser().parse_args(args_list))
