@@ -21,9 +21,18 @@ def test_healthz():
 def test_presets():
     res = client.get("/api/presets")
     assert res.status_code == 200
-    names = {p["name"] for p in res.json()["presets"]}
+    data = res.json()
+    names = [p["name"] for p in data["presets"]]
     assert "technical" in names
+    assert "editorial" in names
     assert "wecom" not in names
+    assert names[0] == "professional"
+    assert names[1] == "editorial"
+    first = data["presets"][1]
+    assert first["name"] == "editorial"
+    assert "preview" in first
+    assert first["preview"]["latin"] == "Georgia"
+    assert first["preview"]["body_pt"] == 13
 
 
 def test_convert_returns_docx():

@@ -6,19 +6,122 @@
 
 # md-to-docx
 
-<img src="assets/branding/wordmark.svg" alt="md-to-docx: MD → DOCX" width="320">
+### AI 时代的开源文档编译器。
 
-**AI 时代的开源文档编译器。**
+```
+    AI / Markdown
+          ↓
+    Professional DOCX
+```
 
-把 Markdown 与 AI 生成内容编译成专业 Word — 支持正向、反向、对比与 CI 自动化。
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sunliang11/md-to-docx?quickstart=1)
+· [安装](#安装)
+· [GitHub](https://github.com/sunliang11/md-to-docx)
 
-[文档](references/installation.md) · **[命令手册](references/cli.zh.md)** · [示例](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
+---
+
+### 为什么选择 md-to-docx？
+
+- ✓ **AI → Word** — 把 AI 文稿编译成可交付 DOCX（[agents](references/agents.md)）
+- ✓ **Markdown → DOCX** — `md-to-docx report.md --preset technical`
+- ✓ **DOCX → Markdown** — `md-to-docx reverse report.docx -o report.md`
+- ✓ **文档对比** — 按结构对比 `.md` 与 `.docx` 版本（[roundtrip](references/roundtrip.md)）
+- ✓ **模板** — 预设 + 社区 Word 模板（[presets](references/presets.md) · [templates](templates/README.md)）
+- ✓ **MCP** — convert、validate、apply_template、list_presets（[mcp](references/mcp.md)）
+- ✓ **Cursor / Claude / Codex / Gemini** — [SKILL.md](SKILL.md) · [skills/](skills/)
+- ✓ **浏览器扩展** — 从 ChatGPT / Claude / Gemini 对话导出 Word（[extension](browser-extension/README.md)）
+- ✓ **GitHub Action** — CI 从 Markdown 构建 DOCX（[action](action/README.md)）
+- ✓ **本地 & 私有** — 无需 API Key，Docker 或 Codespaces 自托管
+
+---
+
+### 30 秒上手
+
+```
+input.md  →  md-to-docx  →  report.docx
+```
+
+```bash
+./bin/convert examples/technical-report/example.md --preset technical
+```
 
 ![Markdown 转 DOCX 演示](assets/demo/hero.gif)
 
 **转换前**（Markdown）→ **转换后**（Word）
 
 <img src="assets/demo/before.md.png" width="48%"> <img src="assets/demo/after.png" width="48%">
+
+---
+
+### AI 工作流
+
+```
+ChatGPT · Claude · Cursor · Codex · Gemini
+                  ↓
+              md-to-docx
+                  ↓
+            专业 Word 文档
+```
+
+[SKILL.md](SKILL.md) · [配合 AI 使用](references/agents.md) · [MCP 服务](references/mcp.md)
+
+---
+
+### 模板
+
+[Technical](examples/technical-report/) · [Business](examples/business-report/) · [Academic](examples/academic-paper/) · [Chinese](examples/chinese-report/) · [API](examples/api-document/) · [Meeting](examples/meeting-notes/)
+
+完整 [示例库](examples/README.md)。
+
+---
+
+### 生态
+
+[CLI](references/cli.zh.md) · [MCP](references/mcp.md) · [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) · [Browser](browser-extension/README.md) · [GitHub Action](action/README.md) · [Docker](web/README.md)
+
+---
+
+## 快速开始
+
+**方式 A — Git 克隆（推荐，无需 pip）**
+
+```bash
+git clone https://github.com/sunliang11/md-to-docx.git
+cd md-to-docx
+./bin/convert path/to/report.md --preset technical
+```
+
+**方式 B — Docker Playground（无需本机 Python）**
+
+```bash
+docker compose -f web/docker-compose.yml up --build
+# 浏览器打开 http://localhost:8080
+```
+
+**方式 C — GitHub Codespaces（零本地安装）**
+
+点击上方 **Open in GitHub Codespaces** — Web Playground 会在 8080 端口自动启动。
+
+## 命令
+
+```bash
+md-to-docx report.md --preset technical                              # 正向编译（默认）
+md-to-docx reverse report.docx -o report.md                           # DOCX → Markdown
+md-to-docx diff draft-v1.md draft-v2.md --format md                  # 结构对比
+md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # 自定义插件
+md-to-docx report.md --check                                         # 仅校验
+```
+
+**完整参数说明 → [references/cli.zh.md](references/cli.zh.md)**（全部子命令、参数、安装方式与排错）。
+
+子命令：`convert`（默认）、`reverse`、`diff`、`build`。旧写法 `md-to-docx file.md` 仍然有效。
+
+**批量与目录**
+
+```bash
+md-to-docx ./docs --output-dir ./output --exclude "README.md"
+md-to-docx ./docs --dry-run
+```
 
 ## 你能做什么
 
@@ -45,49 +148,11 @@
 | Cursor Skill | Agent 自动选 preset 并转换 | [SKILL.md](SKILL.md) |
 | Claude / Codex / Gemini | 各平台 Skill 副本 | [skills/](skills/) |
 | MCP | 四个工具：convert、validate、apply_template、list_presets | [mcp.md](references/mcp.md) |
-| Web Playground | 浏览器编辑并下载 DOCX（Docker） | [web/README.md](web/README.md) |
+| Web Playground | 浏览器编辑并下载 DOCX（Docker / Codespaces） | [web/README.md](web/README.md) |
 | 浏览器扩展 | 从 ChatGPT / Claude / Gemini 对话导出 Word | [browser-extension/README.md](browser-extension/README.md) |
 | VS Code | 命令 `MD: Export to DOCX`，Markdown 右键菜单 | [editors/vscode/README.md](editors/vscode/README.md) |
 | Obsidian | `Export to Professional Word`（仅桌面端） | [editors/obsidian/README.md](editors/obsidian/README.md) |
 | GitHub Action | CI 从 Markdown 构建 DOCX | [action/README.md](action/README.md) |
-
-## 快速开始
-
-**方式 A — Git 克隆（推荐，无需 pip）**
-
-```bash
-git clone https://github.com/sunliang11/md-to-docx.git
-cd md-to-docx
-./bin/convert path/to/report.md --preset technical
-```
-
-**方式 B — Docker Playground（无需本机 Python）**
-
-```bash
-docker compose -f web/docker-compose.yml up --build
-# 浏览器打开 http://localhost:8080
-```
-
-## 命令
-
-```bash
-md-to-docx report.md --preset technical                              # 正向编译（默认）
-md-to-docx reverse report.docx -o report.md                           # DOCX → Markdown
-md-to-docx diff draft-v1.md draft-v2.md --format md                  # 结构对比
-md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # 自定义插件
-md-to-docx report.md --check                                         # 仅校验
-```
-
-**完整参数说明 → [references/cli.zh.md](references/cli.zh.md)**（全部子命令、参数、安装方式与排错）。
-
-子命令：`convert`（默认）、`reverse`、`diff`、`build`。旧写法 `md-to-docx file.md` 仍然有效。
-
-**批量与目录**
-
-```bash
-md-to-docx ./docs --output-dir ./output --exclude "README.md"
-md-to-docx ./docs --dry-run
-```
 
 ## 文档格式支持
 

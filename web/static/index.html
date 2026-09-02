@@ -4,54 +4,104 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>md-to-docx Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/app.css">
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <h1>md-to-docx</h1>
-    <label>
-      Preset
-      <select id="preset"></select>
-    </label>
-    <label class="toc-label">
-      <input type="checkbox" id="toc" checked> TOC
-    </label>
-    <button type="button" id="generate">Generate DOCX</button>
-    <button type="button" id="copy-cli" class="secondary">Copy CLI command</button>
-    <label>
-      Example
-      <select id="example">
-        <option value="">— load example —</option>
-        <option value="technical-report">Technical report</option>
-        <option value="academic-paper">Academic paper</option>
-        <option value="business-report">Business report</option>
-        <option value="meeting-notes">Meeting notes</option>
-        <option value="api-document">API document</option>
-        <option value="ai-report">AI report</option>
-        <option value="chinese-report">Chinese report</option>
-      </select>
-    </label>
+  <header class="app-header">
+    <div class="app-header__brand">
+      <h1 class="app-header__title">md-to-docx</h1>
+      <span class="app-header__hint" id="i18n-header-hint">Markdown → DOCX playground</span>
+    </div>
+    <div class="app-header__actions">
+      <div class="lang-switch" role="group" id="lang-switch" aria-label="Language">
+        <button type="button" id="lang-en" class="lang-switch__btn" data-lang="en">EN</button>
+        <span class="lang-switch__sep" aria-hidden="true">|</span>
+        <button type="button" id="lang-zh" class="lang-switch__btn" data-lang="zh">中文</button>
+      </div>
+      <a class="app-header__link" href="https://github.com/sunliang11/md-to-docx">GitHub</a>
+    </div>
   </header>
 
-  <div id="error" class="error hidden" role="alert"></div>
+  <div class="toolbar">
+    <div class="toolbar__group">
+      <label class="field">
+        <span class="field__label" id="i18n-label-example">Example</span>
+        <select id="example" class="field__control">
+          <option value="" disabled selected id="i18n-example-placeholder">Load example…</option>
+          <option value="technical-report" data-example-key="technical-report">Technical</option>
+          <option value="business-report" data-example-key="business-report">Business</option>
+          <option value="academic-paper" data-example-key="academic-paper">Academic</option>
+          <option value="api-document" data-example-key="api-document">API</option>
+          <option value="meeting-notes" data-example-key="meeting-notes">Meeting</option>
+          <option value="ai-report" data-example-key="ai-report">AI Report</option>
+          <option value="chinese-report" data-example-key="chinese-report">Chinese</option>
+        </select>
+      </label>
+    </div>
 
-  <main class="split">
-    <section class="editor-pane">
-      <h2>Markdown</h2>
-      <textarea id="markdown" placeholder="# Technical Report&#10;&#10;Your AI-generated content here…" spellcheck="false"></textarea>
+    <div class="toolbar__group toolbar__group--settings">
+      <label class="field">
+        <span class="field__label" id="i18n-label-preset">Preset</span>
+        <select id="preset" class="field__control"></select>
+      </label>
+      <label class="field field--checkbox">
+        <input type="checkbox" id="toc" checked>
+        <span id="i18n-label-toc">Table of contents</span>
+      </label>
+    </div>
+
+    <div class="toolbar__spacer"></div>
+
+    <div class="toolbar__group toolbar__group--actions">
+      <button type="button" id="copy-cli" class="btn btn--ghost">Copy CLI</button>
+      <button type="button" id="generate" class="btn btn--primary">
+        <span class="btn__label" id="i18n-btn-export">Export Word (.docx)</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="preset-hint" class="preset-hint" aria-live="polite"></div>
+
+  <div id="error" class="error-panel hidden" role="alert">
+    <div class="error-panel__body">
+      <p class="error-panel__problem" id="error-problem"></p>
+      <p class="error-panel__cause" id="error-cause"></p>
+      <p class="error-panel__fix" id="error-fix"></p>
+    </div>
+    <button type="button" class="error-panel__dismiss" id="error-dismiss" aria-label="Dismiss error">×</button>
+  </div>
+
+  <main class="workspace">
+    <section class="pane pane--editor">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-markdown">Markdown</h2>
+        <span class="pane__meta" id="char-count">0 B</span>
+      </div>
+      <textarea id="markdown" placeholder="# Technical Report&#10;&#10;Paste AI-generated Markdown here…" spellcheck="false"></textarea>
     </section>
-    <section class="preview-pane">
-      <h2>Preview <span class="hint">(approximation — not Word layout)</span></h2>
+    <section class="pane pane--preview">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-preview">Preview</h2>
+        <div class="pane__badges">
+          <span class="pane__badge" id="preview-preset"></span>
+          <span class="pane__badge" id="i18n-badge-approx">Approximation</span>
+        </div>
+      </div>
       <div id="preview" class="preview"></div>
     </section>
   </main>
 
-  <footer>
-    Documents are converted in memory/temp and deleted. Self-host with Docker.
-    <a href="https://github.com/sunliang11/md-to-docx">GitHub</a>
+  <footer class="app-footer">
+    <span id="i18n-footer-privacy">Private · converted in memory and deleted</span>
   </footer>
 
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="/i18n.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>

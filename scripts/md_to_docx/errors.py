@@ -43,7 +43,7 @@ def unknown_preset(name: str) -> MdToDocxError:
     return MdToDocxError(
         "Unknown preset",
         f"preset '{name}' is not defined",
-        "Use list_presets or --preset professional|technical|academic|business|report|wecom",
+        "Use list_presets or --preset professional|editorial|technical|academic|business|report|wecom",
     )
 
 

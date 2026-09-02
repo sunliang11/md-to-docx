@@ -6,19 +6,122 @@ English | [中文](README.zh.md)
 
 # md-to-docx
 
-<img src="assets/branding/wordmark.svg" alt="md-to-docx: MD → DOCX" width="320">
+### The open-source document compiler for the AI era.
 
-**The open-source document compiler for the AI era.**
+```
+    AI / Markdown
+          ↓
+    Professional DOCX
+```
 
-Turn Markdown and AI-generated content into professional Word documents — forward, reverse, diff, and automate in CI.
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sunliang11/md-to-docx?quickstart=1)
+· [Install](#install)
+· [GitHub](https://github.com/sunliang11/md-to-docx)
 
-[Documentation](references/installation.md) · **[CLI Reference](references/cli.md)** · [Examples](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
+---
+
+### Why md-to-docx?
+
+- ✓ **AI → Word** — compile AI drafts into deliverable DOCX ([agents](references/agents.md))
+- ✓ **Markdown → DOCX** — `md-to-docx report.md --preset technical`
+- ✓ **DOCX → Markdown** — `md-to-docx reverse report.docx -o report.md`
+- ✓ **Document Diff** — structural compare for `.md` and `.docx` ([roundtrip](references/roundtrip.md))
+- ✓ **Templates** — presets + community Word templates ([presets](references/presets.md) · [templates](templates/README.md))
+- ✓ **MCP** — convert, validate, apply_template, list_presets ([mcp](references/mcp.md))
+- ✓ **Cursor / Claude / Codex / Gemini** — [SKILL.md](SKILL.md) · [skills/](skills/)
+- ✓ **Browser Extension** — export ChatGPT / Claude / Gemini chats ([extension](browser-extension/README.md))
+- ✓ **GitHub Action** — CI builds DOCX from Markdown ([action](action/README.md))
+- ✓ **Local & Private** — no API keys, self-host with Docker or Codespaces
+
+---
+
+### 30 seconds demo
+
+```
+input.md  →  md-to-docx  →  report.docx
+```
+
+```bash
+./bin/convert examples/technical-report/example.md --preset technical
+```
 
 ![Convert Markdown to DOCX](assets/demo/hero.gif)
 
 **Before** (Markdown) → **After** (Word)
 
 <img src="assets/demo/before.md.png" width="48%"> <img src="assets/demo/after.png" width="48%">
+
+---
+
+### AI Workflow
+
+```
+ChatGPT · Claude · Cursor · Codex · Gemini
+                  ↓
+              md-to-docx
+                  ↓
+         Professional Word
+```
+
+[SKILL.md](SKILL.md) · [Use with AI agents](references/agents.md) · [MCP server](references/mcp.md)
+
+---
+
+### Templates
+
+[Technical](examples/technical-report/) · [Business](examples/business-report/) · [Academic](examples/academic-paper/) · [Chinese](examples/chinese-report/) · [API](examples/api-document/) · [Meeting](examples/meeting-notes/)
+
+See the full [examples gallery](examples/README.md).
+
+---
+
+### Ecosystem
+
+[CLI](references/cli.md) · [MCP](references/mcp.md) · [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) · [Browser](browser-extension/README.md) · [GitHub Action](action/README.md) · [Docker](web/README.md)
+
+---
+
+## Quick Start
+
+**Option A — Git clone (recommended, no pip)**
+
+```bash
+git clone https://github.com/sunliang11/md-to-docx.git
+cd md-to-docx
+./bin/convert path/to/report.md --preset technical
+```
+
+**Option B — Docker Playground (no local Python)**
+
+```bash
+docker compose -f web/docker-compose.yml up --build
+# open http://localhost:8080
+```
+
+**Option C — GitHub Codespaces (zero local install)**
+
+Click **Open in GitHub Codespaces** above — the Web Playground starts on port 8080 automatically.
+
+## Commands
+
+```bash
+md-to-docx report.md --preset technical                              # convert (default)
+md-to-docx reverse report.docx -o report.md                           # DOCX → Markdown
+md-to-docx diff draft-v1.md draft-v2.md --format md                  # structural diff
+md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # custom plugin
+md-to-docx report.md --check                                         # validate only
+```
+
+**Full option reference → [references/cli.md](references/cli.md)** (all subcommands, flags, install methods, and troubleshooting).
+
+Subcommands: `convert` (default), `reverse`, `diff`, `build`. Legacy `md-to-docx file.md` still works.
+
+**Batch & directories**
+
+```bash
+md-to-docx ./docs --output-dir ./output --exclude "README.md"
+md-to-docx ./docs --dry-run
+```
 
 ## What you can do
 
@@ -45,49 +148,11 @@ Turn Markdown and AI-generated content into professional Word documents — forw
 | Cursor Skill | Agent picks a preset and converts for you | [SKILL.md](SKILL.md) |
 | Claude / Codex / Gemini | Platform-specific skill copies | [skills/](skills/) |
 | MCP | Four tools: convert, validate, apply_template, list_presets | [mcp.md](references/mcp.md) |
-| Web Playground | Edit in browser, download DOCX (Docker) | [web/README.md](web/README.md) |
+| Web Playground | Edit in browser, download DOCX (Docker / Codespaces) | [web/README.md](web/README.md) |
 | Browser extension | Export ChatGPT / Claude / Gemini chats to Word | [browser-extension/README.md](browser-extension/README.md) |
 | VS Code | Command `MD: Export to DOCX` on Markdown files | [editors/vscode/README.md](editors/vscode/README.md) |
 | Obsidian | `Export to Professional Word` (desktop only) | [editors/obsidian/README.md](editors/obsidian/README.md) |
 | GitHub Action | CI builds DOCX from Markdown | [action/README.md](action/README.md) |
-
-## Quick Start
-
-**Option A — Git clone (recommended, no pip)**
-
-```bash
-git clone https://github.com/sunliang11/md-to-docx.git
-cd md-to-docx
-./bin/convert path/to/report.md --preset technical
-```
-
-**Option B — Docker Playground (no local Python)**
-
-```bash
-docker compose -f web/docker-compose.yml up --build
-# open http://localhost:8080
-```
-
-## Commands
-
-```bash
-md-to-docx report.md --preset technical                              # convert (default)
-md-to-docx reverse report.docx -o report.md                           # DOCX → Markdown
-md-to-docx diff draft-v1.md draft-v2.md --format md                  # structural diff
-md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # custom plugin
-md-to-docx report.md --check                                         # validate only
-```
-
-**Full option reference → [references/cli.md](references/cli.md)** (all subcommands, flags, install methods, and troubleshooting).
-
-Subcommands: `convert` (default), `reverse`, `diff`, `build`. Legacy `md-to-docx file.md` still works.
-
-**Batch & directories**
-
-```bash
-md-to-docx ./docs --output-dir ./output --exclude "README.md"
-md-to-docx ./docs --dry-run
-```
 
 ## Document support
 

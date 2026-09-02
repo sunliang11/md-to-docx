@@ -5,6 +5,7 @@ Presets bundle a template, engine, and default flags. Explicit CLI flags overrid
 | Preset | Engine | TOC | Numbering | Use case |
 |--------|--------|-----|-----------|----------|
 | `professional` | native | yes | no | General documents |
+| `editorial` | native | yes | no | Editorial (Georgia/KaiTi, wide margins) |
 | `technical` | native | yes | yes | Technical reports, API docs |
 | `academic` | native | yes | yes | Papers (Times/SimSun) |
 | `business` | native | no | no | Business summaries |

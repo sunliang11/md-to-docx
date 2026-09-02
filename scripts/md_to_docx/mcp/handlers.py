@@ -12,6 +12,7 @@ from md_to_docx.preset import PRESETS
 
 PRESET_DESCRIPTIONS: dict[str, str] = {
     "professional": "General documents with TOC",
+    "editorial": "Editorial layout (Georgia/KaiTi, wide margins)",
     "technical": "Technical reports with TOC and heading numbering",
     "academic": "Academic papers (Times/SimSun)",
     "business": "Business summaries, no TOC",

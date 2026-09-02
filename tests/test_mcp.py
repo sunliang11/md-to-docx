@@ -19,6 +19,7 @@ def test_list_presets():
     assert result["ok"] is True
     names = {p["name"] for p in result["presets"]}
     assert "technical" in names
+    assert "editorial" in names
     assert "wecom" in names
 
 

@@ -14,6 +14,13 @@ def test_load_preset():
     assert p.toc is True
 
 
+def test_load_preset_editorial():
+    p = load_preset("editorial")
+    assert p.engine == "native"
+    assert p.toc is True
+    assert p.numbering is False
+
+
 def test_unknown_preset():
     import pytest
 

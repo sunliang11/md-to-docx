@@ -23,6 +23,10 @@ PRESETS: dict[str, Preset] = {
     "professional": Preset(
         "professional", "professional", "native", toc=True, numbering=False
     ),
+    "editorial": Preset(
+        "editorial", "editorial", "native", toc=True, numbering=False,
+        toc_title="Table of Contents",
+    ),
     "technical": Preset(
         "technical", "technical", "native", toc=True, numbering=True
     ),

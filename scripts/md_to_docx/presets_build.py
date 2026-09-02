@@ -23,6 +23,14 @@ PRESET_SPECS = {
         "east_asia": "Microsoft YaHei",
         "header": None,
     },
+    "editorial": {
+        "heading_color": "7C2D12",
+        "body_pt": 13,
+        "latin": "Georgia",
+        "east_asia": "KaiTi",
+        "header": "Editorial Draft",
+        "margin_mm": 31.8,
+    },
     "technical": {
         "heading_color": "1E3A5F",
         "body_pt": 10.5,
@@ -61,12 +69,13 @@ def _hex_color(hex_str: str) -> RGBColor:
 def build_preset(name: str, spec: dict, out_dir: Path) -> Path:
     doc = Document()
     section = doc.sections[0]
+    margin = spec.get("margin_mm", 25.4)
     section.page_width = Mm(210)
     section.page_height = Mm(297)
-    section.left_margin = Mm(25.4)
-    section.right_margin = Mm(25.4)
-    section.top_margin = Mm(25.4)
-    section.bottom_margin = Mm(25.4)
+    section.left_margin = Mm(margin)
+    section.right_margin = Mm(margin)
+    section.top_margin = Mm(margin)
+    section.bottom_margin = Mm(margin)
 
     configure_document_styles(doc, force=True)
     normal = doc.styles["Normal"]

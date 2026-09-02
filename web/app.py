@@ -18,6 +18,7 @@ from md_to_docx import __version__
 from md_to_docx.api import convert
 from md_to_docx.errors import MdToDocxError
 from md_to_docx.mcp.handlers import PRESET_DESCRIPTIONS
+from md_to_docx.presets_build import PRESET_SPECS
 from md_to_docx.preset import PRESETS
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -27,10 +28,15 @@ EXAMPLES_DIR = REPO_ROOT / "examples"
 MAX_BODY_BYTES = 400 * 1024
 CONVERT_TIMEOUT_SEC = 30
 
-# Native presets exposed in playground (wecom needs pandoc — hidden)
-PLAYGROUND_PRESETS = [
-    name for name in PRESETS if PRESETS[name].engine == "native"
+PLAYGROUND_PRESET_ORDER = [
+    "professional",
+    "editorial",
+    "technical",
+    "academic",
+    "business",
+    "report",
 ]
+PLAYGROUND_PRESETS = [n for n in PLAYGROUND_PRESET_ORDER if n in PRESETS]
 
 EXAMPLE_FILES = {
     "technical-report": "technical-report/example.md",
@@ -103,6 +109,14 @@ async def api_presets() -> dict[str, Any]:
     items = []
     for name in PLAYGROUND_PRESETS:
         preset = PRESETS[name]
+        spec = PRESET_SPECS.get(name, {})
+        preview = {
+            "latin": spec.get("latin", "Calibri"),
+            "east_asia": spec.get("east_asia", "Microsoft YaHei"),
+            "body_pt": spec.get("body_pt", 11),
+            "heading_color": "#" + spec.get("heading_color", "111827"),
+            "header": spec.get("header"),
+        }
         items.append(
             {
                 "name": name,
@@ -110,6 +124,7 @@ async def api_presets() -> dict[str, Any]:
                 "toc": preset.toc,
                 "numbering": preset.numbering,
                 "description": PRESET_DESCRIPTIONS.get(name, ""),
+                "preview": preview,
             }
         )
     return {"presets": items}
