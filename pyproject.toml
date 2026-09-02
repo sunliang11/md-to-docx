@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "md-to-docx"
 version = "0.1.0"
-description = "Convert Markdown to DOCX for WeCom smart-doc import (pandoc + mermaid-cli)"
+description = "The open-source document compiler for the AI era. Markdown / AI output → professional DOCX."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [{ name = "md-to-docx contributors" }]
-keywords = ["markdown", "docx", "pandoc", "wecom", "mermaid"]
+keywords = ["markdown", "docx", "word", "pandoc", "ai", "document-compiler", "mermaid", "wecom"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -23,8 +23,13 @@ classifiers = [
     "Topic :: Text Processing :: Markup",
 ]
 
+[project.urls]
+Homepage = "https://github.com/sunliang11/md-to-docx"
+Documentation = "https://github.com/sunliang11/md-to-docx#readme"
+Issues = "https://github.com/sunliang11/md-to-docx/issues"
+
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "python-docx>=1.0", "lxml>=4.9"]
+dev = ["pytest>=7.0", "python-docx>=1.0", "lxml>=4.9", "pillow>=10.0"]
 
 [project.scripts]
 md-to-docx = "md_to_docx.cli:main"

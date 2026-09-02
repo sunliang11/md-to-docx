@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Reposition README as an AI-era document compiler (WeCom remains a supported workflow)
+- Examples gallery (`examples/` — 7 curated samples with docx output)
+- GitHub issue/PR templates, SECURITY.md, Dependabot, release workflow
+- Branding assets (`assets/branding/`) and demo assets (`assets/demo/`)
+- Demo generation scripts (`scripts/demo/`)
+
+### Added (previous unreleased)
+
 - `bin/convert` — run converter without `pip install -e` (sets `PYTHONPATH` for Cursor skill checkouts)
 - Auto-build `reference-wecom.docx` on first run when missing (requires `python-docx`)
 - Bilingual `README.md` for GitHub visitors (English + 中文)

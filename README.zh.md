@@ -1,47 +1,82 @@
 [English](README.md) | 中文
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/sunliang11/md-to-docx/actions/workflows/ci.yml/badge.svg)](https://github.com/sunliang11/md-to-docx/actions/workflows/ci.yml)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
+
 # md-to-docx
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<img src="assets/branding/wordmark.svg" alt="md-to-docx: MD → DOCX" width="320">
 
-批量转换 Markdown 为 Word DOCX，用于**企业微信智能文档导入**。
+**AI 时代的开源文档编译器。**
 
-## 功能说明
+把 Markdown / AI 生成内容，编译成可交付的专业 Word 文档。
 
-将 Markdown 文件转换为针对企微「导入本地文档」优化的 Word 文档。代码块、表格、标题和中文文本的保留效果优于直接粘贴 Markdown。
+[文档](references/installation.md) · [示例](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
 
-**处理流程：** `.md` → 规范化空白 → 可选 Mermaid→PNG → pandoc 配合自定义参考模板 + Lua 过滤器 → `.docx`
+![Markdown 转 DOCX 演示](assets/demo/hero.gif)
 
-## 状态
+**转换前**（Markdown）→ **转换后**（Word）
 
-**Beta (0.1.0)。** 未发布到 PyPI —— PyPI 上的 `md-to-docx` 包名属于另一个项目。请从源代码安装。
+<img src="assets/demo/before.md.png" width="48%"> <img src="assets/demo/after.png" width="48%">
 
 ## 快速开始
+
+```bash
+git clone https://github.com/sunliang11/md-to-docx.git
+cd md-to-docx
+./bin/convert path/to/report.md
+```
+
+**处理流程：** Markdown / AI 输出 → md-to-docx → 专业 DOCX
+
+## 功能特性
+
+- 标题、列表、表格、代码块、引用块、图片
+- CJK 中文排版参考模板
+- Mermaid 图表 → PNG
+- 批量目录转换
+- Cursor Agent Skill
+- 企业微信智能文档导入（可选工作流）
+
+## 使用场景
+
+- 把 ChatGPT / Claude / Cursor 的 Markdown 变成可提交的 Word
+- 技术方案、周报、API 文档、会议纪要
+- 企业微信智能文档导入（保留原有优化管道）
+
+## 后续规划
+
+- **v0.2** — 原生 Document AST（[路线图](references/roadmap.md)）
+- **v0.3** — 模板预设（学术、商务、API）
+- **v0.4+** — AI 原生入口（规划中，尚未提供）
+
+## 安装
 
 ### 环境要求
 
 - **Python 3.10+**
 - **pandoc 3.x** —— Markdown → DOCX 转换
-- **mmdc** (可选) —— 仅当 `.md` 包含 ` ```mermaid ` 代码块时需要
+- **mmdc**（可选）—— 仅当 `.md` 包含 ` ```mermaid ` 代码块时需要
 
-### 安装
-
-**Cursor skill / 本地仓库（无需 pip）：**
-
-```bash
-./bin/convert report.md
-./bin/convert ./docs
-```
-
-**可编辑安装（可选）：**
+### 从源码安装（推荐）
 
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
+./bin/convert report.md
+./bin/convert ./docs          # 目录（递归扫描）
+```
+
+### 可编辑安装（可选）
+
+```bash
 pip install -e .
 ```
 
-### 运行
+未发布到 PyPI —— PyPI 上的 `md-to-docx` 包名属于另一个项目。
+
+## 运行
 
 ```bash
 # 转换单个文件
@@ -67,6 +102,8 @@ CLI 选项：
 ## 文档
 
 - [安装与排错](references/installation.md)
+- [示例库](examples/README.md)
+- [路线图](references/roadmap.md)
 - [环境变量](references/configuration.md)
 - [企微导入指南](references/wecom-import.md)
 - [开发与测试](references/development.md)
@@ -81,9 +118,9 @@ CLI 选项：
 ln -sfn /path/to/md-to-docx ~/.cursor/skills/md-to-docx
 ```
 
-Agent 使用说明见 [SKILL.md](SKILL.md)。
+详见 [SKILL.md](SKILL.md) 中的 Agent 使用说明。
 
-## 许可证
+## License
 
 MIT —— 见 [LICENSE](LICENSE)。
 
@@ -91,7 +128,7 @@ MIT —— 见 [LICENSE](LICENSE)。
 
 ## Star History
 
-GitHub 于 2026 年限制了公共 stargazer API 访问权限，因此托管的 `api.star-history.com` 徽章对大多数仓库不再有效。此图表由 [`.github/workflows/star-history.yml`](.github/workflows/star-history.yml) 生成并提交到仓库。
+GitHub 在 2026 年限制了公开 stargazer API，因此大多数仓库无法使用 `api.star-history.com` 徽章。本图表由 [`.github/workflows/star-history.yml`](.github/workflows/star-history.yml) 生成并提交到仓库。
 
 <!-- star-history:start -->
 <picture>

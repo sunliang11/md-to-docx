@@ -1,22 +1,51 @@
 English | [中文](README.zh.md)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/sunliang11/md-to-docx/actions/workflows/ci.yml/badge.svg)](https://github.com/sunliang11/md-to-docx/actions/workflows/ci.yml)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
+
 # md-to-docx
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<img src="assets/branding/wordmark.svg" alt="md-to-docx: MD → DOCX" width="320">
 
-Batch-convert Markdown to Word DOCX for **WeCom (企业微信) smart-document import**.
+**The open-source document compiler for the AI era.**
 
-## What it does
+Turn Markdown and AI-generated content into professional Word documents.
 
-Converts Markdown files to Word documents optimized for WeCom「导入本地文档」. Code blocks, tables, headings, and CJK text survive import better than pasting raw Markdown.
+[Documentation](references/installation.md) · [Examples](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
 
-**Pipeline:** `.md` → normalize spacing → optional Mermaid→PNG → pandoc with custom reference template + Lua filter → `.docx`
+![Convert Markdown to DOCX](assets/demo/hero.gif)
 
-## Status
+**Before** (Markdown) → **After** (Word)
 
-**Beta (0.1.0).** Not published on PyPI — the PyPI package name `md-to-docx` belongs to a different project. Install from source.
+<img src="assets/demo/before.md.png" width="48%"> <img src="assets/demo/after.png" width="48%">
 
 ## Quick Start
+
+```bash
+git clone https://github.com/sunliang11/md-to-docx.git
+cd md-to-docx
+./bin/convert path/to/report.md
+```
+
+**Pipeline:** Markdown / AI output → md-to-docx → Professional DOCX
+
+## Features
+
+- Headings, lists, tables, code blocks, blockquotes, images
+- CJK-aware reference template
+- Mermaid diagrams → PNG
+- Batch directory conversion
+- Cursor Agent Skill
+- WeCom smart-doc import (optional workflow)
+
+## What's next
+
+- **v0.2** — Native Document AST ([roadmap](references/roadmap.md))
+- **v0.3** — Template presets (academic, business, API)
+- **v0.4+** — AI-native entry points (planned, not yet available)
+
+## Install
 
 ### Requirements
 
@@ -24,24 +53,24 @@ Converts Markdown files to Word documents optimized for WeCom「导入本地文�
 - **pandoc 3.x** — Markdown → DOCX conversion
 - **mmdc** (optional) — Only when `.md` contains ` ```mermaid ` blocks
 
-### Install
-
-**Cursor skill / git checkout (no pip):**
-
-```bash
-./bin/convert report.md
-./bin/convert ./docs          # directory (recursive)
-```
-
-**Editable install (optional):**
+### From source (recommended)
 
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
+./bin/convert report.md
+./bin/convert ./docs          # directory (recursive)
+```
+
+### Editable install (optional)
+
+```bash
 pip install -e .
 ```
 
-### Run
+Not published on PyPI — the package name `md-to-docx` belongs to a different project.
+
+## Run
 
 ```bash
 # Convert a single file
@@ -67,6 +96,8 @@ By default, excludes `README.md`, `CHANGELOG.md`, `SKILL.md`, and `.github/**`. 
 ## Documentation
 
 - [Installation & troubleshooting](references/installation.md)
+- [Examples gallery](examples/README.md)
+- [Roadmap](references/roadmap.md)
 - [Environment variables](references/configuration.md)
 - [WeCom import guide](references/wecom-import.md)
 - [Development & tests](references/development.md)

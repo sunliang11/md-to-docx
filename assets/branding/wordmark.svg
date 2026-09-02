@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 128" fill="none">
+  <text x="32" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="700" fill="#111827">MD</text>
+  <path d="M200 64 L260 64 M245 54 L260 64 L245 74" stroke="#111827" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <text x="300" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="700" fill="#111827">DOCX</text>
+</svg>

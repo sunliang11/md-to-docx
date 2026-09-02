@@ -1,5 +1,7 @@
 # Installation
 
+**md-to-docx** is an open-source document compiler for the AI era — it turns Markdown and AI-generated content into professional Word documents. WeCom smart-doc import remains a supported workflow.
+
 See [README.md](../README.md) for a project overview.
 
 ## Two ways to use

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/sunliang11/md-to-docx/blob/main/references/installation.md
+    about: Install, pandoc, mermaid troubleshooting

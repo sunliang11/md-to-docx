@@ -50,3 +50,10 @@ jobs:
           test -s tests/fixtures/comprehensive.docx
           
           echo "✓ Sample conversions succeeded and produced non-empty output"
+
+      - name: Convert examples (pandoc only)
+        run: |
+          for f in examples/*/example.md; do
+            python -m md_to_docx "$f"
+            test -s "${f%.md}.docx"
+          done

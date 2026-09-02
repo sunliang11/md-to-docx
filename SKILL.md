@@ -1,18 +1,13 @@
 ---
 name: md-to-docx
 description: >-
-  Converts Markdown to DOCX via pandoc for WeCom (企微) smart-doc import.
-  Renders Mermaid blocks to PNG, applies WeCom-like styles and layout normalization,
-  leaves original .md untouched, writes .docx beside each source file and Mermaid PNGs
-  under ``{stem}mermaid图片/``.
-  Requires Python 3.10+, pandoc 3.x, mmdc when Markdown contains mermaid blocks.
-  Use when converting md to docx, batch Markdown for 企微导入, preprocess mermaid for pandoc,
-  or migrating docs into WeCom smart documents.
+  Converts Markdown and AI-generated content to professional Word DOCX (pandoc + optional mermaid-cli).
+  WeCom smart-doc import remains a supported workflow. Use when the user wants md→docx, batch convert, or 企微导入.
 ---
 
 # md-to-docx
 
-Batch-convert Markdown to DOCX for WeCom「导入本地文档」.
+The open-source document compiler for the AI era — converts Markdown and AI-generated content to professional Word DOCX. WeCom smart-doc import remains a supported workflow.
 
 ## Quick start (Cursor skill — **no pip install**)
 

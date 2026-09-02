@@ -1,0 +1,79 @@
+name: Bug Report
+description: Report a conversion bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What went wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the issue
+      placeholder: |
+        1. Run `./bin/convert example.md`
+        2. Open output in Word
+        3. See broken table formatting
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: md-to-docx --version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: pandoc
+    attributes:
+      label: pandoc --version (first line)
+      placeholder: "pandoc 3.1.9"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "macOS 15.2 / Ubuntu 22.04"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mermaid
+    attributes:
+      label: Does the Markdown contain Mermaid diagrams?
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+
+  - type: textarea
+    id: snippet
+    attributes:
+      label: Minimal Markdown snippet (optional)
+      description: Paste the smallest `.md` fragment that reproduces the issue
+      render: markdown

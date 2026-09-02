@@ -11,10 +11,17 @@ md-to-docx/
 ├── SKILL.md              # Agent entry point
 ├── bin/convert           # No-pip wrapper (sets PYTHONPATH)
 ├── scripts/md_to_docx/   # Python package
-├── assets/               # Bundled pandoc assets
+├── assets/               # Bundled pandoc assets, branding, demo
+├── examples/             # Curated conversion examples
 ├── references/           # Detailed docs
 └── tests/
 ```
+
+## Scope (Phase 0)
+
+Please do not open PRs for a web app, MCP server, browser extension, or marketplace.
+The current milestone is: make Markdown → DOCX excellent and the GitHub page trustworthy.
+See `aim/` for the roadmap.
 
 ## Setup
 
