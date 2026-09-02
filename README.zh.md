@@ -44,7 +44,7 @@ docker compose -f web/docker-compose.yml up --build
 - 原生 Document AST 引擎（默认）— 多数场景无需 pandoc
 - 标题、列表、表格、代码块、引用块、图片、脚注
 - CJK 中文模板（微软雅黑 / 宋体）
-- Mermaid 图表 → PNG（需 `mmdc`；亦支持 pandoc 引擎）
+- Mermaid 图表 → PNG（需 mmdc；未安装时 native 引擎降级为代码块）
 - 数学公式 → OMML（基础 LaTeX）
 - 图/表题注与交叉引用
 - 模板预设：`--preset technical|academic|business|professional|report`
@@ -80,7 +80,38 @@ docker compose -f web/docker-compose.yml up --build
 
 - **Python 3.10+**
 - **pandoc 3.x** — 仅 `--engine pandoc` / `--preset wecom` 需要
-- **mmdc**（可选）— Markdown 中含 Mermaid 代码块时需要
+
+### Mermaid 图表（mmdc）
+
+仅当 Markdown 含 ` ```mermaid ` 代码块，且希望输出为**图片**时需要。不含 Mermaid 的文档无需安装。
+
+**安装**（需要 Node.js / npm）：
+
+```bash
+npm install -g @mermaid-js/mermaid-cli
+
+# 验证
+mmdc --version
+```
+
+- **macOS：** 若未安装 npm，可先执行 `brew install node`
+- **Linux：** 从发行版安装 Node.js 后执行上述命令
+
+**浏览器：** `mmdc` 通过 Puppeteer 调用 Chromium 系浏览器（Chrome、Edge 或 Chromium）。也可设置 `MD_TO_DOCX_BROWSER` 或 `PUPPETEER_EXECUTABLE_PATH` — 详见 [环境变量](references/configuration.md)。
+
+**未安装 mmdc 时：**
+
+| 条件 | 结果 |
+|------|------|
+| 文档无 Mermaid | 不受影响 |
+| Native 引擎（默认）+ 有 Mermaid | 可正常生成 DOCX；Mermaid 显示为**源码代码块**，stderr 有 warning |
+| Native + `--strict-mermaid` | 缺 mmdc → 转换失败 |
+| `--engine pandoc` / `--preset wecom` + 有 Mermaid | 转换失败，需安装 mmdc |
+| Docker Playground（slim 镜像） | 同 Native 降级行为（代码块） |
+
+渲染产物：native 引擎将 PNG/SVG 保存到 `{stem}-media/`；pandoc 引擎将 PNG 保存到 `{stem}mermaid图片/`。
+
+详见 [安装与排错](references/installation.md)。
 
 ### 从源码运行（推荐）
 

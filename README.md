@@ -44,7 +44,7 @@ docker compose -f web/docker-compose.yml up --build
 - Native Document AST engine (default) — no pandoc required for most conversions
 - Headings, lists, tables, code blocks, blockquotes, images, footnotes
 - CJK-aware templates (Microsoft YaHei / SimSun)
-- Mermaid diagrams → PNG (requires `mmdc`; pandoc engine also supported)
+- Mermaid diagrams → PNG (needs `mmdc`; native engine degrades to code block without it)
 - Math formulas → OMML (basic LaTeX coverage)
 - Figure/table captions and cross-references
 - Template presets: `--preset technical|academic|business|professional|report`
@@ -80,7 +80,38 @@ Turn AI-written Markdown into Word — **no API keys**, all local:
 
 - **Python 3.10+**
 - **pandoc 3.x** — only for `--engine pandoc` / `--preset wecom`
-- **mmdc** (optional) — Mermaid blocks (native or pandoc engine)
+
+### Mermaid (`mmdc`)
+
+Only needed when your Markdown contains ` ```mermaid ` code blocks **and** you want them rendered as images. Documents without Mermaid blocks do not require `mmdc`.
+
+**Install** (requires Node.js / npm):
+
+```bash
+npm install -g @mermaid-js/mermaid-cli
+
+# verify
+mmdc --version
+```
+
+- **macOS:** run `brew install node` first if npm is not available
+- **Linux:** install Node.js from your distribution, then run the command above
+
+**Browser:** `mmdc` uses Puppeteer and needs a Chromium-based browser (Chrome, Edge, or Chromium). Alternatively, set `MD_TO_DOCX_BROWSER` or `PUPPETEER_EXECUTABLE_PATH` — see [Configuration](references/configuration.md).
+
+**Without `mmdc`:**
+
+| Condition | Result |
+|-----------|--------|
+| No Mermaid blocks | Unaffected |
+| Native engine (default) + Mermaid | DOCX is produced; Mermaid shows as a **source code block** (stderr warning) |
+| Native + `--strict-mermaid` | Conversion fails if `mmdc` is missing |
+| `--engine pandoc` / `--preset wecom` + Mermaid | Conversion fails; install `mmdc` |
+| Docker Playground (slim image) | Same as native degradation (code block) |
+
+Rendered assets: native engine writes PNG/SVG to `{stem}-media/`; pandoc engine writes PNG to `{stem}mermaid图片/`.
+
+See [Installation & troubleshooting](references/installation.md) for more.
 
 ### From source (recommended)
 
