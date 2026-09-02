@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.pytest_cache
+__pycache__
+*.pyc
+node_modules
+browser-extension/node_modules
+*.egg-info
+dist
+build

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>md-to-docx Extension Options</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 520px; margin: 24px; }
+    label { display: block; margin: 12px 0 4px; font-weight: 600; }
+    input, select { width: 100%; padding: 8px; font-size: 14px; }
+    button { margin-top: 16px; padding: 8px 16px; }
+    p.hint { color: #555; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>md-to-docx Export</h1>
+  <p class="hint">Conversion runs on your local Playground — chat text is sent only to the endpoint below.</p>
+
+  <label for="endpoint">Convert endpoint URL</label>
+  <input id="endpoint" type="url" placeholder="http://127.0.0.1:8080">
+
+  <label for="preset">Default preset</label>
+  <select id="preset">
+    <option value="technical">technical</option>
+    <option value="professional">professional</option>
+    <option value="academic">academic</option>
+    <option value="business">business</option>
+    <option value="report">report</option>
+  </select>
+
+  <label>
+    <input type="checkbox" id="fallbackMd" checked>
+    Download .md if convert fails
+  </label>
+
+  <button type="button" id="save">Save</button>
+  <p id="status"></p>
+
+  <p class="hint">Start Playground: <code>docker compose -f web/docker-compose.yml up --build</code></p>
+
+  <script src="options.js"></script>
+</body>
+</html>

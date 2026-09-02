@@ -1,0 +1,7 @@
+services:
+  playground:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    ports:
+      - "8080:8080"

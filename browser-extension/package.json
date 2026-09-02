@@ -1,0 +1,11 @@
+{
+  "name": "md-to-docx-browser-extension",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}

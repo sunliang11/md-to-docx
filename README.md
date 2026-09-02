@@ -47,11 +47,22 @@ cd md-to-docx
 - Cursor Agent Skill
 - WeCom smart-doc import (`--preset wecom` or `--engine pandoc`)
 
+## Use with AI
+
+Turn AI-written Markdown into Word — **no API keys**, all local:
+
+| Entry | Docs |
+|-------|------|
+| Cursor Skill | [SKILL.md](SKILL.md) |
+| Claude Code / Codex | [skills/](skills/) |
+| MCP | [references/mcp.md](references/mcp.md) — `pip install .[mcp]` |
+| Web Playground | [web/README.md](web/README.md) — Docker |
+| Browser extension | [browser-extension/README.md](browser-extension/README.md) |
+| ChatGPT prompt | [references/agents.md](references/agents.md) |
+
 ## What's next
 
-- **v1.5** — Web Playground ([roadmap](references/roadmap.md))
-- **v2.0** — Agent Skill matrix + MCP
-- **v3.0** — DOCX roundtrip + GitHub Action
+- **v3.0** — DOCX roundtrip + GitHub Action ([roadmap](references/roadmap.md))
 
 ## Install
 

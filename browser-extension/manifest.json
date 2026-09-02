@@ -1,0 +1,89 @@
+{
+  "manifest_version": 3,
+  "name": "Export AI to Word (md-to-docx)",
+  "version": "0.1.0",
+  "description": "Export AI chat replies as professional Word DOCX via local md-to-docx Playground.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "http://127.0.0.1:8080/*",
+    "http://localhost:8080/*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://chat.deepseek.com/*",
+    "https://kimi.moonshot.cn/*",
+    "https://www.kimi.com/*",
+    "https://www.doubao.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "options_page": "src/options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": [
+        "src/lib/html-to-md.js",
+        "src/lib/extract.js",
+        "src/lib/export.js",
+        "src/content/chatgpt.js"
+      ],
+      "css": ["src/button.css"]
+    },
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": [
+        "src/lib/html-to-md.js",
+        "src/lib/extract.js",
+        "src/lib/export.js",
+        "src/content/claude.js"
+      ],
+      "css": ["src/button.css"]
+    },
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": [
+        "src/lib/html-to-md.js",
+        "src/lib/extract.js",
+        "src/lib/export.js",
+        "src/content/gemini.js"
+      ],
+      "css": ["src/button.css"]
+    },
+    {
+      "matches": ["https://chat.deepseek.com/*"],
+      "js": [
+        "src/lib/html-to-md.js",
+        "src/lib/extract.js",
+        "src/lib/export.js",
+        "src/content/deepseek.js"
+      ],
+      "css": ["src/button.css"]
+    },
+    {
+      "matches": ["https://kimi.moonshot.cn/*", "https://www.kimi.com/*"],
+      "js": [
+        "src/lib/html-to-md.js",
+        "src/lib/extract.js",
+        "src/lib/export.js",
+        "src/content/kimi.js"
+      ],
+      "css": ["src/button.css"]
+    },
+    {
+      "matches": ["https://www.doubao.com/*"],
+      "js": [
+        "src/lib/html-to-md.js",
+        "src/lib/extract.js",
+        "src/lib/export.js",
+        "src/content/doubao.js"
+      ],
+      "css": ["src/button.css"]
+    }
+  ]
+}

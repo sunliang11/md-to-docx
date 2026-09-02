@@ -23,13 +23,13 @@ jobs:
           pip install markdown-it-py mdit-py-plugins python-docx latex2mathml pillow
           PYTHONPATH=scripts python -m md_to_docx.presets_build
       - name: Install package (dev)
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[dev,mcp,web]"
       - name: Native tests (no pandoc)
         run: |
           pytest tests/test_ast.py tests/test_parse_frontmatter.py tests/test_parse_markdown.py \
             tests/test_native_docx.py tests/test_native_no_pandoc.py tests/test_parse_containers.py \
             tests/test_toc.py tests/test_cjk.py tests/test_preset.py tests/test_validate.py \
-            tests/test_examples_smoke.py -v
+            tests/test_examples_smoke.py tests/test_api.py tests/test_mcp.py tests/test_web_api.py -v
 
   test:
     runs-on: ubuntu-latest
@@ -53,10 +53,13 @@ jobs:
           PYTHONPATH=scripts python -m md_to_docx.presets_build
 
       - name: Install package and dev dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[dev,mcp,web]"
 
       - name: Run tests
         run: pytest tests/ -v
+
+      - name: Verify MCP entry
+        run: python -m md_to_docx.mcp --help
 
       - name: Verify bin/convert entry point
         run: ./bin/convert --help
@@ -84,3 +87,16 @@ jobs:
         run: |
           bash scripts/demo/build_examples.sh
           for f in examples/*/example.docx; do test -s "$f"; done
+
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Extension adapter tests
+        run: |
+          cd browser-extension
+          npm install
+          npm test

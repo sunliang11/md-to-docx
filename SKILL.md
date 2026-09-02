@@ -1,70 +1,69 @@
 ---
 name: md-to-docx
 description: >-
-  Converts Markdown and AI-generated content to professional Word DOCX (native AST engine by default).
-  Use --preset technical for formal reports; --preset wecom for 企微导入 (pandoc). Batch convert, mermaid, math.
+  Converts AI-generated Markdown to professional Word DOCX. Use --preset technical
+  for formal reports; --preset wecom for 企微导入. Native engine by default (no pandoc).
 ---
 
 # md-to-docx
 
-The open-source document compiler for the AI era. Default engine is **native** (no pandoc). For WeCom smart-doc import use `--preset wecom`.
+Turn **AI-generated Markdown** into **professional Word documents**. Default engine is **native** (Document AST). MCP and Web Playground available for agent workflows.
 
 ## Quick start (Cursor skill — **no pip install**)
 
-Skill root = directory containing this `SKILL.md` file (may be `~/.cursor/skills/md_to_docx` or `md-to-docx`).
+Skill root = directory containing this `SKILL.md` (e.g. `~/.cursor/skills/md-to-docx`).
 
 ```bash
-# Preferred: wrapper (native engine, no pandoc)
-"<skill-root>/bin/convert" report.md --preset technical
+# Formal technical report
+"<skill-root>/bin/convert" report.md --preset technical --toc --numbering
 
-# WeCom import (pandoc + Lua layout)
+# General document
+"<skill-root>/bin/convert" report.md --preset professional
+
+# WeCom smart-doc import (pandoc)
 "<skill-root>/bin/convert" report.md --preset wecom
 
-# Fallback: explicit PYTHONPATH
-PYTHONPATH="<skill-root>/scripts" python3 -m md_to_docx <path>
+# Fallback
+PYTHONPATH="<skill-root>/scripts" python3 -m md_to_docx report.md --preset technical
 ```
 
-**Do not** run `pip install` as the first step when using a local skill checkout — it often fails (hatchling timeout) and is unnecessary.
-
-Only if both commands above fail with `No module named md_to_docx`, try:
-
-```bash
-pip install -e "<skill-root>"
-```
-
-System deps: **Python 3.10+**, **pandoc** on PATH. **mmdc** only when `.md` contains ` ```mermaid ` blocks.
+**Do not** run `pip install` first when using a local skill checkout — use `bin/convert` or `PYTHONPATH`.
 
 ## Agent workflow
 
-1. Resolve **skill-root** (parent of `bin/convert`, or parent of `scripts/`).
-2. Confirm **pandoc** on PATH: `which pandoc`
-3. Run `"<skill-root>/bin/convert" <user's .md or directory>`
-4. If `reference-wecom.docx` missing, converter auto-builds it (needs `python-docx`; else restore from repo `assets/`)
-5. Summarize created `.docx` and any `{stem}mermaid图片/` PNG folder; **do not edit** source `.md`
-6. Remind user to import manually — [references/wecom-import.md](references/wecom-import.md)
+1. Resolve **skill-root** (parent of `bin/convert`).
+2. Choose preset by user intent:
+   - 企微 / WeCom import → `--preset wecom`
+   - Formal technical / design doc → `--preset technical --toc --numbering`
+   - Academic paper → `--preset academic`
+   - Business summary → `--preset business`
+3. Run conversion; **do not edit** source `.md`.
+4. Report output `.docx` path to the user.
+5. If markdown contains ` ```mermaid ` blocks, ensure `mmdc` is on PATH or warn user.
+6. For MCP clients: see [references/mcp.md](references/mcp.md) (`pip install .[mcp]`, `md-to-docx-mcp`).
 
 Do not automate WeCom upload.
 
 ## Behavior
 
 - Original `.md` files are never modified
-- Output `.docx` is written next to each source file (`foo.md` → `foo.docx`)
-- Mermaid blocks become PNGs under `{stem}mermaid图片/` (e.g. `foo.md` → `foomermaid图片/foo_mermaid_01.png`)
-- Per-file failures are reported; remaining files still convert; exit code is non-zero if any failed
+- Output `.docx` beside source (`foo.md` → `foo.docx`) unless `--output-dir`
+- Mermaid → PNG in `{stem}mermaid图片/` or native `{stem}-media/`
+- Per-file failures reported; exit non-zero if any failed
 
-## Troubleshooting (agents)
+## Troubleshooting
 
 | Error | Fix |
 |-------|-----|
-| `No module named md_to_docx` | Use `bin/convert` or `PYTHONPATH=<skill-root>/scripts` — see Quick start |
-| `pip install` / hatchling timeout | Skip pip; use `bin/convert` instead |
-| `` `pandoc` not found `` | `brew install pandoc` (macOS) or install from pandoc.org |
-| `reference doc missing` + build failed | `pip install python-docx` then `PYTHONPATH=… python3 -m md_to_docx.reference` |
-| `` `mmdc` not found `` | Only needed for mermaid; `npm i -g @mermaid-js/mermaid-cli` |
+| `No module named md_to_docx` | Use `bin/convert` or `PYTHONPATH=<skill-root>/scripts` |
+| `` `pandoc` not found `` | Only for `--preset wecom`; or `brew install pandoc` |
+| `` `mmdc` not found `` | `npm i -g @mermaid-js/mermaid-cli` or remove mermaid blocks |
+| Template missing | `PYTHONPATH=scripts python -m md_to_docx.presets_build` |
 
 ## Resources
 
-- [Installation](references/installation.md) — pip install (optional), pandoc, mmdc
-- [Configuration](references/configuration.md) — environment variables
-- [WeCom import](references/wecom-import.md) — import steps and acceptance checklist
-- [Development](references/development.md) — rebuild reference template, tests
+- [MCP setup](references/mcp.md)
+- [Use with ChatGPT](references/agents.md)
+- [Presets](references/presets.md)
+- [Web Playground](web/README.md)
+- [WeCom import](references/wecom-import.md)

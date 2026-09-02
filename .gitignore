@@ -28,3 +28,6 @@ assets/reference-default.docx
 
 # Accidental nested clone directory
 md-to-docx/
+
+# Browser extension
+browser-extension/node_modules/

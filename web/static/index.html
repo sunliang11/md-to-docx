@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>md-to-docx Playground</title>
+  <link rel="stylesheet" href="/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>md-to-docx</h1>
+    <label>
+      Preset
+      <select id="preset"></select>
+    </label>
+    <label class="toc-label">
+      <input type="checkbox" id="toc" checked> TOC
+    </label>
+    <button type="button" id="generate">Generate DOCX</button>
+    <button type="button" id="copy-cli" class="secondary">Copy CLI command</button>
+    <label>
+      Example
+      <select id="example">
+        <option value="">— load example —</option>
+        <option value="technical-report">Technical report</option>
+        <option value="academic-paper">Academic paper</option>
+        <option value="business-report">Business report</option>
+        <option value="meeting-notes">Meeting notes</option>
+        <option value="api-document">API document</option>
+        <option value="ai-report">AI report</option>
+        <option value="chinese-report">Chinese report</option>
+      </select>
+    </label>
+  </header>
+
+  <div id="error" class="error hidden" role="alert"></div>
+
+  <main class="split">
+    <section class="editor-pane">
+      <h2>Markdown</h2>
+      <textarea id="markdown" placeholder="# Technical Report&#10;&#10;Your AI-generated content here…" spellcheck="false"></textarea>
+    </section>
+    <section class="preview-pane">
+      <h2>Preview <span class="hint">(approximation — not Word layout)</span></h2>
+      <div id="preview" class="preview"></div>
+    </section>
+  </main>
+
+  <footer>
+    Documents are converted in memory/temp and deleted. Self-host with Docker.
+    <a href="https://github.com/sunliang11/md-to-docx">GitHub</a>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

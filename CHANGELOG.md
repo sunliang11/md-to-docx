@@ -25,4 +25,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added (P2)
+
+- **Python API** (`md_to_docx.api.convert`) for Skill, MCP, and Web
+- **MCP server** (`md-to-docx-mcp`) — `convert_markdown`, `apply_template`, `validate_document`, `list_presets`
+- **Skill matrix** — Claude Code, Codex, Gemini CLI wrappers under `skills/`
+- **Web Playground** — FastAPI + Docker (`web/`)
+- **Browser extension** — Export AI chat to Word (`browser-extension/`)
+
 ### Added (P0)
