@@ -22,7 +22,8 @@ Presets bundle a template, engine, and default flags. Explicit CLI flags overrid
 ## Rebuild preset templates
 
 ```bash
-python -m md_to_docx.presets_build
+md-to-docx build presets
+# or: python -m md_to_docx.presets_build
 ```
 
 Templates are written to `assets/presets/` and bundled into the wheel.

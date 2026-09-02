@@ -12,7 +12,7 @@
 
 把 Markdown 与 AI 生成内容编译成专业 Word — 支持正向、反向、对比与 CI 自动化。
 
-[文档](references/installation.md) · [示例](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
+[文档](references/installation.md) · **[命令手册](references/cli.zh.md)** · [示例](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
 
 ![Markdown 转 DOCX 演示](assets/demo/hero.gif)
 
@@ -39,7 +39,7 @@
 
 | 入口 | 一句话 | 文档 |
 |------|--------|------|
-| CLI | 完整命令行工具（`md-to-docx`） | 本 README |
+| CLI | 完整命令行工具（`md-to-docx`） | [命令手册](references/cli.zh.md) |
 | `bin/convert` | clone 后无需 `pip install` 即可运行 | — |
 | Python API | 脚本调用 `from md_to_docx.api import convert` | [development.md](references/development.md) |
 | Cursor Skill | Agent 自动选 preset 并转换 | [SKILL.md](SKILL.md) |
@@ -78,7 +78,9 @@ md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # 自定�
 md-to-docx report.md --check                                         # 仅校验
 ```
 
-子命令：`convert`（默认）、`reverse`、`diff`。仍支持旧写法 `md-to-docx file.md`。`reverse` 与 `diff` 均支持 `.docx` 输入。Pandoc 降级：`md-to-docx reverse file.docx -o out.md --engine pandoc`。
+**完整参数说明 → [references/cli.zh.md](references/cli.zh.md)**（全部子命令、参数、安装方式与排错）。
+
+子命令：`convert`（默认）、`reverse`、`diff`、`build`。旧写法 `md-to-docx file.md` 仍然有效。
 
 **批量与目录**
 
@@ -86,33 +88,6 @@ md-to-docx report.md --check                                         # 仅校验
 md-to-docx ./docs --output-dir ./output --exclude "README.md"
 md-to-docx ./docs --dry-run
 ```
-
-### CLI 选项（分组）
-
-**正向编译**
-
-- `--preset` — `professional` \| `technical` \| `academic` \| `business` \| `report` \| `wecom`
-- `--template PATH` — 自定义 Word 模板（native 引擎）
-- `--toc` / `--numbering` — 目录与章节编号
-- `--title` / `--author` / `--date` / `--doc-version` — 文档元数据
-- `--engine native|pandoc` — 或环境变量 `MD_TO_DOCX_ENGINE`
-- `--output-dir` / `--exclude` / `--skip-existing` / `--dry-run`
-- `--plugin PATH`（可多次）/ `--no-plugins`
-- `--strict-mermaid` / `--no-normalize`
-
-**校验**
-
-- `--check` / `--check-format text|json` / `--strict`
-
-**反向**
-
-- `-o PATH` / `--engine native|pandoc`
-
-**对比**
-
-- `--format text|json|md`
-
-目录扫描默认跳过 `.git`、`node_modules`；排除 `README.md`、`CHANGELOG.md`、`SKILL.md`、`.github/**`。
 
 ## 文档格式支持
 
@@ -179,8 +154,11 @@ md-to-docx report.md --template templates/technical-design/template.docx
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
 pip install -e ".[dev]"      # 或 -e ".[mcp]" / -e ".[web]"
-./bin/convert report.md
+which md-to-docx             # 确认 CLI 已在 PATH 中
+md-to-docx report.md         # 或 ./bin/convert report.md（免 pip）
 ```
+
+安装方式与入口说明：[命令手册 — 怎么运行命令](references/cli.zh.md#怎么运行命令)。
 
 **暂未发布 PyPI。** 计划包名：`md2docx-compiler` · 命令行：`md-to-docx`。请从源码安装，或使用 `pip install "git+https://github.com/sunliang11/md-to-docx.git"`。
 
@@ -188,6 +166,7 @@ pip install -e ".[dev]"      # 或 -e ".[mcp]" / -e ".[web]"
 
 ## 文档
 
+- **[CLI 命令手册](references/cli.zh.md)** — 全部命令、参数与安装方式
 - [安装与排错](references/installation.md)
 - [预设模板](references/presets.md)
 - [文档校验](references/validation.md)

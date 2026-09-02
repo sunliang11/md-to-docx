@@ -1,5 +1,7 @@
 # Configuration
 
+For the full CLI option reference see [cli.md](cli.md).
+
 ## CLI Options
 
 The converter supports command-line options for batch processing:

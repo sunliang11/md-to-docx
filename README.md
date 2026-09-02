@@ -12,7 +12,7 @@ English | [中文](README.zh.md)
 
 Turn Markdown and AI-generated content into professional Word documents — forward, reverse, diff, and automate in CI.
 
-[Documentation](references/installation.md) · [Examples](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
+[Documentation](references/installation.md) · **[CLI Reference](references/cli.md)** · [Examples](examples/README.md) · [GitHub](https://github.com/sunliang11/md-to-docx)
 
 ![Convert Markdown to DOCX](assets/demo/hero.gif)
 
@@ -39,7 +39,7 @@ Turn Markdown and AI-generated content into professional Word documents — forw
 
 | Entry | One-liner | Doc |
 |-------|-----------|-----|
-| CLI | Full command-line tool (`md-to-docx`) | this README |
+| CLI | Full command-line tool (`md-to-docx`) | [CLI Reference](references/cli.md) |
 | `bin/convert` | Run from a git clone without `pip install` | — |
 | Python API | `from md_to_docx.api import convert` for scripts | [development.md](references/development.md) |
 | Cursor Skill | Agent picks a preset and converts for you | [SKILL.md](SKILL.md) |
@@ -78,7 +78,9 @@ md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # custom 
 md-to-docx report.md --check                                         # validate only
 ```
 
-Subcommands: `convert` (default), `reverse`, `diff`. Legacy `md-to-docx file.md` still works. `reverse` and `diff` accept `.docx` inputs. Pandoc fallback: `md-to-docx reverse file.docx -o out.md --engine pandoc`.
+**Full option reference → [references/cli.md](references/cli.md)** (all subcommands, flags, install methods, and troubleshooting).
+
+Subcommands: `convert` (default), `reverse`, `diff`, `build`. Legacy `md-to-docx file.md` still works.
 
 **Batch & directories**
 
@@ -86,33 +88,6 @@ Subcommands: `convert` (default), `reverse`, `diff`. Legacy `md-to-docx file.md`
 md-to-docx ./docs --output-dir ./output --exclude "README.md"
 md-to-docx ./docs --dry-run
 ```
-
-### CLI options (grouped)
-
-**Convert**
-
-- `--preset` — `professional` \| `technical` \| `academic` \| `business` \| `report` \| `wecom`
-- `--template PATH` — custom Word template (native engine)
-- `--toc` / `--numbering` — table of contents and chapter numbers
-- `--title` / `--author` / `--date` / `--doc-version` — document metadata
-- `--engine native|pandoc` — or env `MD_TO_DOCX_ENGINE`
-- `--output-dir` / `--exclude` / `--skip-existing` / `--dry-run`
-- `--plugin PATH` (repeatable) / `--no-plugins`
-- `--strict-mermaid` / `--no-normalize`
-
-**Validate**
-
-- `--check` / `--check-format text|json` / `--strict`
-
-**Reverse**
-
-- `-o PATH` / `--engine native|pandoc`
-
-**Diff**
-
-- `--format text|json|md`
-
-Directory scans skip `.git` and `node_modules` by default; exclude `README.md`, `CHANGELOG.md`, `SKILL.md`, `.github/**`.
 
 ## Document support
 
@@ -179,8 +154,11 @@ To contribute a template, see the PR checklist in [templates/README.md](template
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
 pip install -e ".[dev]"      # or -e ".[mcp]" / -e ".[web]"
-./bin/convert report.md
+which md-to-docx             # verify CLI is on PATH
+md-to-docx report.md         # or ./bin/convert report.md (no pip)
 ```
+
+Install options and entry points: [CLI Reference — How to run commands](references/cli.md#how-to-run-commands).
 
 **Not on PyPI yet.** Planned package name: `md2docx-compiler` · CLI command: `md-to-docx`. Install from source or `pip install "git+https://github.com/sunliang11/md-to-docx.git"`.
 
@@ -188,6 +166,7 @@ pip install -e ".[dev]"      # or -e ".[mcp]" / -e ".[web]"
 
 ## Documentation
 
+- **[CLI Reference](references/cli.md)** — all commands, flags, install methods
 - [Installation & troubleshooting](references/installation.md)
 - [Presets](references/presets.md)
 - [Validation](references/validation.md)
