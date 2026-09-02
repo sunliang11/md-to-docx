@@ -25,6 +25,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added (P4 Gate A)
+
+- **Open Document Markdown spec** — `spec/document-markdown.md` (`odm-0.1`)
+- **Callouts** — `:::warning`, `:::info`, `:::note` containers with colored left border in DOCX
+- **Community templates** — `templates/` directory with four official examples and contribution guide
+- **Experimental HTML renderer** — `md_to_docx.render.html.render_html()` for AST preview (not CLI-exposed)
+- CI validates `templates/**/sample.md` conversion
+
 ## [1.1.0] - 2026-09-02
 
 ### Added (P3A)

@@ -156,6 +156,12 @@ class Figure:
 
 
 @dataclass(frozen=True, slots=True)
+class Callout:
+    kind: Literal["warning", "info", "note"]
+    children: tuple[Block, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class PageBreak:
     pass
 
@@ -190,7 +196,7 @@ class FootnoteDef:
 
 Block = Union[
     Heading, Paragraph, ListBlock, Table, CodeBlock, BlockQuote,
-    ThematicBreak, Image, PageBreak, HTMLBlock, Mermaid, MathBlock,
+    ThematicBreak, Image, Callout, PageBreak, HTMLBlock, Mermaid, MathBlock,
     Figure, TableOfContents,
 ]
 

@@ -9,7 +9,7 @@
 | P2A–P2C | MCP, Web Playground, browser extension | Done |
 | P3A | Roundtrip + GitHub Action | Done |
 | P3B | Plugin API + VS Code / Obsidian | Done |
-| P4 | Ecosystem, marketplace, Document Standard | Planned |
+| P4 | Ecosystem, Document Standard, templates | Gate A done |
 
 See [`aim/00-INDEX.md`](../aim/00-INDEX.md) for the full plan index.
 

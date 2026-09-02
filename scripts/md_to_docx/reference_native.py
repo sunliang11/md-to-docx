@@ -11,7 +11,11 @@ from docx.shared import Mm, Pt
 
 from md_to_docx.paths import data_dir
 from md_to_docx.render.fields import add_page_field
-from md_to_docx.render.styles import configure_document_styles, set_theme_font_lang
+from md_to_docx.render.styles import (
+    HEADING_COLOR,
+    configure_document_styles,
+    set_theme_font_lang,
+)
 
 
 def build_native_reference(output_dir: Path | None = None) -> Path:
@@ -28,7 +32,7 @@ def build_native_reference(output_dir: Path | None = None) -> Path:
     section.top_margin = Mm(25.4)
     section.bottom_margin = Mm(25.4)
 
-    configure_document_styles(doc, force=True)
+    configure_document_styles(doc, force=True, heading_color=HEADING_COLOR)
     set_theme_font_lang(doc)
 
     footer = section.footer

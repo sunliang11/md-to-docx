@@ -53,3 +53,20 @@ def test_yahei_in_styles(native_sample: Path):
         for el in root.findall(".//w:rFonts", namespaces=NS)
     ]
     assert "Microsoft YaHei" in east
+
+
+def _heading_color(docx: Path, style_id: str) -> str | None:
+    root = _xml(docx, "word/styles.xml")
+    for style in root.findall("w:style", namespaces=NS):
+        if style.get(f"{{{NS['w']}}}styleId") != style_id:
+            continue
+        color = style.find(".//w:color", namespaces=NS)
+        if color is None:
+            return None
+        return color.get(f"{{{NS['w']}}}val")
+    return None
+
+
+def test_heading_color_black(native_sample: Path):
+    assert _heading_color(native_sample, "Heading1") == "000000"
+    assert _heading_color(native_sample, "Heading2") == "000000"

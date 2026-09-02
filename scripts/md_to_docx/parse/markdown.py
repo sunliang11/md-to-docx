@@ -20,6 +20,11 @@ PAGEBREAK_CONTAINER_RE = re.compile(
     r"^:::+\s*pagebreak\s*\n:::+\s*$",
     re.I | re.MULTILINE,
 )
+CALLOUT_RE = re.compile(
+    r"^:::+(warning|info|note)\s*\n(.*?)^:::+\s*$",
+    re.I | re.MULTILINE | re.DOTALL,
+)
+CALLOUT_PLACEHOLDER_RE = re.compile(r"^\s*<!--\s*odm-callout:(\d+)\s*-->\s*$")
 FIG_ID_RE = re.compile(r"\{#(fig|tbl):([^}]+)\}\s*$")
 XREF_RE = re.compile(r"\[@(fig|tbl|sec):([^\]]+)\]")
 TABLE_CAPTION_RE = re.compile(r"^Table:\s*(.+?)(?:\s*\{#tbl:([^}]+)\})?\s*$", re.I)
@@ -139,7 +144,13 @@ def _parse_image_attrs(src: str, alt: str, title: str | None) -> tuple[str, str,
     return src, alt, title, identifier
 
 
-def _blocks_from_tokens(tokens: list[Token], warnings: list[str]) -> tuple[n.Block, ...]:
+def _blocks_from_tokens(
+    tokens: list[Token],
+    warnings: list[str],
+    *,
+    callouts: dict[int, tuple[str, tuple[n.Block, ...]]] | None = None,
+) -> tuple[n.Block, ...]:
+    callout_map = callouts or {}
     blocks: list[n.Block] = []
     i = 0
     while i < len(tokens):
@@ -147,7 +158,7 @@ def _blocks_from_tokens(tokens: list[Token], warnings: list[str]) -> tuple[n.Blo
         if tok.type in ("bullet_list_open", "ordered_list_open"):
             ordered = tok.type == "ordered_list_open"
             close = _find_close(tokens, i, "bullet_list_close" if not ordered else "ordered_list_close")
-            items = _parse_list_items(tokens, i + 1, close, ordered)
+            items = _parse_list_items(tokens, i + 1, close, ordered, callout_map)
             blocks.append(
                 n.ListBlock(
                     ordered=ordered,
@@ -180,7 +191,7 @@ def _blocks_from_tokens(tokens: list[Token], warnings: list[str]) -> tuple[n.Blo
             i += 1
         elif tok.type == "blockquote_open":
             close = _find_close(tokens, i, "blockquote_close")
-            inner = _blocks_from_tokens(tokens[i + 1 : close], warnings)
+            inner = _blocks_from_tokens(tokens[i + 1 : close], warnings, callouts=callout_map)
             blocks.append(n.BlockQuote(children=inner))
             i = close + 1
         elif tok.type == "table_open":
@@ -193,7 +204,12 @@ def _blocks_from_tokens(tokens: list[Token], warnings: list[str]) -> tuple[n.Blo
             i += 1
         elif tok.type == "html_block":
             raw = tok.content.strip()
-            if PAGEBREAK_COMMENT.match(raw):
+            callout_match = CALLOUT_PLACEHOLDER_RE.match(raw)
+            if callout_match:
+                idx = int(callout_match.group(1))
+                kind, children = callout_map[idx]
+                blocks.append(n.Callout(kind=kind, children=children))
+            elif PAGEBREAK_COMMENT.match(raw):
                 blocks.append(n.PageBreak())
             else:
                 blocks.append(n.HTMLBlock(raw))
@@ -213,7 +229,11 @@ def _blocks_from_tokens(tokens: list[Token], warnings: list[str]) -> tuple[n.Blo
 
 
 def _parse_list_items(
-    tokens: list[Token], start: int, end: int, ordered: bool
+    tokens: list[Token],
+    start: int,
+    end: int,
+    ordered: bool,
+    callouts: dict[int, tuple[str, tuple[n.Block, ...]]],
 ) -> list[n.ListItem]:
     items: list[n.ListItem] = []
     i = start
@@ -234,7 +254,7 @@ def _parse_list_items(
                         first = inline.children[0]
                         if first.type == "html_inline" and "checkbox" in first.content:
                             checked = "checked" in first.content
-        inner_blocks = _blocks_from_tokens(tokens[i + 1 : close], [])
+        inner_blocks = _blocks_from_tokens(tokens[i + 1 : close], [], callouts=callouts)
         items.append(n.ListItem(children=inner_blocks, checked=checked))
         i = close + 1
     return items
@@ -285,6 +305,38 @@ def _preprocess_containers(text: str) -> str:
     return text
 
 
+def _parse_inner_blocks(
+    text: str,
+    warnings: list[str],
+) -> tuple[n.Block, ...]:
+    text = _preprocess_containers(text)
+    md = _make_md()
+    tokens = md.parse(text)
+    blocks = _blocks_from_tokens(tokens, warnings, callouts={})
+    return _split_block_images(blocks)
+
+
+def _extract_callouts(
+    text: str,
+    warnings: list[str],
+) -> tuple[str, dict[int, tuple[str, tuple[n.Block, ...]]]]:
+    callouts: dict[int, tuple[str, tuple[n.Block, ...]]] = {}
+    counter = 0
+
+    def replacer(match: re.Match[str]) -> str:
+        nonlocal counter
+        kind = match.group(1).lower()
+        inner = match.group(2).strip()
+        children = _parse_inner_blocks(inner, warnings)
+        idx = counter
+        counter += 1
+        callouts[idx] = (kind, children)
+        return f"<!-- odm-callout:{idx} -->\n"
+
+    text = CALLOUT_RE.sub(replacer, text)
+    return text, callouts
+
+
 def _extract_footnotes(tokens: list[Token]) -> tuple[n.FootnoteDef, ...]:
     footnotes: list[n.FootnoteDef] = []
     i = 0
@@ -296,7 +348,7 @@ def _extract_footnotes(tokens: list[Token]) -> tuple[n.FootnoteDef, ...]:
                 if tokens[j].type == "footnote_open":
                     key = tokens[j].meta.get("id", str(len(footnotes) + 1))
                     fc = _find_close(tokens, j, "footnote_close")
-                    inner = _blocks_from_tokens(tokens[j + 1 : fc], [])
+                    inner = _blocks_from_tokens(tokens[j + 1 : fc], [], callouts=callout_map)
                     footnotes.append(n.FootnoteDef(key=key, children=inner))
                     j = fc + 1
                 else:
@@ -328,10 +380,11 @@ def parse_markdown(text: str, *, source_path: Path | None = None) -> n.Document:
     warnings: list[str] = []
     metadata, body = parse_frontmatter(text)
     body = _preprocess_containers(body)
+    body, callouts = _extract_callouts(body, warnings)
     md = _make_md()
     tokens = md.parse(body)
     footnotes = _extract_footnotes(tokens)
-    blocks = _blocks_from_tokens(tokens, warnings)
+    blocks = _blocks_from_tokens(tokens, warnings, callouts=callouts)
     blocks = _split_block_images(blocks)
     for w in warnings:
         print(f"warning: {w}", file=sys.stderr)

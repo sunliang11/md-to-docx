@@ -155,6 +155,16 @@ dist/docx/
 
 详见 [action/README.md](action/README.md)。路线图：[references/roadmap.md](references/roadmap.md)。
 
+## 社区模板
+
+在 [`templates/`](templates/README.md) 浏览可贡献的 Word 模板：
+
+```bash
+md-to-docx report.md --template templates/technical-design/template.docx
+```
+
+贡献模板请参阅 [templates/README.md](templates/README.md) 中的 PR 清单。文档语法规范：[spec/document-markdown.md](spec/document-markdown.md)（ODM `odm-0.1`）。
+
 ## 安装
 
 ### 环境要求

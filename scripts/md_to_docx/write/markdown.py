@@ -106,6 +106,16 @@ def _write_block(block: n.Block, lines: list[str]) -> None:
             else:
                 _write_block(sub, lines)
         lines.append("")
+    elif isinstance(block, n.Callout):
+        inner_lines: list[str] = []
+        for sub in block.children:
+            _write_block(sub, inner_lines)
+        while inner_lines and inner_lines[-1] == "":
+            inner_lines.pop()
+        lines.append(f":::{block.kind}")
+        lines.extend(inner_lines)
+        lines.append(":::")
+        lines.append("")
     elif isinstance(block, n.ThematicBreak):
         lines.append("---")
         lines.append("")

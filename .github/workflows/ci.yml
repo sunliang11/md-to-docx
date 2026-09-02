@@ -31,7 +31,8 @@ jobs:
             tests/test_toc.py tests/test_cjk.py tests/test_preset.py tests/test_validate.py \
             tests/test_examples_smoke.py tests/test_api.py tests/test_mcp.py tests/test_web_api.py \
             tests/test_parse_docx.py tests/test_write_markdown.py tests/test_diff.py \
-            tests/test_roundtrip.py tests/test_plugin_loader.py -v
+            tests/test_roundtrip.py tests/test_plugin_loader.py tests/test_callout.py \
+            tests/test_render_html.py -v
 
   test:
     runs-on: ubuntu-latest
@@ -102,6 +103,15 @@ jobs:
             --plugin examples/plugins/uppercase_headings.py \
             --output-dir /tmp/p3b-plugin-test
           test -s /tmp/p3b-plugin-test/sample.docx
+
+      - name: Validate community templates
+        run: |
+          for f in templates/*/sample.md; do
+            dir=$(dirname "$f")
+            name=$(basename "$f" .md)
+            md-to-docx "$f" --template "$dir/template.docx" --output-dir /tmp/templates-test
+            test -s "/tmp/templates-test/${name}.docx"
+          done
 
       - name: Validate editor manifests
         run: |

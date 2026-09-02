@@ -44,6 +44,8 @@ def _block_summary(block: n.Block) -> str:
         return f"math: {block.latex[:40]}"
     if isinstance(block, n.BlockQuote):
         return "blockquote"
+    if isinstance(block, n.Callout):
+        return f"callout: {block.kind}"
     if isinstance(block, n.PageBreak):
         return "page break"
     if isinstance(block, n.ThematicBreak):

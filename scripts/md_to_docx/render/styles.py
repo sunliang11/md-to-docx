@@ -14,6 +14,7 @@ BODY_FONT_EAST_ASIA = "Microsoft YaHei"
 MONO_FONT = "Consolas"
 CODE_FILL = "F5F5F5"
 HEADING_SIZES_PT = {1: 22, 2: 18, 3: 16, 4: 14, 5: 12, 6: 12}
+HEADING_COLOR = RGBColor(0, 0, 0)
 BODY_SIZE_PT = 11
 CODE_SIZE_PT = 9
 
@@ -49,7 +50,22 @@ def _ensure_paragraph_style(doc: Document, name: str) -> None:
         doc.styles.add_style(name, WD_STYLE_TYPE.PARAGRAPH)
 
 
-def configure_document_styles(doc: Document, *, force: bool = False) -> None:
+def _apply_heading_color(doc: Document, color: RGBColor) -> None:
+    for level in range(1, 7):
+        for name in (f"Heading {level}", f"Heading {level} Char"):
+            try:
+                style = doc.styles[name]
+            except KeyError:
+                continue
+            style.font.color.rgb = color
+
+
+def configure_document_styles(
+    doc: Document,
+    *,
+    force: bool = False,
+    heading_color: RGBColor | None = None,
+) -> None:
     """Configure default styles; skip if template already has them unless force=True."""
     normal = doc.styles["Normal"]
     if force or normal.font.name is None:
@@ -68,6 +84,9 @@ def configure_document_styles(doc: Document, *, force: bool = False) -> None:
             _set_fonts(hstyle, latin=BODY_FONT_LATIN, east_asia=BODY_FONT_EAST_ASIA)
             hstyle.font.size = Pt(HEADING_SIZES_PT[level])
             hstyle.font.bold = True
+
+    if heading_color is not None:
+        _apply_heading_color(doc, heading_color)
 
     _ensure_paragraph_style(doc, "MDCodeBlock")
     code_style = doc.styles["MDCodeBlock"]

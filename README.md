@@ -155,6 +155,16 @@ dist/docx/
 
 See [action/README.md](action/README.md). Roadmap: [references/roadmap.md](references/roadmap.md).
 
+## Community templates
+
+Browse contributed Word templates in [`templates/`](templates/README.md). Use any template with `--template`:
+
+```bash
+md-to-docx report.md --template templates/technical-design/template.docx
+```
+
+To contribute a template, see the PR checklist in [templates/README.md](templates/README.md). Document syntax: [spec/document-markdown.md](spec/document-markdown.md) (ODM `odm-0.1`).
+
 ## Install
 
 ### Requirements

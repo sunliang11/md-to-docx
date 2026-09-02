@@ -15,11 +15,29 @@ from docx.text.paragraph import Paragraph
 from md_to_docx.ast import nodes as n
 from md_to_docx.render.fields import add_toc_field
 from md_to_docx.render.header_footer import apply_header_footer
-from md_to_docx.render.styles import configure_document_styles
+from md_to_docx.render.styles import HEADING_COLOR, configure_document_styles
 from md_to_docx.render.template import open_document
 
 W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 R_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+
+CALLOUT_BORDER_COLORS = {
+    "warning": "F59E0B",
+    "info": "3B82F6",
+    "note": "6B7280",
+}
+
+
+def _set_left_border(paragraph: Paragraph, color_hex: str, width: int = 12) -> None:
+    ppr = paragraph._p.get_or_add_pPr()
+    p_bdr = OxmlElement("w:pBdr")
+    left = OxmlElement("w:left")
+    left.set(qn("w:val"), "single")
+    left.set(qn("w:sz"), str(width))
+    left.set(qn("w:space"), "4")
+    left.set(qn("w:color"), color_hex)
+    p_bdr.append(left)
+    ppr.append(p_bdr)
 
 
 def _add_hyperlink(paragraph: Paragraph, text: str, url: str) -> None:
@@ -111,6 +129,8 @@ class DocxRenderer:
             self._render_math_block(block)
         elif isinstance(block, n.BlockQuote):
             self._render_blockquote(block)
+        elif isinstance(block, n.Callout):
+            self._render_callout(block)
         elif isinstance(block, n.ThematicBreak):
             p = self.doc.add_paragraph()
             p.paragraph_format.border_bottom = True
@@ -251,6 +271,17 @@ class DocxRenderer:
             else:
                 self.render_block(sub)
 
+    def _render_callout(self, block: n.Callout) -> None:
+        color = CALLOUT_BORDER_COLORS.get(block.kind, "6B7280")
+        for sub in block.children:
+            if isinstance(sub, n.Paragraph):
+                p = self.doc.add_paragraph()
+                p.paragraph_format.left_indent = Inches(0.25)
+                _set_left_border(p, color)
+                self._render_inlines(p, sub.children)
+            else:
+                self.render_block(sub)
+
     def _resolve_image(self, src: str) -> Path | None:
         path = Path(src)
         if not path.is_absolute():
@@ -315,7 +346,10 @@ def render_docx(
     media_paths: dict[str, Path] | None = None,
 ) -> None:
     doc = open_document(template_path)
-    configure_document_styles(doc)
+    configure_document_styles(
+        doc,
+        heading_color=HEADING_COLOR if template_path is None else None,
+    )
     meta = document.metadata
     apply_header_footer(
         doc,
