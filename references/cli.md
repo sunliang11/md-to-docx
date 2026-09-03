@@ -29,8 +29,9 @@ md-to-docx report.md --template letterhead.docx
 # Validate Markdown only — no .docx created
 md-to-docx report.md --check
 
-# Word → Markdown (editable source for Git)
-md-to-docx reverse report.docx -o report.md
+# Word → Markdown (editable source for Git; default output: report.md beside the DOCX)
+md-to-docx reverse report.docx
+md-to-docx reverse report.docx -o other.md
 
 # Compare two document versions (changelog-style output)
 md-to-docx diff v1.md v2.md --format md
@@ -106,7 +107,7 @@ Details: [installation.md](installation.md).
 ```
 md-to-docx [--version] [convert options] PATH     # default subcommand = convert
 md-to-docx convert [options] PATH
-md-to-docx reverse INPUT -o OUTPUT
+md-to-docx reverse INPUT [-o OUTPUT]
 md-to-docx diff A B [--format text|json|md]
 md-to-docx build presets|all            # developer: rebuild templates
 ```
@@ -267,16 +268,17 @@ Validation rules: [validation.md](validation.md).
 ### Synopsis
 
 ```bash
-md-to-docx reverse INPUT -o OUTPUT [options]
+md-to-docx reverse INPUT [-o OUTPUT] [options]
 ```
 
 | Argument / option | Default | Description |
 |-------------------|---------|-------------|
 | `INPUT` | *(required)* | Source `.docx` file |
-| `-o`, `--output PATH` | *(required)* | Output `.md` path |
+| `-o`, `--output PATH` | same directory as `INPUT`, same stem, `.md` | Output `.md` path |
 | `--version` | — | Print version and exit |
 
 ```bash
+md-to-docx reverse report.docx
 md-to-docx reverse report.docx -o report.md
 ```
 

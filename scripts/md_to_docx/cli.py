@@ -92,7 +92,14 @@ def build_reverse_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Convert DOCX to Markdown.")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("input", type=Path, help="Input .docx file")
-    parser.add_argument("-o", "--output", type=Path, required=True, metavar="PATH")
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help="Output .md path (default: same directory as INPUT, same stem)",
+    )
     return parser
 
 
@@ -254,7 +261,9 @@ def _run_convert(args: argparse.Namespace) -> int:
 
 def _run_reverse(args: argparse.Namespace) -> int:
     docx_path = args.input.resolve()
-    out_path = args.output.resolve()
+    out_path = (
+        args.output if args.output is not None else docx_path.with_suffix(".md")
+    ).resolve()
     if not docx_path.is_file():
         print(f"error: file not found: {docx_path}", file=sys.stderr)
         return 2

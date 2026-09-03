@@ -29,8 +29,9 @@ md-to-docx report.md --template letterhead.docx
 # 只校验 Markdown，不生成 .docx
 md-to-docx report.md --check
 
-# Word 转回 Markdown（方便放进 Git 当源文件）
-md-to-docx reverse report.docx -o report.md
+# Word 转回 Markdown（默认写到同目录同名 .md）
+md-to-docx reverse report.docx
+md-to-docx reverse report.docx -o other.md
 
 # 对比两个版本的文档结构（输出类似 changelog）
 md-to-docx diff v1.md v2.md --format md
@@ -106,7 +107,7 @@ alias md_to_docx="/path/to/md-to-docx/bin/convert"
 ```
 md-to-docx [--version] [convert 选项] PATH     # 默认子命令 = convert（正向编译）
 md-to-docx convert [选项] PATH
-md-to-docx reverse INPUT -o OUTPUT
+md-to-docx reverse INPUT [-o OUTPUT]
 md-to-docx diff A B [--format text|json|md]
 md-to-docx build presets|all         # 开发者：重建模板
 ```
@@ -267,16 +268,17 @@ md-to-docx ./docs --check --strict
 ### 基本用法
 
 ```bash
-md-to-docx reverse INPUT -o OUTPUT [选项]
+md-to-docx reverse INPUT [-o OUTPUT] [选项]
 ```
 
 | 参数 / 选项 | 默认值 | 说明 |
 |-------------|--------|------|
 | `INPUT` | 必填 | 源 `.docx` 文件 |
-| `-o`, `--output PATH` | 必填 | 输出 `.md` 路径 |
+| `-o`, `--output PATH` | 与 `INPUT` 同目录、同主文件名、`.md` | 输出 `.md` 路径 |
 | `--version` | — | 打印版本号并退出 |
 
 ```bash
+md-to-docx reverse report.docx
 md-to-docx reverse report.docx -o report.md
 ```
 

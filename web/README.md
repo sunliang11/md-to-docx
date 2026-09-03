@@ -26,15 +26,18 @@ uvicorn web.app:app --reload --port 8080
 
 ## Features
 
-- Left: Markdown editor. Right: HTML preview (approximation, not Word layout).
-- Preset selector for built-in templates.
-- **Generate DOCX** downloads `document.docx`.
-- **Copy CLI command** for the equivalent `bin/convert` invocation.
-- Example documents from `examples/`.
+- **Convert** — Markdown editor, engine HTML preview (callouts, math, page breaks, Mermaid source), presets, TOC / numbering / metadata, community Word templates, ODM syntax inserts, **Validate**, export DOCX, Copy CLI
+- **Reverse** — upload `.docx` (max 2MB) → Markdown; copy or send to Convert
+- **Diff** — two Markdown (or uploaded `.md` / `.docx`) documents, output `md` / `text` / `json`
+- Example documents from `examples/`
+- Footer links to MCP, GitHub Action, and editor integrations (not run in the browser)
+
+Preview is an AST HTML approximation, not Word layout.
 
 ## Limits
 
 - Markdown body max **400KB**
+- Upload (reverse / diff files) max **2MB**
 - Conversion timeout **30 seconds**
 - Documents converted in temp storage and not persisted
 

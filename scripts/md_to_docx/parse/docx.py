@@ -267,12 +267,18 @@ class DocxParser:
                 self._footnotes[fn_id] = fblocks
 
     def _extract_media(self, zf: zipfile.ZipFile) -> None:
+        names = [
+            name
+            for name in zf.namelist()
+            if name.startswith("word/media/") and not name.endswith("/")
+        ]
+        if not names:
+            return
         self.media_dir.mkdir(parents=True, exist_ok=True)
-        for name in zf.namelist():
-            if name.startswith("word/media/"):
-                dest = self.media_dir / Path(name).name
-                if not dest.exists():
-                    dest.write_bytes(zf.read(name))
+        for name in names:
+            dest = self.media_dir / Path(name).name
+            if not dest.exists():
+                dest.write_bytes(zf.read(name))
 
     def _paragraph_style(self, p: etree._Element) -> str | None:
         ppr = p.find("w:pPr", NS)

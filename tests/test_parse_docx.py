@@ -11,6 +11,7 @@ from md_to_docx.ast import nodes as n
 from md_to_docx.engine.native import NativeOptions, convert_native
 from md_to_docx.parse.docx import parse_docx
 from md_to_docx.paths import native_reference_doc
+from md_to_docx.reverse import reverse_docx
 
 W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
@@ -85,6 +86,24 @@ def sample_docx(tmp_path: Path) -> Path:
         options=NativeOptions(template_path=native_reference_doc()),
     )
     return out
+
+
+def _media_dir(docx: Path) -> Path:
+    return docx.parent / f"{docx.stem}-media"
+
+
+def test_convert_without_assets_skips_media_dir(sample_docx: Path) -> None:
+    assert not _media_dir(sample_docx).exists()
+
+
+def test_parse_without_assets_skips_media_dir(sample_docx: Path) -> None:
+    parse_docx(sample_docx)
+    assert not _media_dir(sample_docx).exists()
+
+
+def test_reverse_without_assets_skips_media_dir(sample_docx: Path, tmp_path: Path) -> None:
+    reverse_docx(sample_docx, tmp_path / "back.md")
+    assert not _media_dir(sample_docx).exists()
 
 
 def test_parse_docx_headings(sample_docx: Path) -> None:

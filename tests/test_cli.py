@@ -129,6 +129,21 @@ def test_reverse_subcommand(tmp_path: Path) -> None:
     assert len(back.read_text(encoding="utf-8")) > 10
 
 
+def test_reverse_default_output(tmp_path: Path) -> None:
+    sample_src = Path(__file__).parent / "fixtures" / "sample.md"
+    sample_dst = tmp_path / "sample.md"
+    shutil.copy(sample_src, sample_dst)
+    docx = sample_dst.with_suffix(".docx")
+    back = tmp_path / "sample.md"
+
+    assert run_cli(str(sample_dst)).returncode == 0
+    sample_dst.unlink()
+    result = run_cli("reverse", str(docx))
+    assert result.returncode == 0, result.stderr
+    assert back.is_file()
+    assert len(back.read_text(encoding="utf-8")) > 10
+
+
 def test_diff_subcommand(tmp_path: Path) -> None:
     sample_src = Path(__file__).parent / "fixtures" / "sample.md"
     a = tmp_path / "a.md"

@@ -8,9 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/app.css">
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#workspace-convert">Skip to content</a>
+
   <header class="app-header">
     <div class="app-header__brand">
       <h1 class="app-header__title">md-to-docx</h1>
@@ -26,7 +27,13 @@
     </div>
   </header>
 
-  <div class="toolbar">
+  <nav class="mode-nav" aria-label="Playground mode">
+    <button type="button" class="mode-nav__btn mode-nav__btn--active" data-mode="convert" id="mode-convert">Convert</button>
+    <button type="button" class="mode-nav__btn" data-mode="reverse" id="mode-reverse">Reverse</button>
+    <button type="button" class="mode-nav__btn" data-mode="diff" id="mode-diff">Diff</button>
+  </nav>
+
+  <div class="toolbar" id="toolbar-convert" data-mode-panel="convert">
     <div class="toolbar__group">
       <label class="field">
         <span class="field__label" id="i18n-label-example">Example</span>
@@ -52,14 +59,95 @@
         <input type="checkbox" id="toc" checked>
         <span id="i18n-label-toc">Table of contents</span>
       </label>
+      <label class="field field--checkbox">
+        <input type="checkbox" id="numbering">
+        <span id="i18n-label-numbering">Heading numbers</span>
+      </label>
+      <button type="button" id="toggle-options" class="btn btn--ghost" aria-expanded="false">Options</button>
     </div>
 
     <div class="toolbar__spacer"></div>
 
     <div class="toolbar__group toolbar__group--actions">
+      <button type="button" id="validate" class="btn btn--ghost">
+        <span class="btn__label" id="i18n-btn-validate">Validate</span>
+      </button>
       <button type="button" id="copy-cli" class="btn btn--ghost">Copy CLI</button>
       <button type="button" id="generate" class="btn btn--primary">
         <span class="btn__label" id="i18n-btn-export">Export Word (.docx)</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="options-panel hidden" id="options-panel" data-mode-panel="convert">
+    <label class="field">
+      <span class="field__label" id="i18n-label-title">Title</span>
+      <input type="text" id="doc-title" class="field__control" autocomplete="off">
+    </label>
+    <label class="field">
+      <span class="field__label" id="i18n-label-author">Author</span>
+      <input type="text" id="doc-author" class="field__control" autocomplete="off">
+    </label>
+    <label class="field">
+      <span class="field__label" id="i18n-label-date">Date</span>
+      <input type="text" id="doc-date" class="field__control" autocomplete="off">
+    </label>
+    <label class="field">
+      <span class="field__label" id="i18n-label-template">Community template</span>
+      <select id="community-template" class="field__control">
+        <option value="" id="i18n-template-none">Preset default</option>
+      </select>
+    </label>
+    <label class="field field--checkbox field--checkbox-inline">
+      <input type="checkbox" id="page-numbers" checked>
+      <span id="i18n-label-page-numbers">Page numbers</span>
+    </label>
+  </div>
+
+  <div class="snippet-bar" id="snippet-bar" data-mode-panel="convert">
+    <span class="snippet-bar__label" id="i18n-snippets-label">Insert</span>
+    <button type="button" class="chip" data-snippet="frontmatter">Frontmatter</button>
+    <button type="button" class="chip" data-snippet="callout">Callout</button>
+    <button type="button" class="chip" data-snippet="pagebreak">Page break</button>
+    <button type="button" class="chip" data-snippet="caption">Caption</button>
+    <button type="button" class="chip" data-snippet="mermaid">Mermaid</button>
+    <button type="button" class="chip" data-snippet="math">Math</button>
+  </div>
+
+  <div class="toolbar hidden" id="toolbar-reverse" data-mode-panel="reverse">
+    <div class="toolbar__group">
+      <label class="field">
+        <span class="field__label" id="i18n-label-docx">Word file</span>
+        <input type="file" id="reverse-file" class="field__control field__control--file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      </label>
+    </div>
+    <div class="toolbar__spacer"></div>
+    <div class="toolbar__group toolbar__group--actions">
+      <button type="button" id="copy-cli-reverse" class="btn btn--ghost">Copy CLI</button>
+      <button type="button" id="send-to-convert" class="btn btn--ghost" disabled>Send to Convert</button>
+      <button type="button" id="run-reverse" class="btn btn--primary">
+        <span class="btn__label" id="i18n-btn-reverse">Reverse to Markdown</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="toolbar hidden" id="toolbar-diff" data-mode-panel="diff">
+    <div class="toolbar__group">
+      <label class="field">
+        <span class="field__label" id="i18n-label-diff-format">Format</span>
+        <select id="diff-format" class="field__control">
+          <option value="md">Markdown</option>
+          <option value="text">Text</option>
+          <option value="json">JSON</option>
+        </select>
+      </label>
+      <button type="button" id="load-diff-sample" class="btn btn--ghost">Load sample</button>
+    </div>
+    <div class="toolbar__spacer"></div>
+    <div class="toolbar__group toolbar__group--actions">
+      <button type="button" id="copy-cli-diff" class="btn btn--ghost">Copy CLI</button>
+      <button type="button" id="run-diff" class="btn btn--primary">
+        <span class="btn__label" id="i18n-btn-diff">Compare</span>
       </button>
     </div>
   </div>
@@ -75,7 +163,15 @@
     <button type="button" class="error-panel__dismiss" id="error-dismiss" aria-label="Dismiss error">×</button>
   </div>
 
-  <main class="workspace">
+  <div id="validate-panel" class="validate-panel hidden" data-mode-panel="convert" aria-live="polite">
+    <div class="validate-panel__head">
+      <h2 class="validate-panel__title" id="i18n-validate-title">Validation</h2>
+      <span class="validate-panel__meta" id="validate-meta"></span>
+    </div>
+    <ul id="validate-list" class="validate-list"></ul>
+  </div>
+
+  <main class="workspace" id="workspace-convert" data-mode-panel="convert">
     <section class="pane pane--editor">
       <div class="pane__header">
         <h2 class="pane__title" id="i18n-pane-markdown">Markdown</h2>
@@ -95,8 +191,60 @@
     </section>
   </main>
 
+  <div class="workspace hidden" id="workspace-reverse" data-mode-panel="reverse" hidden>
+    <section class="pane pane--editor">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-reverse-in">Upload</h2>
+      </div>
+      <div class="dropzone" id="reverse-empty">
+        <p id="i18n-reverse-empty">Choose a .docx file (max 2MB). Output stays in memory and is deleted after reverse.</p>
+      </div>
+    </section>
+    <section class="pane pane--preview">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-reverse-out">Markdown</h2>
+        <button type="button" id="copy-reverse-md" class="btn btn--ghost" disabled>Copy</button>
+      </div>
+      <textarea id="reverse-out" class="result-text" readonly placeholder=""></textarea>
+    </section>
+  </div>
+
+  <div class="workspace hidden" id="workspace-diff" data-mode-panel="diff" hidden>
+    <section class="pane pane--editor">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-diff-a">Version A</h2>
+        <label class="file-mini">
+          <input type="file" id="diff-file-a" accept=".md,.docx">
+          <span id="i18n-upload-a">Upload</span>
+        </label>
+      </div>
+      <textarea id="diff-a" class="diff-input" spellcheck="false"></textarea>
+    </section>
+    <section class="pane pane--editor">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-diff-b">Version B</h2>
+        <label class="file-mini">
+          <input type="file" id="diff-file-b" accept=".md,.docx">
+          <span id="i18n-upload-b">Upload</span>
+        </label>
+      </div>
+      <textarea id="diff-b" class="diff-input" spellcheck="false"></textarea>
+    </section>
+    <section class="pane pane--preview pane--diff-out">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-diff-out">Changes</h2>
+      </div>
+      <pre id="diff-out" class="diff-out"></pre>
+    </section>
+  </div>
+
   <footer class="app-footer">
     <span id="i18n-footer-privacy">Private · converted in memory and deleted</span>
+    <span class="app-footer__sep" aria-hidden="true">·</span>
+    <a href="https://github.com/sunliang11/md-to-docx/blob/main/references/mcp.md">MCP</a>
+    <a href="https://github.com/sunliang11/md-to-docx/blob/main/action/README.md">Action</a>
+    <a href="https://github.com/sunliang11/md-to-docx/blob/main/editors/vscode/README.md">VS Code</a>
+    <a href="https://github.com/sunliang11/md-to-docx/blob/main/editors/obsidian/README.md">Obsidian</a>
   </footer>
 
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>

@@ -24,7 +24,7 @@ English | [中文](README.zh.md)
 
 - ✓ **AI → Word** — compile AI drafts into deliverable DOCX ([agents](references/agents.md))
 - ✓ **Markdown → DOCX** — `md-to-docx report.md --preset technical`
-- ✓ **DOCX → Markdown** — `md-to-docx reverse report.docx -o report.md`
+- ✓ **DOCX → Markdown** — `md-to-docx reverse report.docx`
 - ✓ **Document Diff** — structural compare for `.md` and `.docx` ([roundtrip](references/roundtrip.md))
 - ✓ **Templates** — presets + community Word templates ([presets](references/presets.md) · [templates](templates/README.md))
 - ✓ **MCP** — convert, validate, apply_template, list_presets ([mcp](references/mcp.md))
@@ -111,11 +111,13 @@ uvicorn web.app:app --reload --port 8080
 # open http://localhost:8080
 ```
 
+Modes: **Convert** (presets, TOC, numbering, community templates, ODM syntax inserts, validate, engine preview, export DOCX), **Reverse** (DOCX → Markdown), **Diff** (structural compare). MCP / editors / GitHub Action stay in their own docs.
+
 ## Commands
 
 ```bash
 md-to-docx report.md --preset technical                              # convert (default)
-md-to-docx reverse report.docx -o report.md                           # DOCX → Markdown
+md-to-docx reverse report.docx                                        # DOCX → Markdown (same dir, report.md)
 md-to-docx diff draft-v1.md draft-v2.md --format md                  # structural diff
 md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # custom plugin
 md-to-docx report.md --check                                         # validate only
@@ -137,7 +139,7 @@ md-to-docx ./docs --dry-run
 | What | One-liner | Try |
 |------|-----------|-----|
 | **Convert** | Compile Markdown or AI drafts into professional DOCX | `md-to-docx report.md --preset technical` |
-| **Reverse** | Turn DOCX back into editable Markdown (native AST) | `md-to-docx reverse report.docx -o report.md` |
+| **Reverse** | Turn DOCX back into editable Markdown (native AST) | `md-to-docx reverse report.docx` |
 | **Diff** | Compare two versions by document structure (.md or .docx) | `md-to-docx diff v1.md v2.md --format md` |
 | **Validate** | Lint Markdown before shipping — no DOCX output | `md-to-docx report.md --check` |
 | **Extend** | Hook custom transforms with a small Python plugin | `md-to-docx report.md --plugin my_plugin.py` |

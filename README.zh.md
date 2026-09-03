@@ -24,7 +24,7 @@
 
 - ✓ **AI → Word** — 把 AI 文稿编译成可交付 DOCX（[agents](references/agents.md)）
 - ✓ **Markdown → DOCX** — `md-to-docx report.md --preset technical`
-- ✓ **DOCX → Markdown** — `md-to-docx reverse report.docx -o report.md`
+- ✓ **DOCX → Markdown** — `md-to-docx reverse report.docx`
 - ✓ **文档对比** — 按结构对比 `.md` 与 `.docx` 版本（[roundtrip](references/roundtrip.md)）
 - ✓ **模板** — 预设 + 社区 Word 模板（[presets](references/presets.md) · [templates](templates/README.md)）
 - ✓ **MCP** — convert、validate、apply_template、list_presets（[mcp](references/mcp.md)）
@@ -111,11 +111,13 @@ uvicorn web.app:app --reload --port 8080
 # 浏览器打开 http://localhost:8080
 ```
 
+模式：**转换**（预设、目录、编号、社区模板、ODM 语法插入、校验、引擎预览、导出 DOCX）、**反向**（DOCX → Markdown）、**对比**（结构 diff）。MCP / 编辑器 / GitHub Action 仍见各自文档。
+
 ## 命令
 
 ```bash
 md-to-docx report.md --preset technical                              # 正向编译（默认）
-md-to-docx reverse report.docx -o report.md                           # DOCX → Markdown
+md-to-docx reverse report.docx                                        # DOCX → Markdown（同目录 report.md）
 md-to-docx diff draft-v1.md draft-v2.md --format md                  # 结构对比
 md-to-docx report.md --plugin examples/plugins/uppercase_headings.py   # 自定义插件
 md-to-docx report.md --check                                         # 仅校验
@@ -137,7 +139,7 @@ md-to-docx ./docs --dry-run
 | 做什么 | 一句话 | 试试 |
 |--------|--------|------|
 | **正向编译** | 把 Markdown / AI 文稿变成可交付的 Word | `md-to-docx report.md --preset technical` |
-| **反向还原** | Word 转回 Markdown，方便当 Git 源文件维护 | `md-to-docx reverse report.docx -o report.md` |
+| **反向还原** | Word 转回 Markdown，方便当 Git 源文件维护 | `md-to-docx reverse report.docx` |
 | **版本对比** | 按文档结构对比两版差异（支持 .md 和 .docx） | `md-to-docx diff v1.md v2.md --format md` |
 | **文档校验** | 只检查 Markdown，不生成 docx | `md-to-docx report.md --check` |
 | **自定义插件** | 用小型 Python 插件改写转换逻辑 | `md-to-docx report.md --plugin my_plugin.py` |

@@ -18,11 +18,13 @@ class MermaidPlugin(PluginBase):
         document: n.Document,
         ctx: PluginContext,
     ) -> tuple[n.Document, dict[str, Path]]:
+        if not any(isinstance(block, n.Mermaid) for block in document.blocks):
+            return document, {}
+
         media = ctx.base_dir / f"{ctx.base_dir.name}-media"
         if ctx.config.get("md_path"):
             md_path = Path(str(ctx.config["md_path"]))
             media = md_path.parent / f"{md_path.stem}-media"
-        media.mkdir(parents=True, exist_ok=True)
         media_paths: dict[str, Path] = {}
         new_blocks: list[n.Block] = []
         idx = 0

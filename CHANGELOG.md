@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Web Playground modes: Convert (validate, ODM inserts, community templates, engine HTML preview), Reverse, and Diff
+
+### Changed
+
+- `md-to-docx reverse INPUT` writes `INPUT` with a `.md` suffix in the same directory when `-o` is omitted
+
 ## [1.1.0] - 2026-09-03
 
 ### Removed

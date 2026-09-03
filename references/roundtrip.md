@@ -5,7 +5,8 @@ md-to-docx v1.1+ supports **reverse** conversion: DOCX → Document AST → Mark
 ## Commands
 
 ```bash
-# DOCX → Markdown (native AST parser)
+# DOCX → Markdown (native AST parser; default: same directory, same stem)
+md-to-docx reverse report.docx
 md-to-docx reverse report.docx -o report.md
 
 # Diff two documents (.md or .docx)
