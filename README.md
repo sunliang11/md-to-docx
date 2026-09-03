@@ -100,7 +100,7 @@ docker compose -f web/docker-compose.yml up --build
 
 **Option C — GitHub Codespaces (zero local install)**
 
-Click **Open in GitHub Codespaces** above — the Web Playground starts on port 8080 automatically.
+Click **Open in GitHub Codespaces** on the [GitHub repo page](https://github.com/sunliang11/md-to-docx) (not inside an already-open Codespace). First create waits for dependency install; then the Web Playground starts on port **8080**. If the browser does not open, use the **Ports** panel → **Web Playground**.
 
 **Option D — Local Web Playground (pip + uvicorn)**
 

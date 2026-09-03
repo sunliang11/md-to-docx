@@ -100,7 +100,7 @@ docker compose -f web/docker-compose.yml up --build
 
 **方式 C — GitHub Codespaces（零本地安装）**
 
-点击上方 **Open in GitHub Codespaces** — Web Playground 会在 8080 端口自动启动。
+在 [GitHub 仓库页](https://github.com/sunliang11/md-to-docx) 点击 **Open in GitHub Codespaces**（已打开的 Codespaces 内再点徽章无效）。首次创建需等待依赖安装；完成后 Web Playground 在 **8080** 启动。若浏览器未自动打开，打开 **Ports** 面板 → **Web Playground**。
 
 **方式 D — 本地 Web Playground（pip + uvicorn）**
 

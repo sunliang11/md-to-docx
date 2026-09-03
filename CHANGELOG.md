@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 - Separate console script `md-to-docx-mcp` — use `md-to-docx mcp` instead
 - Vestigial `engine` parameters on convert/reverse APIs and preset objects
 
+### Fixed
+
+- Codespaces Web Playground startup — wait for `/healthz`, clearer failure logs, `waitFor: postStartCommand`
+
 ### Changed
 
 - **Native-only compiler** — Markdown → Document AST → python-docx; no external document converter

@@ -9,5 +9,6 @@
     }
   },
   "postCreateCommand": "pip install -e \".[web]\" && PYTHONPATH=scripts python -m md_to_docx.presets_build",
-  "postStartCommand": "bash .devcontainer/start-playground.sh"
+  "postStartCommand": "bash .devcontainer/start-playground.sh",
+  "waitFor": "postStartCommand"
 }
