@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 - **Native-only compiler** — Markdown → Document AST → python-docx; no external document converter
 - **CLI consolidation** — PATH only installs `md-to-docx`; use `md-to-docx build presets|all` and `md-to-docx mcp`
 - Mermaid/captions transforms live in built-in plugins; `MD_TO_DOCX_MERMAID_WIDTH` is honored by `mmdc`
-- GitHub Action docs pin to `@main` until a matching release tag is published
+- GitHub Action docs pin to `@v1.1.0` (floating major: `@v1`)
 - `editorial` preset available on CLI and bundled in the wheel
 
 ### Added (P3A / P3B / P4 Gate A / P2)
