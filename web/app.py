@@ -120,7 +120,6 @@ async def api_presets() -> dict[str, Any]:
         items.append(
             {
                 "name": name,
-                "engine": preset.engine,
                 "toc": preset.toc,
                 "numbering": preset.numbering,
                 "description": PRESET_DESCRIPTIONS.get(name, ""),

@@ -14,7 +14,7 @@ def test_toc_field_present(tmp_path: Path):
     dst = tmp_path / "sample.md"
     shutil.copy(src, dst)
     out = tmp_path / "out.docx"
-    convert_file(dst, out, engine="native", toc=True)
+    convert_file(dst, out, toc=True)
     with zipfile.ZipFile(out) as zf:
         xml = zf.read("word/document.xml").decode()
     assert "TOC" in xml

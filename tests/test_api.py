@@ -20,7 +20,6 @@ def test_convert_markdown_text(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
   )
   assert result.output_path.is_file()
   assert result.output_path.stat().st_size > 500
-  assert result.engine == "native"
 
 
 def test_convert_preset_technical(tmp_path: Path):

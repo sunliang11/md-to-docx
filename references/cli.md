@@ -152,22 +152,23 @@ md-to-docx ./docs --dry-run
 md-to-docx report.md --skip-existing
 ```
 
-### Engine & template
+### Template
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--preset NAME` | none | Bundle template + flags. Values: `professional`, `technical`, `academic`, `business`, `report` |
+| `--preset NAME` | none | Bundle template + flags. Values: `professional`, `editorial`, `technical`, `academic`, `business`, `report` |
 | `--template PATH` | built-in reference | Custom `.docx` template |
 
 **Preset defaults** (explicit CLI flags override preset):
 
-| Preset | Engine | TOC | Numbering |
-|--------|--------|-----|-----------|
-| `professional` | native | yes | no |
-| `technical` | native | yes | yes |
-| `academic` | native | yes | yes |
-| `business` | native | no | no |
-| `report` | native | yes | no |
+| Preset | TOC | Numbering |
+|--------|-----|-----------|
+| `professional` | yes | no |
+| `editorial` | yes | no |
+| `technical` | yes | yes |
+| `academic` | yes | yes |
+| `business` | no | no |
+| `report` | yes | no |
 
 See [presets.md](presets.md) for font/style details.
 

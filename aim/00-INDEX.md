@@ -1,14 +1,21 @@
 # md-to-docx 分阶段实现计划（执行总表）
 
+> **ARCHIVED / HISTORICAL** — See [`aim/README.md`](README.md). This index describes the pre–native-only plan (WeCom / pandoc). Do not execute these plans against the current tree.
+>
 > 产品战略原文：[`aim.md`](aim.md)
-> 仓库快照日期：2026-09-02
-> 当前版本：`0.1.0`（Beta，未上 PyPI）
-> 当前定位：WeCom 企微导入专用 Markdown → DOCX（pandoc 管道）
-> 目标定位：AI / Markdown → Professional Document 的开源文档编译基础设施
+> 仓库快照日期：2026-09-02（archived）
+> 当时版本：`0.1.0`（Beta）
+> 当时定位：WeCom 企微导入专用 Markdown → DOCX（pandoc 管道）
+> 当前产品：native Document AST only — see `references/roadmap.md`
 
 ---
 
 ## 给执行本计划的 AI Agent
+
+**Stop.** This file is archived. Use `references/roadmap.md` and the live code under `scripts/md_to_docx/`.
+
+<details>
+<summary>Original agent instructions (historical)</summary>
 
 你一次只执行 **一个** plan 文件。不要跨阶段提前实现 Web / MCP / 浏览器插件 / VS Code / Marketplace。
 
@@ -18,6 +25,9 @@
 2. [`aim.md`](aim.md) 对应阶段的「目标 / 不要做什么」
 3. 当前要执行的那份 `P*.md`
 4. 仓库真实代码：`scripts/md_to_docx/`、`tests/`、`README.md`、`pyproject.toml`
+
+</details>
+
 
 ### 执行协议
 

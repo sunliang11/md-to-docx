@@ -2,7 +2,8 @@
 name: md-to-docx
 description: >-
   Converts AI-generated Markdown to professional Word DOCX. Use --preset technical
-  for formal reports; other presets: professional, academic, business, report.
+  for formal reports; other presets: professional, editorial, academic, business, report.
+  Supports callouts (:::warning/info/note), Mermaid (optional mmdc), reverse, and diff.
 ---
 
 # md-to-docx
@@ -20,6 +21,9 @@ Skill root = directory containing this `SKILL.md` (e.g. `~/.cursor/skills/md-to-
 # General document
 "<skill-root>/bin/convert" report.md --preset professional
 
+# Editorial layout
+"<skill-root>/bin/convert" report.md --preset editorial
+
 # Fallback
 PYTHONPATH="<skill-root>/scripts" python3 -m md_to_docx report.md --preset technical
 ```
@@ -32,11 +36,12 @@ PYTHONPATH="<skill-root>/scripts" python3 -m md_to_docx report.md --preset techn
 2. Choose preset by user intent:
    - Formal technical / design doc → `--preset technical --toc --numbering`
    - Academic paper → `--preset academic`
+   - Editorial / long-form → `--preset editorial`
    - Business summary → `--preset business`
    - General document → `--preset professional`
 3. Run conversion; **do not edit** source `.md`.
 4. Report output `.docx` path to the user.
-5. If markdown contains ` ```mermaid ` blocks, ensure `mmdc` is on PATH or warn user.
+5. If markdown contains ` ```mermaid ` blocks, ensure `mmdc` on PATH or warn (optional; CI does not require it).
 6. For MCP clients: see [references/mcp.md](references/mcp.md) (`pip install .[mcp]`, `md-to-docx mcp`).
 7. **Reverse** (user gives DOCX, wants Markdown source): `md-to-docx reverse file.docx -o file.md` — see [references/roundtrip.md](references/roundtrip.md).
 8. **Diff** two report versions: `md-to-docx diff v1.md v2.md --format md`.
@@ -45,13 +50,14 @@ PYTHONPATH="<skill-root>/scripts" python3 -m md_to_docx report.md --preset techn
 
 - Original `.md` files are never modified
 - Output `.docx` beside source (`foo.md` → `foo.docx`) unless `--output-dir`
-- Mermaid → PNG under native `{stem}-media/`
+- Mermaid → PNG under native `{stem}-media/` when `mmdc` is available
+- Callouts: `:::warning`, `:::info`, `:::note`
 - Per-file failures reported; exit non-zero if any failed
 
 ## Troubleshooting
 
 | Error | Fix |
-|-------|-----|
+|-------|------|
 | `No module named md_to_docx` | Use `bin/convert` or `PYTHONPATH=<skill-root>/scripts` |
 | `` `mmdc` not found `` | `npm i -g @mermaid-js/mermaid-cli` or remove mermaid blocks |
 | Template missing | `PYTHONPATH=scripts python -m md_to_docx.presets_build` |

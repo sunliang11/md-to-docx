@@ -11,8 +11,10 @@ Symlink or clone [md-to-docx](https://github.com/sunliang11/md-to-docx), then:
 /path/to/md-to-docx/bin/convert your-report.md --preset technical
 ```
 
-Presets: `technical` (reports), `academic`, `professional`, `business`, `report`.
+Presets: `technical` (reports), `editorial`, `academic`, `professional`, `business`, `report`.
 
 No pip required — `bin/convert` sets `PYTHONPATH` automatically.
+
+Supports callouts (`:::warning` / `:::info` / `:::note`). Mermaid needs optional `mmdc`.
 
 MCP: `pip install -e /path/to/md-to-docx[mcp]` then `md-to-docx mcp`. See `references/mcp.md`.

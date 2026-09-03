@@ -31,15 +31,15 @@ The system consists of four layers:
 |-------|---------------|------------|
 | Ingestion | Accept Markdown from files, API, or clipboard | Python CLI |
 | Normalization | Fix tables, headings, code blocks | Custom normalizer |
-| Compilation | Markdown → DOCX | Pandoc + reference template |
+| Compilation | Markdown → Document AST → DOCX | Native engine + reference template |
 | Distribution | Store, version, and share output | File system / S3 |
 
 ### Data Flow
 
 ```
-User Markdown → Normalize → Pandoc → DOCX → Deliver
+User Markdown → Normalize → Parse AST → Render DOCX → Deliver
                     ↓
-              Optional: Mermaid → PNG
+              Optional: Mermaid → PNG (mmdc)
 ```
 
 ### Key Design Decisions

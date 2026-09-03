@@ -19,10 +19,10 @@ Technical teams increasingly author content in Markdown. Final deliverables, how
 
 ## 2. Related Work
 
-1. Pandoc (MacFarlane, 2006–present) — universal document converter
+1. Pandoc (MacFarlane, 2006–present) — universal document converter (external baseline)
 2. MultiMarkdown — extended syntax with footnotes and citations
 3. Quarto — scientific publishing with multiple output formats
-4. Commercial tools (Pandoc Pro, Typora export) — limited automation
+4. Native AST compilers — structured parse → render pipelines (this work)
 
 ## 3. Methodology
 
@@ -31,8 +31,8 @@ Technical teams increasingly author content in Markdown. Final deliverables, how
 Our compiler applies three stages:
 
 1. **Normalization** — deterministic text transforms
-2. **Asset resolution** — images, optional diagram rendering
-3. **Pandoc conversion** — GFM input, DOCX output with reference template
+2. **Asset resolution** — images, optional Mermaid rendering via `mmdc`
+3. **Native render** — Document AST → DOCX with reference template
 
 ### 3.2 Evaluation Setup
 
@@ -65,8 +65,7 @@ The normalization layer contributes most to fidelity gains. Tables with inconsis
 
 Limitations include:
 
-- No native math (OMML) support in v0.1
-- Mermaid diagrams require external `mmdc` binary
+- Mermaid diagrams require external `mmdc` binary (optional; not required for CI smoke)
 - Custom Word styles beyond the reference template need manual post-editing
 
 ## 6. Conclusion

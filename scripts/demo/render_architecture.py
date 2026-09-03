@@ -36,7 +36,7 @@ def main() -> None:
     font = _font(14, bold=True)
     bw, bh = 120, 48
     y = 76
-    boxes = [("Markdown", 40), ("Normalize", 200), ("Pandoc", 360), ("DOCX", 520)]
+    boxes = [("Markdown", 40), ("Normalize", 200), ("AST", 360), ("DOCX", 520)]
     for i, (label, x) in enumerate(boxes):
         _box(draw, x, y, bw, bh, label, font)
         if i < len(boxes) - 1:

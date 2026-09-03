@@ -2,84 +2,12 @@
 
 from __future__ import annotations
 
-import os
-import re
 from pathlib import Path
 
 import pytest
 
-from md_to_docx.converter import (
-    MERMAID_BLOCK_RE,
-    collect_md_files,
-    is_excluded,
-    mermaid_images_dir,
-    resolve_mermaid_scale,
-    resolve_mermaid_width,
-)
-
-
-class TestMermaidRegex:
-    """Tests for mermaid block regex matching."""
-
-    def test_mermaid_block_matches(self):
-        text = """
-# Title
-
-```mermaid
-graph TD
-    A --> B
-```
-
-More text.
-"""
-        matches = list(MERMAID_BLOCK_RE.finditer(text))
-        assert len(matches) == 1
-        assert "graph TD" in matches[0].group(1)
-        assert "A --> B" in matches[0].group(1)
-
-    def test_mermaid_block_case_insensitive(self):
-        text = """```MeRmAiD
-graph LR
-    X --> Y
-```"""
-        matches = list(MERMAID_BLOCK_RE.finditer(text))
-        assert len(matches) == 1
-
-    def test_no_mermaid_block(self):
-        text = """
-```python
-print("hello")
-```
-"""
-        matches = list(MERMAID_BLOCK_RE.finditer(text))
-        assert len(matches) == 0
-
-    def test_multiple_mermaid_blocks(self):
-        text = """
-```mermaid
-graph TD
-    A
-```
-
-```mermaid
-sequenceDiagram
-    Alice->>Bob: Hi
-```
-"""
-        matches = list(MERMAID_BLOCK_RE.finditer(text))
-        assert len(matches) == 2
-
-
-class TestMermaidImagesDir:
-    """Tests for mermaid PNG output directory naming."""
-
-    def test_mermaid_images_dir_name(self, tmp_path: Path):
-        md_file = tmp_path / "LogCollectV2架构说明.md"
-        assert mermaid_images_dir(md_file) == tmp_path / "LogCollectV2架构说明mermaid图片"
-
-    def test_mermaid_images_dir_simple_stem(self, tmp_path: Path):
-        md_file = tmp_path / "foo.md"
-        assert mermaid_images_dir(md_file) == tmp_path / "foomermaid图片"
+from md_to_docx.converter import collect_md_files, is_excluded
+from md_to_docx.util.mmdc import resolve_mermaid_scale, resolve_mermaid_width
 
 
 class TestCollectMdFiles:
@@ -88,7 +16,7 @@ class TestCollectMdFiles:
     def test_collect_single_file(self, tmp_path: Path):
         md_file = tmp_path / "test.md"
         md_file.write_text("# Test")
-        
+
         result = collect_md_files(md_file)
         assert len(result) == 1
         assert result[0].name == "test.md"
@@ -97,7 +25,7 @@ class TestCollectMdFiles:
         (tmp_path / "file1.md").write_text("# File 1")
         (tmp_path / "file2.md").write_text("# File 2")
         (tmp_path / "other.txt").write_text("Not markdown")
-        
+
         result = collect_md_files(tmp_path)
         assert len(result) == 2
         assert all(f.suffix == ".md" for f in result)
@@ -107,7 +35,7 @@ class TestCollectMdFiles:
         subdir = tmp_path / "subdir"
         subdir.mkdir()
         (subdir / "nested.md").write_text("# Nested")
-        
+
         result = collect_md_files(tmp_path)
         assert len(result) == 2
         names = {f.name for f in result}
@@ -181,19 +109,19 @@ class TestCollectMdFiles:
     def test_non_markdown_file_raises(self, tmp_path: Path):
         txt_file = tmp_path / "test.txt"
         txt_file.write_text("Not markdown")
-        
+
         with pytest.raises(SystemExit):
             collect_md_files(txt_file)
 
     def test_nonexistent_path_raises(self, tmp_path: Path):
         fake_path = tmp_path / "nonexistent.md"
-        
+
         with pytest.raises(SystemExit):
             collect_md_files(fake_path)
 
 
 class TestEnvParsing:
-    """Tests for environment variable parsing."""
+    """Tests for Mermaid environment variable parsing."""
 
     def test_default_mermaid_scale(self, monkeypatch):
         monkeypatch.delenv("MD_TO_DOCX_MERMAID_SCALE", raising=False)

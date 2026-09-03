@@ -152,22 +152,23 @@ md-to-docx ./docs --dry-run
 md-to-docx report.md --skip-existing
 ```
 
-### 引擎与模板
+### 模板
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--preset NAME` | 无 | 一键套用模板 + 默认选项。可选：`professional`、`technical`、`academic`、`business`、`report` |
+| `--preset NAME` | 无 | 一键套用模板 + 默认选项。可选：`professional`、`editorial`、`technical`、`academic`、`business`、`report` |
 | `--template PATH` | 内置 reference | 自定义 `.docx` 模板 |
 
 **各 preset 默认行为**（命令行显式指定的参数会覆盖 preset）：
 
-| Preset | 引擎 | 目录 | 章节编号 |
-|--------|------|------|----------|
-| `professional` | native | 有 | 无 |
-| `technical` | native | 有 | 有 |
-| `academic` | native | 有 | 有 |
-| `business` | native | 无 | 无 |
-| `report` | native | 有 | 无 |
+| Preset | 目录 | 章节编号 |
+|--------|------|----------|
+| `professional` | 有 | 无 |
+| `editorial` | 有 | 无 |
+| `technical` | 有 | 有 |
+| `academic` | 有 | 有 |
+| `business` | 无 | 无 |
+| `report` | 有 | 无 |
 
 字体与样式细节见 [presets.md](presets.md)。
 

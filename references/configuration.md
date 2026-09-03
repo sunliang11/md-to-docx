@@ -28,7 +28,7 @@ python3 -m md_to_docx ./docs --exclude "*.draft.md" --output-dir ./output
 
 ## Environment Variables
 
-Environment variables control Mermaid rendering. All are optional.
+Environment variables control Mermaid rendering. All are optional. Mermaid is **optional** at runtime: without `mmdc`, diagrams stay as fenced code (unless `--strict-mermaid`). CI does not install Mermaid CLI.
 
 | Variable | Default | Purpose |
 |----------|---------|---------|

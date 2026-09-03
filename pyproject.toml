@@ -52,6 +52,7 @@ packages = ["scripts/md_to_docx"]
 [tool.hatch.build.targets.wheel.force-include]
 "assets/reference-native.docx" = "md_to_docx/data/reference-native.docx"
 "assets/presets/professional.docx" = "md_to_docx/data/presets/professional.docx"
+"assets/presets/editorial.docx" = "md_to_docx/data/presets/editorial.docx"
 "assets/presets/technical.docx" = "md_to_docx/data/presets/technical.docx"
 "assets/presets/academic.docx" = "md_to_docx/data/presets/academic.docx"
 "assets/presets/business.docx" = "md_to_docx/data/presets/business.docx"

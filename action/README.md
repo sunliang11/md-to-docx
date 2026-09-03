@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: sunliang11/md-to-docx/action@v3
+      - uses: sunliang11/md-to-docx/action@v1.1.0
         with:
           input: docs/report.md
           preset: technical
@@ -30,12 +30,14 @@ jobs:
           path: dist/docx
 ```
 
+Pin to `@v1.1.0` for this release, or `@v1` for the floating major tag (tracks the latest v1.x).
+
 ## Inputs
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `input` | yes | — | Markdown file or directory |
-| `preset` | no | `technical` | Template preset |
+| `preset` | no | `technical` | Template preset (`professional`, `editorial`, `technical`, `academic`, `business`, `report`) |
 | `output-dir` | no | `dist/docx` | Output directory |
 
 ## Local testing

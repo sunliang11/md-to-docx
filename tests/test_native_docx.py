@@ -26,7 +26,7 @@ def native_sample(tmp_path: Path) -> Path:
     dst = tmp_path / "sample.md"
     shutil.copy(src, dst)
     out = tmp_path / "sample.docx"
-    convert_file(dst, out, engine="native")
+    convert_file(dst, out)
     return out
 
 

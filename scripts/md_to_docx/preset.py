@@ -11,7 +11,6 @@ from md_to_docx.paths import preset_template
 class Preset:
     name: str
     template: str | None
-    engine: str
     toc: bool
     numbering: bool
     figure_label: str = "Figure"
@@ -21,24 +20,24 @@ class Preset:
 
 PRESETS: dict[str, Preset] = {
     "professional": Preset(
-        "professional", "professional", "native", toc=True, numbering=False
+        "professional", "professional", toc=True, numbering=False
     ),
     "editorial": Preset(
-        "editorial", "editorial", "native", toc=True, numbering=False,
+        "editorial", "editorial", toc=True, numbering=False,
         toc_title="Table of Contents",
     ),
     "technical": Preset(
-        "technical", "technical", "native", toc=True, numbering=True
+        "technical", "technical", toc=True, numbering=True
     ),
     "academic": Preset(
-        "academic", "academic", "native", toc=True, numbering=True,
+        "academic", "academic", toc=True, numbering=True,
         figure_label="Figure", toc_title="Contents",
     ),
     "business": Preset(
-        "business", "business", "native", toc=False, numbering=False
+        "business", "business", toc=False, numbering=False
     ),
     "report": Preset(
-        "report", "report", "native", toc=True, numbering=False
+        "report", "report", toc=True, numbering=False
     ),
 }
 

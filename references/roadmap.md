@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current release: v1.1** — Roundtrip, diff, GitHub Action, Plugin API, editor extensions.
+**Current release: v1.1.0** — Native-only Document AST compiler; roundtrip, diff, GitHub Action, Plugin API, MCP, Web, editor extensions.
 
 | Phase | Focus | Status |
 |-------|-------|--------|
@@ -11,6 +11,6 @@
 | P3B | Plugin API + VS Code / Obsidian | Done |
 | P4 | Ecosystem, Document Standard, templates | Gate A done |
 
-See [`aim/00-INDEX.md`](../aim/00-INDEX.md) for the full plan index.
+Planning docs under [`aim/`](../aim/README.md) are **historical** (pre–native-only). Do not treat them as the active execution plan.
 
-Use `./bin/convert`, `md-to-docx reverse`, or the [Web Playground](web/README.md).
+Use `./bin/convert`, `md-to-docx reverse`, or the [Web Playground](../web/README.md).

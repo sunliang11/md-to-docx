@@ -2,8 +2,8 @@
 
 ## 二级标题 Level 2
 
-This document tests various Markdown features for WeCom conversion.
-本文档测试各种 Markdown 功能的企微转换效果。
+This document tests various Markdown features for native DOCX conversion.
+本文档测试各种 Markdown 功能的原生 DOCX 转换效果。
 
 ### Level 3 标题
 

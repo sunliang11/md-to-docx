@@ -8,25 +8,18 @@ from __future__ import annotations
 
 import fnmatch
 import hashlib
-import os
 import re
 import sys
 from pathlib import Path
 
 from md_to_docx.normalizer import normalize_markdown_content
 
-MERMAID_BLOCK_RE = re.compile(
-    r"```mermaid\s*\n(.*?)```",
-    re.DOTALL | re.IGNORECASE,
-)
 FENCED_CODE_RE = re.compile(r"^```", re.MULTILINE)
 HEADING_RE = re.compile(r"^#{1,6}\s", re.MULTILINE)
 TABLE_ROW_RE = re.compile(r"^\|.+\|\s*$", re.MULTILINE)
 TABLE_SEP_RE = re.compile(r"^\|[\s\-:|]+\|\s*$", re.MULTILINE)
 HR_RE = re.compile(r"^(\*{3,}|-{3,}|_{3,})\s*$", re.MULTILINE)
 IMAGE_RE = re.compile(r"^!\[.*\]\(.*\)\s*$", re.MULTILINE)
-
-DEFAULT_MERMAID_SCALE = 4.0
 
 DEFAULT_EXCLUDE_PATTERNS: tuple[str, ...] = (
     "README.md",
@@ -103,50 +96,6 @@ def file_sha256(path: Path) -> str:
         for chunk in iter(lambda: f.read(65536), b""):
             h.update(chunk)
     return h.hexdigest()
-
-
-def resolve_mermaid_scale() -> float:
-    raw = os.environ.get("MD_TO_DOCX_MERMAID_SCALE")
-    if raw is None or raw.strip() == "":
-        return DEFAULT_MERMAID_SCALE
-    try:
-        scale = float(raw)
-    except ValueError:
-        print(
-            f"warning: invalid MD_TO_DOCX_MERMAID_SCALE={raw!r}; "
-            f"using default {DEFAULT_MERMAID_SCALE}",
-            file=sys.stderr,
-        )
-        return DEFAULT_MERMAID_SCALE
-    if scale <= 0:
-        print(
-            f"warning: MD_TO_DOCX_MERMAID_SCALE must be > 0 (got {scale}); "
-            f"using default {DEFAULT_MERMAID_SCALE}",
-            file=sys.stderr,
-        )
-        return DEFAULT_MERMAID_SCALE
-    return scale
-
-
-def resolve_mermaid_width() -> int | None:
-    raw = os.environ.get("MD_TO_DOCX_MERMAID_WIDTH")
-    if raw is None or raw.strip() == "":
-        return None
-    try:
-        width = int(raw)
-    except ValueError:
-        print(
-            f"warning: invalid MD_TO_DOCX_MERMAID_WIDTH={raw!r}; ignoring",
-            file=sys.stderr,
-        )
-        return None
-    if width <= 0:
-        print(
-            f"warning: MD_TO_DOCX_MERMAID_WIDTH must be > 0 (got {width}); ignoring",
-            file=sys.stderr,
-        )
-        return None
-    return width
 
 
 def _is_table_line(line: str) -> bool:
@@ -279,16 +228,10 @@ def normalize_md(text: str) -> str:
     return result
 
 
-def mermaid_images_dir(source_md: Path) -> Path:
-    """Subfolder beside source_md for rendered Mermaid PNGs."""
-    return source_md.parent / f"{source_md.stem}mermaid图片"
-
-
 def convert_file(
     md_path: Path,
     out_docx: Path,
     *,
-    engine: str = "native",
     normalize: bool = True,
     template_path: Path | None = None,
     toc: bool = False,
@@ -307,9 +250,6 @@ def convert_file(
     no_plugins: bool = False,
 ) -> None:
     """Convert a single markdown file with the native engine."""
-    if engine != "native":
-        die(f"unknown engine: {engine} (only native is supported)")
-
     from md_to_docx.engine.native import NativeOptions, convert_native
 
     convert_native(

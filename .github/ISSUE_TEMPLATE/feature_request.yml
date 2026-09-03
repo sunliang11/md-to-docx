@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Phase 0 does not accept Web apps, MCP servers, browser extensions, or marketplace features as immediate work items. Those belong on the roadmap — see `aim/` for planned phases.
+        Contributions welcome across CLI, native engine, API, MCP, Web, Action, editors, and extensions. See `CONTRIBUTING.md` and `references/roadmap.md`.
 
   - type: textarea
     id: problem

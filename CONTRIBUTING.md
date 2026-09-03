@@ -4,8 +4,6 @@ Thanks for helping improve md-to-docx.
 
 ## Project layout
 
-This repo is a **Cursor Agent Skill** first. Python packaging is optional.
-
 ```
 md-to-docx/
 ├── SKILL.md              # Agent entry point
@@ -13,15 +11,24 @@ md-to-docx/
 ├── scripts/md_to_docx/   # Python package
 ├── assets/               # Bundled templates, branding, demo
 ├── examples/             # Curated conversion examples
+├── action/               # GitHub Action
+├── web/                  # FastAPI playground
+├── editors/              # VS Code / Obsidian
+├── browser-extension/    # Browser export extension
 ├── references/           # Detailed docs
 └── tests/
 ```
 
-## Scope (Phase 0)
+## Scope
 
-Please do not open PRs for a web app, MCP server, browser extension, or marketplace.
-The current milestone is: make Markdown → DOCX excellent and the GitHub page trustworthy.
-See `aim/` for the roadmap.
+Contributions are welcome across the shipped product surface:
+
+- CLI / native Document AST engine / presets
+- Python API, MCP server, Web Playground
+- GitHub Action, editor integrations, browser extension
+- Docs, examples, community templates under `templates/`
+
+Historical planning notes live under `aim/` (archived — not the active roadmap). See [references/roadmap.md](references/roadmap.md).
 
 ## Setup
 
@@ -37,7 +44,7 @@ pytest tests/ -v   # may need: pip install -e ".[dev]"
 **Editable install:**
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,mcp,web]"
 python -m md_to_docx --help
 ```
 
@@ -54,7 +61,9 @@ python -m md_to_docx --help
 pytest tests/ -v
 ```
 
-DOCX XML assertions need `lxml` (included in `[dev]`).
+`lxml` is a runtime dependency (used for DOCX XML assertions).
+
+Mermaid diagrams need `mmdc` on PATH. CI does **not** install Mermaid CLI; diagram rendering is optional unless you pass `--strict-mermaid`.
 
 ## Rebuild templates
 

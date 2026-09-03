@@ -123,7 +123,7 @@ md-to-docx report.md --check                                         # 仅校验
 
 **完整参数说明 → [references/cli.zh.md](references/cli.zh.md)**（全部子命令、参数、安装方式与排错）。
 
-子命令：`convert`（默认）、`reverse`、`diff`、`build`。旧写法 `md-to-docx file.md` 仍然有效。
+子命令：`convert`（默认）、`reverse`、`diff`、`build`、`mcp`。旧写法 `md-to-docx file.md` 仍然有效。
 
 **批量与目录**
 
@@ -141,7 +141,7 @@ md-to-docx ./docs --dry-run
 | **版本对比** | 按文档结构对比两版差异（支持 .md 和 .docx） | `md-to-docx diff v1.md v2.md --format md` |
 | **文档校验** | 只检查 Markdown，不生成 docx | `md-to-docx report.md --check` |
 | **自定义插件** | 用小型 Python 插件改写转换逻辑 | `md-to-docx report.md --plugin my_plugin.py` |
-| **CI 自动化** | GitHub Actions 构建 DOCX，仓库里只留 .md | `uses: sunliang11/md-to-docx/action@v3` |
+| **CI 自动化** | GitHub Actions 构建 DOCX，仓库里只留 .md | `uses: sunliang11/md-to-docx/action@v1.1.0` |
 | **编辑器导出** | VS Code / Obsidian 右键一键导出 Word | [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) |
 | **AI 接入** | Cursor / MCP / 浏览器 — 全本地，无需 API Key | [SKILL.md](SKILL.md) · [MCP](references/mcp.md) |
 
@@ -191,7 +191,7 @@ dist/docx/
 ```
 
 ```yaml
-- uses: sunliang11/md-to-docx/action@v3
+- uses: sunliang11/md-to-docx/action@v1.1.0
   with:
     input: docs/report.md
     preset: technical

@@ -12,7 +12,7 @@ from md_to_docx.converter import collect_md_files, convert_file
 from md_to_docx.diff.ast_diff import diff_documents, format_diff
 from md_to_docx.load import load_document
 from md_to_docx.paths import native_reference_doc
-from md_to_docx.preset import load_preset, preset_template_path
+from md_to_docx.preset import PRESETS, load_preset, preset_template_path
 from md_to_docx.reverse import reverse_docx
 from md_to_docx.validate import validate_file
 
@@ -59,7 +59,7 @@ def _add_convert_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--section-label", default="Section")
     parser.add_argument(
         "--preset",
-        choices=["professional", "technical", "academic", "business", "report"],
+        choices=sorted(PRESETS),
         default=None,
     )
     parser.add_argument("--check", action="store_true", help="Validate without converting")

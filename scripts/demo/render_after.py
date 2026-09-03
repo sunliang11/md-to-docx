@@ -69,7 +69,7 @@ def main() -> None:
     cols = ["Stage", "Input", "Output"]
     rows = [
         ["Normalize", "Raw .md", "Cleaned .md"],
-        ["Pandoc", "GFM Markdown", ".docx"],
+        ["Native AST", "Document AST", ".docx"],
         ["Verify", ".docx", "SHA256 check"],
     ]
     col_widths = [140, 160, 160]

@@ -72,7 +72,6 @@ def handle_convert_markdown(args: dict[str, Any]) -> dict[str, Any]:
         "ok": True,
         "output_path": str(result.output_path),
         "warnings": result.warnings,
-        "engine": result.engine,
     }
 
 
@@ -134,7 +133,6 @@ def handle_list_presets(_args: dict[str, Any] | None = None) -> dict[str, Any]:
         presets.append(
             {
                 "name": name,
-                "engine": preset.engine,
                 "toc": preset.toc,
                 "numbering": preset.numbering,
                 "description": PRESET_DESCRIPTIONS.get(name, ""),

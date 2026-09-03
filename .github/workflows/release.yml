@@ -19,14 +19,31 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Build template assets
+        run: |
+          pip install markdown-it-py mdit-py-plugins python-docx latex2mathml pillow
+          PYTHONPATH=scripts python -m md_to_docx.presets_build
+
       - name: Install dependencies
-        run: pip install -e ".[dev]" build
+        run: pip install -e ".[dev,mcp,web]" build
 
       - name: Run tests
         run: pytest tests/ -v
 
       - name: Build package
         run: python -m build
+
+      - name: Wheel packaging smoke
+        run: |
+          python -m venv /tmp/md2docx-wheel
+          /tmp/md2docx-wheel/bin/pip install dist/*.whl
+          /tmp/md2docx-wheel/bin/python -c "
+          from md_to_docx.preset import load_preset, preset_template_path, PRESETS
+          for name in PRESETS:
+              path = preset_template_path(load_preset(name))
+              assert path is not None and path.is_file(), name
+              print(name, path, path.stat().st_size)
+          "
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

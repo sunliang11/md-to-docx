@@ -14,7 +14,7 @@ def test_cjk_text_in_docx(tmp_path: Path):
     dst = tmp_path / "cjk.md"
     shutil.copy(src, dst)
     out = tmp_path / "cjk.docx"
-    convert_file(dst, out, engine="native")
+    convert_file(dst, out)
     with zipfile.ZipFile(out) as zf:
         xml = zf.read("word/document.xml").decode()
         styles = zf.read("word/styles.xml").decode()

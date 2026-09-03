@@ -10,13 +10,11 @@ from md_to_docx.preset import load_preset
 
 def test_load_preset():
     p = load_preset("technical")
-    assert p.engine == "native"
     assert p.toc is True
 
 
 def test_load_preset_editorial():
     p = load_preset("editorial")
-    assert p.engine == "native"
     assert p.toc is True
     assert p.numbering is False
 
@@ -41,7 +39,6 @@ def test_preset_conversion(tmp_path: Path):
     convert_file(
         dst,
         out,
-        engine=preset.engine,
         template_path=preset_template_path(preset),
         toc=preset.toc,
     )

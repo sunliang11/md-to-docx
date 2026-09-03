@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.1.0] - 2026-09-03
 
 ### Removed
 
@@ -11,71 +11,44 @@ All notable changes to this project will be documented in this file.
 - WeCom import guide (`references/wecom-import.md`)
 - Pandoc reverse fallback (`md-to-docx reverse --engine pandoc`)
 - Separate console script `md-to-docx-mcp` — use `md-to-docx mcp` instead
+- Vestigial `engine` parameters on convert/reverse APIs and preset objects
 
 ### Changed
 
-- **CLI consolidation** — removed pip entry points `md-to-docx-build-reference`, `md-to-docx-build-native-reference`, and `md-to-docx-build-presets`. Use `md-to-docx build presets|all` instead. Module entry points (`python -m md_to_docx.presets_build`, etc.) unchanged.
-- **Single CLI command** — PATH only installs `md-to-docx`; MCP starts via `md-to-docx mcp` (or `python -m md_to_docx.mcp`)
+- **Native-only compiler** — Markdown → Document AST → python-docx; no external document converter
+- **CLI consolidation** — PATH only installs `md-to-docx`; use `md-to-docx build presets|all` and `md-to-docx mcp`
+- Mermaid/captions transforms live in built-in plugins; `MD_TO_DOCX_MERMAID_WIDTH` is honored by `mmdc`
+- GitHub Action docs pin to `@main` until a matching release tag is published
+- `editorial` preset available on CLI and bundled in the wheel
 
-### Added (P4 Gate A)
+### Added (P3A / P3B / P4 Gate A / P2)
 
+- **DOCX reverse** — `md-to-docx reverse in.docx -o out.md`
+- **AST diff** — `md-to-docx diff a b [--format text|json|md]`
+- **GitHub Action** — `action/action.yml` composite action for CI DOCX builds
+- **Plugin API** — `--plugin PATH`, `--no-plugins`; built-in mermaid/math/captions
+- **VS Code / Obsidian** editor integrations under `editors/`
+- **Python API** (`md_to_docx.api.convert`), **MCP server**, **Web Playground**, **browser extension**
 - **Open Document Markdown spec** — `spec/document-markdown.md` (`odm-0.1`)
-- **Callouts** — `:::warning`, `:::info`, `:::note` containers with colored left border in DOCX
-- **Community templates** — `templates/` directory with four official examples and contribution guide
-- **Experimental HTML renderer** — `md_to_docx.render.html.render_html()` for AST preview (not CLI-exposed)
-- CI validates `templates/**/sample.md` conversion
+- **Callouts** — `:::warning`, `:::info`, `:::note` containers
+- **Community templates** — `templates/` with contribution guide
+- Experimental HTML renderer (`md_to_docx.render.html.render_html`)
 
 ## [1.0.0] - 2026-09-02
 
 ### Added
 
-- **Native Document AST engine** (default) — Parser → AST → python-docx renderer; no pandoc required
-- `--engine {native,pandoc}` with `MD_TO_DOCX_ENGINE` env override
+- **Native Document AST engine** (default) — Parser → AST → python-docx renderer
+- Dual-engine era flags (removed in 1.1.0): `--engine {native,pandoc}`, `--preset wecom`
 - `--template`, `--toc`, `--title`, `--author`, `--date`, `--numbering`, header/footer page numbers
-- Template presets: `--preset professional|technical|academic|business|report|wecom`
+- Template presets: `--preset professional|technical|academic|business|report`
 - `--check` document validation (`--check --format json`, `--strict`)
 - Mermaid rendering in native engine (PNG embed; SVG saved to `{stem}-media/`)
 - Math formulas via OMML (basic LaTeX via `latex2mathml`)
 - Figure/table captions, cross-references (`{#fig:id}`, `[@fig:id]`), footnotes
 - Built-in templates: `assets/reference-native.docx`, `assets/presets/*.docx`
-- CI `test-native` job (no pandoc)
 
 ### Changed
 
-- Default engine is **native** (was pandoc-only in v0.1)
+- Default engine became **native** (earlier builds were pandoc-oriented)
 - Package name `md2docx-compiler` on PyPI; CLI command remains `md-to-docx`
-- WeCom import: use `--preset wecom` or `--engine pandoc` (unchanged Lua pipeline)
-
-## [1.1.0] - 2026-09-02
-
-### Added (P3A)
-
-- **DOCX reverse** — `md-to-docx reverse in.docx -o out.md` (native AST parser; `--engine pandoc` fallback)
-- **AST diff** — `md-to-docx diff a b [--format text|json|md]`
-- **GitHub Action** — `action/action.yml` composite action for CI DOCX builds
-- `references/roundtrip.md` — support matrix and limitations
-- `lxml` promoted to runtime dependency
-
-### Added (P3B)
-
-- **Plugin API** — `--plugin PATH`, `--no-plugins`; built-in mermaid/math/captions plugins
-- **VS Code extension** — `editors/vscode/` (`MD: Export to DOCX`)
-- **Obsidian plugin** — `editors/obsidian/` (desktop CLI spawn)
-- `examples/plugins/uppercase_headings.py` — third-party plugin sample
-- `references/plugins.md`
-
-### Changed
-
-- Mermaid/captions transforms migrated to plugin hooks (behavior compatible with P1C)
-
-## [Unreleased — P2 archive]
-
-### Added (P2)
-
-- **Python API** (`md_to_docx.api.convert`) for Skill, MCP, and Web
-- **MCP server** (`md-to-docx-mcp`) — `convert_markdown`, `apply_template`, `validate_document`, `list_presets`
-- **Skill matrix** — Claude Code, Codex, Gemini CLI wrappers under `skills/`
-- **Web Playground** — FastAPI + Docker (`web/`)
-- **Browser extension** — Export AI chat to Word (`browser-extension/`)
-
-### Added (P0)

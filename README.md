@@ -123,7 +123,7 @@ md-to-docx report.md --check                                         # validate 
 
 **Full option reference → [references/cli.md](references/cli.md)** (all subcommands, flags, install methods, and troubleshooting).
 
-Subcommands: `convert` (default), `reverse`, `diff`, `build`. Legacy `md-to-docx file.md` still works.
+Subcommands: `convert` (default), `reverse`, `diff`, `build`, `mcp`. Legacy `md-to-docx file.md` still works.
 
 **Batch & directories**
 
@@ -141,7 +141,7 @@ md-to-docx ./docs --dry-run
 | **Diff** | Compare two versions by document structure (.md or .docx) | `md-to-docx diff v1.md v2.md --format md` |
 | **Validate** | Lint Markdown before shipping — no DOCX output | `md-to-docx report.md --check` |
 | **Extend** | Hook custom transforms with a small Python plugin | `md-to-docx report.md --plugin my_plugin.py` |
-| **Automate (CI)** | Build DOCX in GitHub Actions; keep `.md` in Git | `uses: sunliang11/md-to-docx/action@v3` |
+| **Automate (CI)** | Build DOCX in GitHub Actions; keep `.md` in Git | `uses: sunliang11/md-to-docx/action@v1.1.0` |
 | **Editor export** | Right-click in VS Code or Obsidian → export Word | [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) |
 | **AI agents** | Cursor / MCP / browser — local, no API keys | [SKILL.md](SKILL.md) · [MCP](references/mcp.md) |
 
@@ -191,7 +191,7 @@ dist/docx/
 ```
 
 ```yaml
-- uses: sunliang11/md-to-docx/action@v3
+- uses: sunliang11/md-to-docx/action@v1.1.0
   with:
     input: docs/report.md
     preset: technical

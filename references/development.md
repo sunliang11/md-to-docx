@@ -7,7 +7,7 @@ Requires **Python 3.10+**.
 ```bash
 git clone https://github.com/sunliang11/md-to-docx.git
 cd md-to-docx
-pip install -e ".[dev]"
+pip install -e ".[dev,mcp,web]"
 ```
 
 ## Run tests
@@ -16,13 +16,28 @@ pip install -e ".[dev]"
 pytest tests/ -v
 ```
 
-Test suite includes:
-- `test_normalize.py` — Markdown normalization functions
-- `test_unit.py` — Unit tests for mermaid regex, file collection, env parsing
-- `test_cli.py` — CLI flags (--version, --help, sample conversion)
-- `test_native_docx.py` — Native DOCX output assertions
+`lxml` is a runtime dependency. Mermaid rendering needs `mmdc` on PATH; CI does not install it (diagrams are optional unless `--strict-mermaid`).
 
-Requirements: `pytest`, `python-docx`, and `lxml` must be available.
+## Python API
+
+```python
+from pathlib import Path
+from md_to_docx.api import convert, validate_markdown
+
+result = convert(
+    source=Path("report.md"),
+    output=Path("report.docx"),
+    preset="technical",
+)
+print(result.output_path, result.warnings)
+
+# Or from text:
+result = convert(markdown_text="# Hello\n\nWorld.", preset="professional")
+
+issues = validate_markdown("# Title\n\n")
+```
+
+`convert()` accepts a file path or `markdown_text=`, optional `preset` / `template`, TOC and metadata flags. See `scripts/md_to_docx/api.py`.
 
 ## Rebuild templates
 
@@ -55,7 +70,7 @@ md-to-docx/
 
 Content normalization fixes tables (separator row, column count), list spacing, heading levels, unclosed code blocks, inline formatting, and similar issues before parsing.
 
-Optional Mermaid blocks are rendered to PNG via `mmdc` when available (native media under `{stem}-media/`).
+Optional Mermaid blocks are rendered to PNG via `mmdc` when available (native media under `{stem}-media/`). Scale/width: `MD_TO_DOCX_MERMAID_SCALE`, `MD_TO_DOCX_MERMAID_WIDTH`.
 
 ## Contributing
 

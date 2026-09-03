@@ -11,6 +11,8 @@ description: Convert AI Markdown to professional Word DOCX.
 
 Clone: `git clone https://github.com/sunliang11/md-to-docx.git`
 
-Presets: `technical`, `academic`, `professional`, `business`, `report`.
+Presets: `technical`, `editorial`, `academic`, `professional`, `business`, `report`.
+
+Callouts: `:::warning`, `:::info`, `:::note`. Mermaid needs optional `mmdc`.
 
 MCP server: `pip install -e .[mcp]` → `md-to-docx mcp`. Docs: `references/mcp.md`.

@@ -24,9 +24,9 @@ The system follows a linear pipeline with optional diagram rendering:
 | Stage | Input | Output | Notes |
 |-------|-------|--------|-------|
 | Normalize | Raw `.md` | Cleaned `.md` | Fix tables, headings, blank lines |
-| Mermaid (optional) | ` ```mermaid ` blocks | PNG images | Requires `mmdc` when fences present |
-| Pandoc | GFM Markdown | `.docx` | Reference template + Lua filter |
-| Post-check | `.docx` | Verified output | Source `.md` unchanged (SHA256) |
+| Parse | Cleaned `.md` | Document AST | markdown-it-py + plugins |
+| Transform | Document AST | Enriched AST | TOC, numbering, Mermaid/math/captions |
+| Render | Document AST | `.docx` | python-docx + reference template |
 
 ### Component Responsibilities
 
@@ -50,7 +50,7 @@ class MarkdownNormalizer:
         return text
 ```
 
-### Pandoc Invocation
+### Native Invocation
 
 ```bash
 ./bin/convert input.md --preset technical --toc --numbering

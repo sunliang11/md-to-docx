@@ -61,7 +61,7 @@ def test_callout_docx_has_left_border(tmp_path: Path):
     dst = tmp_path / "callout.md"
     dst.write_text(src.read_text())
     out = tmp_path / "callout.docx"
-    convert_file(dst, out, engine="native")
+    convert_file(dst, out)
     assert out.is_file()
 
     with zipfile.ZipFile(out) as zf:

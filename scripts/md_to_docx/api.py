@@ -28,7 +28,6 @@ from md_to_docx.validate import Issue, validate_document, validate_file
 class ConvertResult:
   output_path: Path
   warnings: list[str]
-  engine: str = "native"
 
 
 @dataclass
@@ -227,5 +226,4 @@ def convert(
   return ConvertResult(
     output_path=output,
     warnings=warnings,
-    engine="native",
   )

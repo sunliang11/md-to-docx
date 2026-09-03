@@ -70,7 +70,7 @@ dist/docx/
 Build in CI with the [GitHub Action](../action/README.md):
 
 ```yaml
-- uses: sunliang11/md-to-docx/action@v3
+- uses: sunliang11/md-to-docx/action@v1.1.0
   with:
     input: docs/report.md
     preset: technical
