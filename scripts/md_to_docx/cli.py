@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -17,7 +16,7 @@ from md_to_docx.preset import load_preset, preset_template_path
 from md_to_docx.reverse import reverse_docx
 from md_to_docx.validate import validate_file
 
-SUBCOMMANDS = frozenset({"convert", "reverse", "diff", "build"})
+SUBCOMMANDS = frozenset({"convert", "reverse", "diff", "build", "mcp"})
 
 
 def resolve_output_docx(
@@ -36,19 +35,12 @@ def resolve_output_docx(
     return output_dir / f"{md_path.stem}.docx"
 
 
-def resolve_engine(args: argparse.Namespace) -> str:
-    if getattr(args, "engine", None):
-        return args.engine
-    return os.environ.get("MD_TO_DOCX_ENGINE", "native")
-
-
 def _add_convert_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("path", type=Path, nargs="?", help="Markdown file or directory")
     parser.add_argument("--exclude", action="append", default=[], metavar="PATTERN")
     parser.add_argument("--output-dir", type=Path, default=None, metavar="DIR")
     parser.add_argument("--skip-existing", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--engine", choices=["native", "pandoc"], default=None)
     parser.add_argument("--normalize", dest="normalize", action="store_true", default=True)
     parser.add_argument("--no-normalize", dest="normalize", action="store_false")
     parser.add_argument("--template", type=Path, default=None, metavar="PATH")
@@ -67,7 +59,7 @@ def _add_convert_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--section-label", default="Section")
     parser.add_argument(
         "--preset",
-        choices=["professional", "technical", "academic", "business", "report", "wecom"],
+        choices=["professional", "technical", "academic", "business", "report"],
         default=None,
     )
     parser.add_argument("--check", action="store_true", help="Validate without converting")
@@ -101,12 +93,6 @@ def build_reverse_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("input", type=Path, help="Input .docx file")
     parser.add_argument("-o", "--output", type=Path, required=True, metavar="PATH")
-    parser.add_argument(
-        "--engine",
-        choices=["native", "pandoc"],
-        default="native",
-        help="Reverse engine (default: native AST)",
-    )
     return parser
 
 
@@ -131,8 +117,8 @@ def build_build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument(
         "target",
-        choices=["presets", "reference", "all"],
-        help="presets: preset + native templates; reference: WeCom/pandoc template; all: both",
+        choices=["presets", "all"],
+        help="presets / all: rebuild preset + native reference templates",
     )
     return parser
 
@@ -145,26 +131,19 @@ def _apply_preset(args: argparse.Namespace) -> None:
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         raise SystemExit(2) from exc
-    if preset.engine == "pandoc":
-        args.engine = "pandoc"
-        if args.template:
-            print("warning: --template ignored for wecom/pandoc preset", file=sys.stderr)
-    else:
-        if args.engine is None:
-            args.engine = preset.engine
-        if args.toc is None:
-            args.toc = preset.toc
-        if not args.numbering:
-            args.numbering = preset.numbering
-        if args.template is None and preset.template:
-            try:
-                args.template = preset_template_path(preset)
-            except FileNotFoundError as exc:
-                print(f"error: {exc}", file=sys.stderr)
-                raise SystemExit(2) from exc
-        args.figure_label = preset.figure_label
-        args.table_label = preset.table_label
-        args.toc_title = preset.toc_title
+    if args.toc is None:
+        args.toc = preset.toc
+    if not args.numbering:
+        args.numbering = preset.numbering
+    if args.template is None and preset.template:
+        try:
+            args.template = preset_template_path(preset)
+        except FileNotFoundError as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            raise SystemExit(2) from exc
+    args.figure_label = preset.figure_label
+    args.table_label = preset.table_label
+    args.toc_title = preset.toc_title
 
 
 def _run_check(args: argparse.Namespace) -> int:
@@ -199,10 +178,9 @@ def _run_convert(args: argparse.Namespace) -> int:
         build_convert_parser().error("the following arguments are required: path")
 
     _apply_preset(args)
-    engine = resolve_engine(args)
     if args.toc is None:
         args.toc = False
-    if args.template is None and engine == "native":
+    if args.template is None:
         args.template = native_reference_doc()
 
     plugin_paths = tuple(args.plugin)
@@ -234,7 +212,7 @@ def _run_convert(args: argparse.Namespace) -> int:
 
     if args.dry_run:
         for md, out_docx in planned:
-            print(f"would convert: {md} -> {out_docx} [{engine}]")
+            print(f"would convert: {md} -> {out_docx}")
         print(f"dry-run: {len(planned)} file(s)")
         return 0
 
@@ -248,7 +226,6 @@ def _run_convert(args: argparse.Namespace) -> int:
             convert_file(
                 md,
                 out_docx,
-                engine=engine,
                 normalize=args.normalize,
                 template_path=args.template,
                 toc=args.toc,
@@ -282,7 +259,7 @@ def _run_reverse(args: argparse.Namespace) -> int:
         print(f"error: file not found: {docx_path}", file=sys.stderr)
         return 2
     try:
-        reverse_docx(docx_path, out_path, engine=args.engine)
+        reverse_docx(docx_path, out_path)
         print(f"ok: {docx_path} -> {out_path}")
         return 0
     except Exception as exc:  # noqa: BLE001
@@ -309,11 +286,9 @@ def _run_diff(args: argparse.Namespace) -> int:
 
 
 def _run_build(args: argparse.Namespace) -> int:
-    from md_to_docx import presets_build, reference
+    from md_to_docx import presets_build
 
     try:
-        if args.target in ("reference", "all"):
-            reference.build_reference_doc()
         if args.target in ("presets", "all"):
             presets_build.main()
     except Exception as exc:  # noqa: BLE001
@@ -336,5 +311,9 @@ def main(argv: list[str] | None = None) -> int:
             return _run_diff(build_diff_parser().parse_args(rest))
         if command == "build":
             return _run_build(build_build_parser().parse_args(rest))
+        if command == "mcp":
+            from md_to_docx.mcp.server import main as mcp_main
+
+            return mcp_main(rest)
 
     return _run_convert(build_convert_parser().parse_args(args_list))

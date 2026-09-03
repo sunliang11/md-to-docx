@@ -63,7 +63,7 @@ author: md-to-docx
 def compile_document(source_path: str) -> str:
   """将 Markdown 编译为 DOCX，不修改源文件。"""
   normalized = normalizer.process(read(source_path))
-  output = pandoc.convert(normalized, template="reference-wecom.docx")
+  output = convert(normalized, preset="technical")
   return output
 ```
 

@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [{ name = "md-to-docx contributors" }]
-keywords = ["markdown", "docx", "word", "pandoc", "ai", "document-compiler", "mermaid", "wecom"]
+keywords = ["markdown", "docx", "word", "ai", "document-compiler", "mermaid"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -42,7 +42,6 @@ web = ["fastapi>=0.100", "uvicorn[standard]>=0.23", "httpx>=0.24"]
 
 [project.scripts]
 md-to-docx = "md_to_docx.cli:main"
-md-to-docx-mcp = "md_to_docx.mcp.server:main"
 
 [tool.hatch.build]
 dev-mode-dirs = ["scripts"]
@@ -51,8 +50,6 @@ dev-mode-dirs = ["scripts"]
 packages = ["scripts/md_to_docx"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"assets/wecom-layout.lua" = "md_to_docx/data/wecom-layout.lua"
-"assets/reference-wecom.docx" = "md_to_docx/data/reference-wecom.docx"
 "assets/reference-native.docx" = "md_to_docx/data/reference-native.docx"
 "assets/presets/professional.docx" = "md_to_docx/data/presets/professional.docx"
 "assets/presets/technical.docx" = "md_to_docx/data/presets/technical.docx"

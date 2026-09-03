@@ -46,14 +46,6 @@ body:
       required: true
 
   - type: input
-    id: pandoc
-    attributes:
-      label: pandoc --version (first line)
-      placeholder: "pandoc 3.1.9"
-    validations:
-      required: true
-
-  - type: input
     id: os
     attributes:
       label: Operating system

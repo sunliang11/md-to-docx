@@ -7,9 +7,9 @@ author: md-to-docx
 
 **Abstract**
 
-This paper presents a lightweight approach to converting Markdown technical documents into professionally formatted Word files. We evaluate a pandoc-based pipeline with custom normalization and reference templates. Results show that automated compilation reduces manual formatting time by 85% while preserving document structure.
+This paper presents a lightweight approach to converting Markdown technical documents into professionally formatted Word files. We evaluate a Document AST pipeline with custom normalization and reference templates. Results show that automated compilation reduces manual formatting time by 85% while preserving document structure.
 
-**Keywords:** document compilation, Markdown, DOCX, pandoc, technical writing
+**Keywords:** document compilation, Markdown, DOCX, technical writing
 
 ## 1. Introduction
 
@@ -71,7 +71,7 @@ Limitations include:
 
 ## 6. Conclusion
 
-A compiler-style Markdown-to-DOCX pipeline is practical for technical teams. Future work will introduce a Document AST to reduce pandoc coupling and enable template presets.
+A compiler-style Markdown-to-DOCX pipeline is practical for technical teams. Future work will expand template presets and plugin hooks.
 
 ## References
 

@@ -27,7 +27,7 @@ uvicorn web.app:app --reload --port 8080
 ## Features
 
 - Left: Markdown editor. Right: HTML preview (approximation, not Word layout).
-- Preset selector (native presets only; `wecom` requires pandoc and is not in the dropdown).
+- Preset selector for built-in templates.
 - **Generate DOCX** downloads `document.docx`.
 - **Copy CLI command** for the equivalent `bin/convert` invocation.
 - Example documents from `examples/`.

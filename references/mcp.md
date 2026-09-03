@@ -2,6 +2,12 @@
 
 Local MCP server for Markdown → DOCX. No API keys.
 
+Start with the main CLI:
+
+```bash
+md-to-docx mcp
+```
+
 ## Install
 
 ```bash
@@ -18,13 +24,14 @@ Add to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "md-to-docx": {
-      "command": "md-to-docx-mcp"
+      "command": "md-to-docx",
+      "args": ["mcp"]
     }
   }
 }
 ```
 
-Or with full path:
+Or with full path / module entry:
 
 ```json
 {
@@ -63,6 +70,7 @@ Failures return JSON with `problem`, `cause`, `fix`, and `docs` URL.
 ## Verify
 
 ```bash
-md-to-docx-mcp --help
-python -m md_to_docx.mcp --version
+md-to-docx mcp --help
+md-to-docx mcp --version
+# or: python -m md_to_docx.mcp --version
 ```

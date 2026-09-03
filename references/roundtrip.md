@@ -8,9 +8,6 @@ md-to-docx v1.1+ supports **reverse** conversion: DOCX → Document AST → Mark
 # DOCX → Markdown (native AST parser)
 md-to-docx reverse report.docx -o report.md
 
-# Pandoc fallback (lower quality, external dependency)
-md-to-docx reverse report.docx -o report.md --engine pandoc
-
 # Diff two documents (.md or .docx)
 md-to-docx diff v1.md v2.md
 md-to-docx diff old.docx new.docx --format json

@@ -1,22 +1,20 @@
 # Presets
 
-Presets bundle a template, engine, and default flags. Explicit CLI flags override preset defaults.
+Presets bundle a template and default flags. Explicit CLI flags override preset defaults.
 
-| Preset | Engine | TOC | Numbering | Use case |
-|--------|--------|-----|-----------|----------|
-| `professional` | native | yes | no | General documents |
-| `editorial` | native | yes | no | Editorial (Georgia/KaiTi, wide margins) |
-| `technical` | native | yes | yes | Technical reports, API docs |
-| `academic` | native | yes | yes | Papers (Times/SimSun) |
-| `business` | native | no | no | Business summaries |
-| `report` | native | yes | no | Meeting notes, reports |
-| `wecom` | pandoc | no | no | 企业微信智能文档导入 |
+| Preset | TOC | Numbering | Use case |
+|--------|-----|-----------|----------|
+| `professional` | yes | no | General documents |
+| `editorial` | yes | no | Editorial (Georgia/KaiTi, wide margins) |
+| `technical` | yes | yes | Technical reports, API docs |
+| `academic` | yes | yes | Papers (Times/SimSun) |
+| `business` | no | no | Business summaries |
+| `report` | yes | no | Meeting notes, reports |
 
 ## Examples
 
 ```bash
 ./bin/convert report.md --preset technical
-./bin/convert report.md --preset wecom
 ./bin/convert report.md --preset professional --no-toc
 ```
 

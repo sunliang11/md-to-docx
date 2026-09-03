@@ -68,5 +68,5 @@ The converter checks these locations (in order) when `MD_TO_DOCX_BROWSER` is uns
 
 Conversion uses files in `assets/` (or the packaged copies under `md_to_docx/data/`):
 
-- `reference-wecom.docx` — Word styles for WeCom-like output
-- `wecom-layout.lua` — Pandoc Lua filter (code blocks, wide tables, image width)
+- `reference-native.docx` — default Word styles for native conversion
+- `presets/*.docx` — preset templates (professional, technical, academic, …)

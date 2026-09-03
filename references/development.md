@@ -20,22 +20,13 @@ Test suite includes:
 - `test_normalize.py` — Markdown normalization functions
 - `test_unit.py` — Unit tests for mermaid regex, file collection, env parsing
 - `test_cli.py` — CLI flags (--version, --help, sample conversion)
-- `test_docx_output.py` — XML assertions on generated .docx (code styles, table borders, fonts, H5/H6)
+- `test_native_docx.py` — Native DOCX output assertions
 
-Requirements: `pytest`, `python-docx`, `lxml`, and `pandoc` must be available.
+Requirements: `pytest`, `python-docx`, and `lxml` must be available.
 
-## Rebuild the Word reference template
+## Rebuild templates
 
 When changing fonts, heading sizes, or table borders:
-
-```bash
-pip install python-docx   # if not already installed via [dev]
-md-to-docx build reference
-# or:
-python3 -m md_to_docx.reference
-```
-
-Rebuild preset and native templates:
 
 ```bash
 md-to-docx build presets
@@ -43,7 +34,7 @@ md-to-docx build presets
 python3 -m md_to_docx.presets_build
 ```
 
-Regenerates `assets/reference-wecom.docx`. A temporary `assets/reference-default.docx` may be created (gitignored). Requires `pandoc` on PATH.
+Regenerates `assets/presets/*.docx` and `assets/reference-native.docx`.
 
 ## Project layout
 
@@ -59,10 +50,12 @@ md-to-docx/
 ## Conversion pipeline
 
 ```
-.md → content normalize → layout spacing → mermaid → PNG (optional) → pandoc + reference-wecom.docx + wecom-layout.lua → .docx
+.md → content normalize → layout spacing → Document AST → native DOCX renderer → .docx
 ```
 
-Content normalization fixes tables (separator row, column count), list spacing, heading levels, unclosed code blocks, inline formatting, and similar issues before pandoc runs.
+Content normalization fixes tables (separator row, column count), list spacing, heading levels, unclosed code blocks, inline formatting, and similar issues before parsing.
+
+Optional Mermaid blocks are rendered to PNG via `mmdc` when available (native media under `{stem}-media/`).
 
 ## Contributing
 

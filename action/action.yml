@@ -12,10 +12,6 @@ inputs:
     description: Output directory for .docx files
     required: false
     default: dist/docx
-  engine:
-    description: Conversion engine (native or pandoc)
-    required: false
-    default: native
 runs:
   using: composite
   steps:
@@ -29,6 +25,5 @@ runs:
       run: |
         md-to-docx "${{ inputs.input }}" \
           --preset "${{ inputs.preset }}" \
-          --output-dir "${{ inputs.output-dir }}" \
-          --engine "${{ inputs.engine }}"
+          --output-dir "${{ inputs.output-dir }}"
       shell: bash

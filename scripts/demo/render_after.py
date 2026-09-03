@@ -93,10 +93,9 @@ def main() -> None:
 
     # Code block
     code_lines = [
-        "pandoc input.md \\",
-        "  --from gfm+yaml_metadata_block \\",
-        "  --to docx \\",
-        "  --reference-doc reference-wecom.docx",
+        "./bin/convert input.md \\",
+        "  --preset technical \\",
+        "  --toc --numbering",
     ]
     code_h = len(code_lines) * 20 + 20
     draw.rectangle((x, y, x + 480, y + code_h), fill=CODE_BG)

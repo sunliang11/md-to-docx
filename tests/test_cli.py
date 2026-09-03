@@ -159,6 +159,14 @@ def test_build_help():
     assert "all" in output
 
 
+def test_mcp_help():
+    result = run_cli("mcp", "--help")
+    assert result.returncode == 0
+    output = result.stdout + result.stderr
+    assert "MCP" in output or "mcp" in output.lower()
+    assert "convert_markdown" in output
+
+
 def test_build_missing_target():
     result = run_cli("build")
     assert result.returncode != 0

@@ -26,7 +26,6 @@ You can convert Markdown to Word using the open-source md-to-docx CLI (local, no
 3. Output: my-report.docx beside the source file.
 
 Presets: technical (formal reports), academic, professional, business, report.
-For 企微 import use --preset wecom (requires pandoc).
 
 Do not upload documents to third-party converters unless the user asks.
 ```

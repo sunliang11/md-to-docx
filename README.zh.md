@@ -165,7 +165,7 @@ md-to-docx ./docs --dry-run
 
 ## 文档格式支持
 
-- **Native AST 引擎** — 默认；多数场景无需 pandoc
+- **Native AST 引擎** — Document AST → 专业 DOCX
 - **结构** — 标题、列表、表格、代码、引用、图片、脚注、任务列表
 - **CJK** — 微软雅黑 / 宋体模板
 - **Mermaid** — 安装 `mmdc` 时输出 PNG；否则降级为代码块
@@ -174,7 +174,6 @@ md-to-docx ./docs --dry-run
 - **目录与页码** — Word 原生域、页眉页脚
 - **分页符** — Markdown 中 `<!-- pagebreak -->`
 - **Frontmatter** — YAML 元数据（title、author、date 等）
-- **企微导入** — `--preset wecom`（pandoc 管线）
 
 详见 [预设](references/presets.md)、[往返转换](references/roundtrip.md)、[插件](references/plugins.md)。
 
@@ -219,7 +218,6 @@ md-to-docx report.md --template templates/technical-design/template.docx
 ### 环境要求
 
 - **Python 3.10+**
-- **pandoc 3.x** — 仅 `--engine pandoc` / `--preset wecom` 需要
 - **mmdc** — 仅当需要 Mermaid 渲染为图片时（[installation.md](references/installation.md)）
 
 ### 从源码（开发）
@@ -236,7 +234,7 @@ md-to-docx report.md         # 或 ./bin/convert report.md（免 pip）
 
 **暂未发布 PyPI。** 计划包名：`md2docx-compiler` · 命令行：`md-to-docx`。请从源码安装，或使用 `pip install "git+https://github.com/sunliang11/md-to-docx.git"`。
 
-**Mermaid 说明：** 未安装 `mmdc` 时 native 引擎仍可生成 DOCX，图表显示为源码代码块；可用 `--strict-mermaid` 强制失败。完整说明见 [installation.md](references/installation.md)。
+**Mermaid 说明：** 未安装 `mmdc` 时图表显示为源码代码块；可用 `--strict-mermaid` 强制失败。完整说明见 [installation.md](references/installation.md)。
 
 ## 文档
 
@@ -256,7 +254,6 @@ md-to-docx report.md         # 或 ./bin/convert report.md（免 pip）
 - [示例库](examples/README.md)
 - [插件示例](examples/plugins/)
 - [环境变量](references/configuration.md)
-- [企微导入](references/wecom-import.md)
 - [开发与测试](references/development.md)
 - [发布流程](references/release.md)
 - [路线图](references/roadmap.md)

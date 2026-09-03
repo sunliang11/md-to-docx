@@ -41,11 +41,6 @@ TOOL_SCHEMAS = [
                 },
                 "template": {"type": "string", "description": "Custom template .docx path"},
                 "toc": {"type": "boolean", "description": "Include table of contents"},
-                "engine": {
-                    "type": "string",
-                    "enum": ["native", "pandoc"],
-                    "description": "Conversion engine",
-                },
             },
         },
     },

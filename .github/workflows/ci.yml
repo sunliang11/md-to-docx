@@ -7,33 +7,6 @@ on:
     branches: [main, master]
 
 jobs:
-  test-native:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Build template assets
-        run: |
-          pip install markdown-it-py mdit-py-plugins python-docx latex2mathml pillow
-          PYTHONPATH=scripts python -m md_to_docx.presets_build
-      - name: Install package (dev)
-        run: pip install -e ".[dev,mcp,web]"
-      - name: Native tests (no pandoc)
-        run: |
-          pytest tests/test_ast.py tests/test_parse_frontmatter.py tests/test_parse_markdown.py \
-            tests/test_native_docx.py tests/test_native_no_pandoc.py tests/test_parse_containers.py \
-            tests/test_toc.py tests/test_cjk.py tests/test_preset.py tests/test_validate.py \
-            tests/test_examples_smoke.py tests/test_api.py tests/test_mcp.py tests/test_web_api.py \
-            tests/test_parse_docx.py tests/test_write_markdown.py tests/test_diff.py \
-            tests/test_roundtrip.py tests/test_plugin_loader.py tests/test_callout.py \
-            tests/test_render_html.py -v
-
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -47,9 +20,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install pandoc
-        run: sudo apt-get update && sudo apt-get install -y pandoc
-
       - name: Build template assets
         run: |
           pip install markdown-it-py mdit-py-plugins python-docx latex2mathml pillow
@@ -62,7 +32,9 @@ jobs:
         run: pytest tests/ -v
 
       - name: Verify MCP entry
-        run: python -m md_to_docx.mcp --help
+        run: |
+          md-to-docx mcp --help
+          python -m md_to_docx.mcp --help
 
       - name: Verify bin/convert entry point
         run: ./bin/convert --help
@@ -73,10 +45,10 @@ jobs:
       - name: Verify --help flag
         run: python -m md_to_docx --help
 
-      - name: Sample conversion and XML assertions
+      - name: Sample conversion
         run: |
-          python -m md_to_docx tests/fixtures/sample.md --engine pandoc
-          python -m md_to_docx tests/fixtures/comprehensive.md --engine pandoc
+          python -m md_to_docx tests/fixtures/sample.md --preset technical
+          python -m md_to_docx tests/fixtures/comprehensive.md --preset professional
           
           # Verify output files exist and are not empty
           test -f tests/fixtures/sample.docx
@@ -84,9 +56,9 @@ jobs:
           test -s tests/fixtures/sample.docx
           test -s tests/fixtures/comprehensive.docx
           
-          echo "✓ Sample conversions succeeded and produced non-empty output"
+          echo "Sample conversions succeeded and produced non-empty output"
 
-      - name: Convert examples (native)
+      - name: Convert examples
         run: |
           bash scripts/demo/build_examples.sh
           for f in examples/*/example.docx; do test -s "$f"; done

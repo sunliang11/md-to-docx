@@ -20,7 +20,7 @@ def test_list_presets():
     names = {p["name"] for p in result["presets"]}
     assert "technical" in names
     assert "editorial" in names
-    assert "wecom" in names
+    assert "wecom" not in names
 
 
 def test_convert_markdown_text(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):

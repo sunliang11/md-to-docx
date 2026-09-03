@@ -29,7 +29,7 @@ date: 2026-09-02
 1. **P0 productization** is the top priority for this sprint
 2. Examples gallery ships before GitHub templates
 3. No new engine work until Document AST design is approved
-4. WeCom import docs remain but are not the primary positioning
+4. Keep Markdown as the source of truth in Git
 
 ## Action Items
 
@@ -55,7 +55,7 @@ date: 2026-09-02
 
 ### Examples Gallery
 
-Bob proposed 7 curated examples covering technical, business, academic, API, meeting, AI, and Chinese content. Each example should convert with pandoc only (no mmdc dependency for CI).
+Bob proposed 7 curated examples covering technical, business, academic, API, meeting, AI, and Chinese content. Each example should convert with the native engine only (no mmdc dependency for CI).
 
 ### Branding
 

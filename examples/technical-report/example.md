@@ -32,14 +32,14 @@ The system follows a linear pipeline with optional diagram rendering:
 
 1. **CLI layer** — discovers files, handles batch conversion, `--dry-run`, `--output-dir`
 2. **Normalizer** — CJK-aware heading numbers, list spacing, code fence fixes
-3. **Converter** — orchestrates pandoc subprocess with bundled assets
+3. **Converter** — parses Markdown to Document AST and renders DOCX
 4. **Reference template** — YaHei body, Consolas code, compact table style
 
 ## Implementation Details
 
 ### Normalization Rules
 
-The normalizer applies deterministic transforms before pandoc sees the file:
+The normalizer applies deterministic transforms before parsing:
 
 ```python
 class MarkdownNormalizer:
@@ -53,19 +53,14 @@ class MarkdownNormalizer:
 ### Pandoc Invocation
 
 ```bash
-pandoc input.md \
-  --from gfm+yaml_metadata_block \
-  --to docx \
-  --reference-doc reference-wecom.docx \
-  --lua-filter wecom-layout.lua \
-  --dpi 150
+./bin/convert input.md --preset technical --toc --numbering
 ```
 
 ## Performance Characteristics
 
 | Metric | Value | Environment |
 |--------|-------|-------------|
-| Single file (< 50 KB) | < 2 s | macOS, pandoc 3.x |
+| Single file (< 50 KB) | < 2 s | macOS, Python 3.10+ |
 | Batch 100 files | < 3 min | SSD, no Mermaid |
 | Mermaid per diagram | 3–8 s | Depends on `mmdc` + browser |
 
@@ -74,7 +69,7 @@ pandoc input.md \
 - Source files are never modified in place
 - Temporary files use a predictable prefix and are cleaned up
 - No network calls during conversion (offline-first)
-- Subprocess isolation for pandoc and mmdc
+- Optional Mermaid rendering via mmdc
 
 ## Internationalization
 
@@ -86,7 +81,7 @@ The reference template sets `zh-CN` theme language and uses Microsoft YaHei for 
 
 ## Future Work
 
-- Native Document AST (v0.2) — reduce pandoc coupling
+- Additional template presets and plugin hooks
 - Template presets — academic, business, API reference
 - Table of contents generation
 - OMML math support
@@ -97,6 +92,6 @@ A focused document compiler turns AI-era Markdown workflows into deliverable Wor
 
 ## References
 
-1. Pandoc User's Guide — https://pandoc.org/MANUAL.html
+1. md-to-docx documentation — https://github.com/sunliang11/md-to-docx
 2. GitHub Flavored Markdown Spec
 3. Office Open XML (OOXML) standard

@@ -40,9 +40,6 @@ PRESETS: dict[str, Preset] = {
     "report": Preset(
         "report", "report", "native", toc=True, numbering=False
     ),
-    "wecom": Preset(
-        "wecom", None, "pandoc", toc=False, numbering=False
-    ),
 }
 
 

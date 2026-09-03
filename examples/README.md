@@ -1,7 +1,6 @@
 # Examples
 
-These examples are converted with the native engine and presets (v1.0).
-Pandoc fallback: `--engine pandoc`. See [aim/P1A-document-engine.md](../aim/P1A-document-engine.md).
+These examples are converted with the native engine and presets.
 
 ## Gallery
 
@@ -31,5 +30,5 @@ Each example directory contains:
 
 ## Requirements
 
-- **pandoc 3.x** — required for all examples
+- **Python 3.10+** — required for all examples
 - **mmdc** — not required for these examples (technical-report uses a static PNG)

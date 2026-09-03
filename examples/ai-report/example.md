@@ -53,7 +53,7 @@ User Markdown → Normalize → Pandoc → DOCX → Deliver
 
 ### Normalization Engine
 
-Before pandoc processes the file, a normalization pass applies:
+Before conversion, a normalization pass applies:
 
 - Table column alignment fixes
 - Heading level consistency
@@ -72,13 +72,13 @@ The Word output uses a custom reference document with:
 
 ### Mermaid Support
 
-Diagrams in ` ```mermaid ` fences are pre-rendered to PNG via `mmdc`. This is optional — files without Mermaid blocks require only pandoc.
+Diagrams in ` ```mermaid ` fences are pre-rendered to PNG via `mmdc` when available. This is optional — files without Mermaid blocks need only Python dependencies.
 
 ## Risks and Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Pandoc version differences | Medium | Medium | Pin pandoc 3.x in CI |
+| Template drift across versions | Medium | Medium | Rebuild presets in CI |
 | Large file performance | Low | Low | Streaming normalization |
 | Font availability on target | Medium | Low | Embed fonts in template |
 | AI-generated malformed tables | High | High | Robust normalizer + tests |
@@ -121,7 +121,7 @@ Diagrams in ` ```mermaid ` fences are pre-rendered to PNG via `mmdc`. This is op
 
 ## Recommendation
 
-Proceed with Phase 1 productization (README, examples, GitHub hygiene) before investing in the Document AST. The current pandoc pipeline is sufficient for 90% of use cases.
+Proceed with Phase 1 productization (README, examples, GitHub hygiene). The native Document AST pipeline covers the common report formats.
 
 ## Appendix: Sample Conversion
 

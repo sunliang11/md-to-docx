@@ -16,8 +16,6 @@ Copy-paste examples for common tasks.
 # Convert a single file (technical report style)
 md-to-docx report.md --preset technical
 
-# Convert for WeCom smart-doc import (uses pandoc engine)
-md-to-docx report.md --preset wecom
 
 # Batch-convert a folder; write DOCX under dist/docx (keeps subfolders)
 md-to-docx ./docs --output-dir ./dist/docx
@@ -56,7 +54,7 @@ There are several equivalent ways to invoke the same CLI. Pick one that fits you
 | **`bin/convert`** | Git clone or Cursor skill; **no pip** | `./bin/convert report.md` |
 | **`pip install -e .`** | Put `md-to-docx` on your PATH globally | `md-to-docx report.md` |
 | **`pip install -e ".[dev]"`** | Development + pytest | Same as above + test deps |
-| **`pip install -e ".[mcp]"`** | MCP clients (Cursor, Claude Desktop) | Also installs `md-to-docx-mcp` |
+| **`pip install -e ".[mcp]"`** | MCP clients (Cursor, Claude Desktop) | Same CLI; run `md-to-docx mcp` |
 | **`pip install "git+https://..."`** | Install without cloning locally | Remote editable install |
 | **`python -m md_to_docx`** | Same as `md-to-docx`; works if PATH script missing | `python3 -m md_to_docx report.md` |
 | **`PYTHONPATH=scripts python -m md_to_docx`** | Run from source tree (CI style) | No pip install needed |
@@ -69,7 +67,7 @@ cd md-to-docx
 pip install -e .              # base CLI: md-to-docx
 # optional extras:
 pip install -e ".[dev]"       # pytest, pillow
-pip install -e ".[mcp]"       # md-to-docx-mcp server
+pip install -e ".[mcp]"       # MCP deps; start with: md-to-docx mcp
 pip install -e ".[web]"       # Web Playground deps
 
 # verify
@@ -77,8 +75,8 @@ which md-to-docx              # should print a path in your venv or ~/.local/bin
 md-to-docx --version
 ```
 
-> **Not on PyPI yet.** Package name is `md2docx-compiler`; CLI command is `md-to-docx`.  
-> After `pip install -e .`, only two scripts are added to PATH: **`md-to-docx`** and **`md-to-docx-mcp`** (with `[mcp]` extra).
+> **Not on PyPI yet.** Package name is `md2docx-compiler`; the only CLI command is **`md-to-docx`**.  
+> After `pip install -e .`, PATH gains a single script: **`md-to-docx`**. MCP is the subcommand `md-to-docx mcp` (requires `[mcp]` extra).
 
 ### Optional shell alias
 
@@ -96,7 +94,6 @@ All subcommands and flags work the same: `md_to_docx report.md`, `md_to_docx rev
 | Component | Required when |
 |-----------|---------------|
 | Python 3.10+ | Always |
-| pandoc 3.x | `--engine pandoc` or `--preset wecom` |
 | mmdc (Mermaid CLI) | Mermaid diagrams rendered as images |
 | Chrome / Edge / Chromium | Mermaid rendering (used by mmdc) |
 
@@ -109,9 +106,9 @@ Details: [installation.md](installation.md).
 ```
 md-to-docx [--version] [convert options] PATH     # default subcommand = convert
 md-to-docx convert [options] PATH
-md-to-docx reverse INPUT -o OUTPUT [--engine native|pandoc]
+md-to-docx reverse INPUT -o OUTPUT
 md-to-docx diff A B [--format text|json|md]
-md-to-docx build presets|reference|all            # developer: rebuild templates
+md-to-docx build presets|all            # developer: rebuild templates
 ```
 
 | Subcommand | Purpose |
@@ -159,9 +156,8 @@ md-to-docx report.md --skip-existing
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--engine native\|pandoc` | `native` (or env `MD_TO_DOCX_ENGINE`) | Conversion engine |
-| `--preset NAME` | none | Bundle template + flags. Values: `professional`, `technical`, `academic`, `business`, `report`, `wecom` |
-| `--template PATH` | built-in reference | Custom `.docx` template (native engine). Ignored when `--preset wecom` |
+| `--preset NAME` | none | Bundle template + flags. Values: `professional`, `technical`, `academic`, `business`, `report` |
+| `--template PATH` | built-in reference | Custom `.docx` template |
 
 **Preset defaults** (explicit CLI flags override preset):
 
@@ -172,15 +168,13 @@ md-to-docx report.md --skip-existing
 | `academic` | native | yes | yes |
 | `business` | native | no | no |
 | `report` | native | yes | no |
-| `wecom` | pandoc | no | no |
 
 See [presets.md](presets.md) for font/style details.
 
 ```bash
 md-to-docx report.md --preset technical
-md-to-docx report.md --preset wecom
 md-to-docx report.md --template templates/my-template/template.docx
-md-to-docx report.md --engine pandoc --template custom.docx
+md-to-docx report.md --template custom.docx
 ```
 
 ### Document structure
@@ -279,12 +273,10 @@ md-to-docx reverse INPUT -o OUTPUT [options]
 |-------------------|---------|-------------|
 | `INPUT` | *(required)* | Source `.docx` file |
 | `-o`, `--output PATH` | *(required)* | Output `.md` path |
-| `--engine native\|pandoc` | `native` | Reverse parser. `pandoc` needs pandoc on PATH |
 | `--version` | — | Print version and exit |
 
 ```bash
 md-to-docx reverse report.docx -o report.md
-md-to-docx reverse report.docx -o report.md --engine pandoc
 ```
 
 Support matrix and limitations: [roundtrip.md](roundtrip.md).
@@ -320,17 +312,15 @@ Rebuild bundled Word templates under `assets/`. Used when changing styles in Pyt
 
 ```bash
 md-to-docx build presets      # assets/presets/*.docx + reference-native.docx
-md-to-docx build reference    # assets/reference-wecom.docx (needs pandoc)
-md-to-docx build all          # both of the above
+md-to-docx build all          # same as presets
 ```
 
-Requires `python-docx` (included in base dependencies). `build reference` also requires **pandoc** on PATH.
+Requires `python-docx` (included in base dependencies).
 
 Equivalent module invocations (CI/Docker still use these):
 
 ```bash
 python -m md_to_docx.presets_build
-python -m md_to_docx.reference
 ```
 
 ---
@@ -339,7 +329,6 @@ python -m md_to_docx.reference
 
 | Variable | Default | Purpose |
 |----------|---------|-------------|
-| `MD_TO_DOCX_ENGINE` | `native` | Default engine when `--engine` omitted |
 | `MD_TO_DOCX_MERMAID_SCALE` | `4` | Mermaid PNG scale (higher = sharper, larger files) |
 | `MD_TO_DOCX_MERMAID_WIDTH` | unset | Optional mmdc width in pixels (e.g. `1200`) |
 | `MD_TO_DOCX_BROWSER` | auto-detect | Browser executable for mmdc |
@@ -347,7 +336,6 @@ python -m md_to_docx.reference
 
 ```bash
 MD_TO_DOCX_MERMAID_SCALE=5 md-to-docx report.md
-MD_TO_DOCX_ENGINE=pandoc md-to-docx report.md --preset wecom
 ```
 
 More details: [configuration.md](configuration.md).
@@ -373,7 +361,6 @@ More details: [configuration.md](configuration.md).
 | `no .md files found` | Empty directory or all files excluded | Run `--dry-run` to inspect; adjust `--exclude` |
 | `Template not found` | Preset template missing from assets | Run `md-to-docx build presets` |
 | Mermaid shows as code block | `mmdc` not installed | `npm install -g @mermaid-js/mermaid-cli` or use `--strict-mermaid` to fail loudly |
-| `pandoc` errors | pandoc not on PATH | Install pandoc or use default `--engine native` |
 | `No module named md_to_docx` | Running without install or PYTHONPATH | Use `./bin/convert` or `pip install -e .` |
 
 Full install guide: [installation.md](installation.md).
@@ -386,7 +373,6 @@ Full install guide: [installation.md](installation.md).
 - [Validation](validation.md) — `--check` rule codes
 - [Roundtrip](roundtrip.md) — reverse & diff support matrix
 - [Plugins](plugins.md) — custom `--plugin` transforms
-- [MCP server](mcp.md) — `md-to-docx-mcp` for AI clients
-- [WeCom import](wecom-import.md) — `--preset wecom` workflow
+- [MCP server](mcp.md) — `md-to-docx mcp` for AI clients
 - [Configuration](configuration.md) — env vars and bundled assets
 - [GitHub Action](../action/README.md) — CI automation

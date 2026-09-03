@@ -66,15 +66,6 @@ def bundled_path(name: str) -> Iterator[Path]:
         yield Path(path)
 
 
-@contextmanager
-def bundled_conversion_assets() -> Iterator[tuple[Path, Path]]:
-    """Yield (reference_docx, lua_filter) paths for pandoc."""
-    with bundled_path("reference-wecom.docx") as ref, bundled_path(
-        "wecom-layout.lua"
-    ) as lua:
-        yield ref, lua
-
-
 def native_reference_doc() -> Path:
     """Path to built-in native reference template."""
     path = _resolve_asset_path("reference-native.docx")

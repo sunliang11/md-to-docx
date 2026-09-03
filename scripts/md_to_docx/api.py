@@ -5,9 +5,8 @@ from __future__ import annotations
 import contextlib
 import io
 import os
-import shutil
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 from md_to_docx.converter import convert_file
@@ -16,7 +15,6 @@ from md_to_docx.errors import (
   empty_document,
   missing_input,
   missing_mmdc,
-  missing_pandoc,
   missing_template,
   unknown_preset,
 )
@@ -30,12 +28,11 @@ from md_to_docx.validate import Issue, validate_document, validate_file
 class ConvertResult:
   output_path: Path
   warnings: list[str]
-  engine: str
+  engine: str = "native"
 
 
 @dataclass
 class ConvertOptions:
-  engine: str | None = None
   normalize: bool = True
   template: Path | None = None
   toc: bool | None = None
@@ -63,30 +60,19 @@ def apply_preset(
   except ValueError:
     raise unknown_preset(preset_name) from None
 
-  if preset.engine == "pandoc":
-    options.engine = "pandoc"
-  else:
-    if options.engine is None:
-      options.engine = preset.engine
-    if options.toc is None:
-      options.toc = preset.toc
-    if not options.numbering:
-      options.numbering = preset.numbering
-    if options.template is None and preset.template:
-      try:
-        options.template = preset_template_path(preset)
-      except FileNotFoundError as exc:
-        raise missing_template(str(exc)) from exc
-    options.figure_label = preset.figure_label
-    options.table_label = preset.table_label
-    options.toc_title = preset.toc_title
+  if options.toc is None:
+    options.toc = preset.toc
+  if not options.numbering:
+    options.numbering = preset.numbering
+  if options.template is None and preset.template:
+    try:
+      options.template = preset_template_path(preset)
+    except FileNotFoundError as exc:
+      raise missing_template(str(exc)) from exc
+  options.figure_label = preset.figure_label
+  options.table_label = preset.table_label
+  options.toc_title = preset.toc_title
   return options
-
-
-def resolve_engine(engine: str | None) -> str:
-  if engine:
-    return engine
-  return os.environ.get("MD_TO_DOCX_ENGINE", "native")
 
 
 def _default_output_dir() -> Path:
@@ -133,7 +119,6 @@ def convert(
   output: Path | None = None,
   preset: str | None = None,
   template: Path | None = None,
-  engine: str | None = None,
   toc: bool | None = None,
   numbering: bool | None = None,
   markdown_text: str | None = None,
@@ -154,7 +139,6 @@ def convert(
     raise missing_input()
 
   options = ConvertOptions(
-    engine=engine,
     normalize=normalize,
     template=template,
     toc=toc,
@@ -171,10 +155,9 @@ def convert(
     section_label=section_label,
   )
   options = apply_preset(preset, options)
-  resolved_engine = resolve_engine(options.engine)
   if options.toc is None:
     options.toc = False
-  if options.template is None and resolved_engine == "native":
+  if options.template is None:
     options.template = native_reference_doc()
 
   temp_dir: tempfile.TemporaryDirectory[str] | None = None
@@ -207,15 +190,11 @@ def convert(
 
   warnings = _collect_warnings(text_for_validate, validate_base)
 
-  if resolved_engine == "pandoc" and not shutil.which("pandoc"):
-    raise missing_pandoc()
-
   try:
     with contextlib.redirect_stdout(io.StringIO()):
       convert_file(
         md_path,
         output,
-        engine=resolved_engine,
         normalize=options.normalize,
         template_path=options.template,
         toc=options.toc,
@@ -248,5 +227,5 @@ def convert(
   return ConvertResult(
     output_path=output,
     warnings=warnings,
-    engine=resolved_engine,
+    engine="native",
   )

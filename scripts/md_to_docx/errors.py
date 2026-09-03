@@ -43,7 +43,7 @@ def unknown_preset(name: str) -> MdToDocxError:
     return MdToDocxError(
         "Unknown preset",
         f"preset '{name}' is not defined",
-        "Use list_presets or --preset professional|editorial|technical|academic|business|report|wecom",
+        "Use list_presets or --preset professional|editorial|technical|academic|business|report",
     )
 
 
@@ -55,19 +55,11 @@ def missing_template(path: str) -> MdToDocxError:
     )
 
 
-def missing_pandoc() -> MdToDocxError:
-    return MdToDocxError(
-        "Pandoc not found",
-        "engine=pandoc requires pandoc on PATH",
-        "Install pandoc: brew install pandoc (macOS) or use engine=native",
-    )
-
-
 def missing_mmdc() -> MdToDocxError:
     return MdToDocxError(
         "Mermaid CLI not found",
         "document contains mermaid blocks but mmdc is not on PATH",
-        "npm i -g @mermaid-js/mermaid-cli, remove mermaid blocks, or use engine=native without mermaid",
+        "npm i -g @mermaid-js/mermaid-cli or remove mermaid blocks",
     )
 
 
@@ -99,5 +91,5 @@ def conversion_failed(cause: str) -> MdToDocxError:
     return MdToDocxError(
         "Conversion failed",
         cause,
-        "Check input markdown and engine options; see docs for troubleshooting",
+        "Check input markdown and options; see docs for troubleshooting",
     )

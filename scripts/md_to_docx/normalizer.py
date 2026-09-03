@@ -1,4 +1,4 @@
-"""Markdown content normalization before pandoc conversion."""
+"""Markdown content normalization before conversion."""
 
 from __future__ import annotations
 
@@ -568,5 +568,5 @@ class MarkdownNormalizer:
 
 
 def normalize_markdown_content(content: str, verbose: bool = False) -> str:
-    """Normalize Markdown content for pandoc; returns fixed text only."""
+    """Normalize Markdown content; returns fixed text only."""
     return MarkdownNormalizer(verbose=verbose).normalize(content)

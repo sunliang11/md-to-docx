@@ -37,7 +37,6 @@ jobs:
 | `input` | yes | — | Markdown file or directory |
 | `preset` | no | `technical` | Template preset |
 | `output-dir` | no | `dist/docx` | Output directory |
-| `engine` | no | `native` | `native` or `pandoc` |
 
 ## Local testing
 

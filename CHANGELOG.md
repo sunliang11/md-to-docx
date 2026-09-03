@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Removed
+
+- `--preset wecom` and the pandoc conversion engine (`--engine pandoc`, `MD_TO_DOCX_ENGINE`)
+- Bundled `reference-wecom.docx` / `wecom-layout.lua` and `md-to-docx build reference`
+- WeCom import guide (`references/wecom-import.md`)
+- Pandoc reverse fallback (`md-to-docx reverse --engine pandoc`)
+- Separate console script `md-to-docx-mcp` — use `md-to-docx mcp` instead
+
+### Changed
+
+- **CLI consolidation** — removed pip entry points `md-to-docx-build-reference`, `md-to-docx-build-native-reference`, and `md-to-docx-build-presets`. Use `md-to-docx build presets|all` instead. Module entry points (`python -m md_to_docx.presets_build`, etc.) unchanged.
+- **Single CLI command** — PATH only installs `md-to-docx`; MCP starts via `md-to-docx mcp` (or `python -m md_to_docx.mcp`)
+
+### Added (P4 Gate A)
+
+- **Open Document Markdown spec** — `spec/document-markdown.md` (`odm-0.1`)
+- **Callouts** — `:::warning`, `:::info`, `:::note` containers with colored left border in DOCX
+- **Community templates** — `templates/` directory with four official examples and contribution guide
+- **Experimental HTML renderer** — `md_to_docx.render.html.render_html()` for AST preview (not CLI-exposed)
+- CI validates `templates/**/sample.md` conversion
+
 ## [1.0.0] - 2026-09-02
 
 ### Added
@@ -22,20 +45,6 @@ All notable changes to this project will be documented in this file.
 - Default engine is **native** (was pandoc-only in v0.1)
 - Package name `md2docx-compiler` on PyPI; CLI command remains `md-to-docx`
 - WeCom import: use `--preset wecom` or `--engine pandoc` (unchanged Lua pipeline)
-
-## [Unreleased]
-
-### Changed
-
-- **CLI consolidation** — removed pip entry points `md-to-docx-build-reference`, `md-to-docx-build-native-reference`, and `md-to-docx-build-presets`. Use `md-to-docx build reference|presets|all` instead. Module entry points (`python -m md_to_docx.presets_build`, etc.) unchanged.
-
-### Added (P4 Gate A)
-
-- **Open Document Markdown spec** — `spec/document-markdown.md` (`odm-0.1`)
-- **Callouts** — `:::warning`, `:::info`, `:::note` containers with colored left border in DOCX
-- **Community templates** — `templates/` directory with four official examples and contribution guide
-- **Experimental HTML renderer** — `md_to_docx.render.html.render_html()` for AST preview (not CLI-exposed)
-- CI validates `templates/**/sample.md` conversion
 
 ## [1.1.0] - 2026-09-02
 

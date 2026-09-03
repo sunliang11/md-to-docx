@@ -16,8 +16,6 @@
 # 单文件转 Word（技术报告风格）
 md-to-docx report.md --preset technical
 
-# 转成企业微信智能文档可导入的格式（走 pandoc 引擎）
-md-to-docx report.md --preset wecom
 
 # 批量转换整个目录，输出到 dist/docx（保留子目录结构）
 md-to-docx ./docs --output-dir ./dist/docx
@@ -56,7 +54,7 @@ md-to-docx report.md --preset professional
 | **`bin/convert`** | git clone 或 Cursor skill；**无需 pip** | `./bin/convert report.md` |
 | **`pip install -e .`** | 把 `md-to-docx` 装到 PATH，全局可用 | `md-to-docx report.md` |
 | **`pip install -e ".[dev]"`** | 开发 + 跑 pytest | 同上，并安装测试依赖 |
-| **`pip install -e ".[mcp]"`** | MCP 客户端（Cursor、Claude Desktop） | 额外获得 `md-to-docx-mcp` |
+| **`pip install -e ".[mcp]"`** | MCP 客户端（Cursor、Claude Desktop） | 同一 CLI；用 `md-to-docx mcp` 启动 |
 | **`pip install "git+https://..."`** | 不 clone 本地仓库，远程安装 | 远程 editable 安装 |
 | **`python -m md_to_docx`** | 与 `md-to-docx` 等价；PATH 里没有脚本时可用 | `python3 -m md_to_docx report.md` |
 | **`PYTHONPATH=scripts python -m md_to_docx`** | 在源码目录直接跑（CI 常用） | 无需 pip install |
@@ -69,7 +67,7 @@ cd md-to-docx
 pip install -e .              # 基础 CLI：md-to-docx
 # 可选扩展：
 pip install -e ".[dev]"       # pytest、pillow
-pip install -e ".[mcp]"       # MCP 服务 md-to-docx-mcp
+pip install -e ".[mcp]"       # MCP 依赖；启动：md-to-docx mcp
 pip install -e ".[web]"       # Web Playground 依赖
 
 # 验证安装
@@ -77,8 +75,8 @@ which md-to-docx              # 应输出 venv 或 ~/.local/bin 下的路径
 md-to-docx --version
 ```
 
-> **暂未发布 PyPI。** Python 包名 `md2docx-compiler`，命令行名 `md-to-docx`。  
-> `pip install -e .` 后 PATH 里只会增加 **`md-to-docx`** 和 **`md-to-docx-mcp`**（安装 `[mcp]` 时）两个脚本。
+> **暂未发布 PyPI。** Python 包名 `md2docx-compiler`，唯一命令行名是 **`md-to-docx`**。  
+> `pip install -e .` 后 PATH 里只会增加 **`md-to-docx`**。MCP 通过子命令 `md-to-docx mcp` 启动（需安装 `[mcp]` 扩展）。
 
 ### 可选：shell alias
 
@@ -96,7 +94,6 @@ alias md_to_docx="/path/to/md-to-docx/bin/convert"
 | 组件 | 什么时候需要 |
 |------|--------------|
 | Python 3.10+ | 始终 |
-| pandoc 3.x | `--engine pandoc` 或 `--preset wecom` |
 | mmdc（Mermaid CLI） | 需要把 Mermaid 图渲染成图片 |
 | Chrome / Edge / Chromium | Mermaid 渲染（mmdc 依赖浏览器） |
 
@@ -109,9 +106,9 @@ alias md_to_docx="/path/to/md-to-docx/bin/convert"
 ```
 md-to-docx [--version] [convert 选项] PATH     # 默认子命令 = convert（正向编译）
 md-to-docx convert [选项] PATH
-md-to-docx reverse INPUT -o OUTPUT [--engine native|pandoc]
+md-to-docx reverse INPUT -o OUTPUT
 md-to-docx diff A B [--format text|json|md]
-md-to-docx build presets|reference|all         # 开发者：重建模板
+md-to-docx build presets|all         # 开发者：重建模板
 ```
 
 | 子命令 | 作用 |
@@ -159,9 +156,8 @@ md-to-docx report.md --skip-existing
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--engine native\|pandoc` | `native`（或环境变量 `MD_TO_DOCX_ENGINE`） | 转换引擎 |
-| `--preset NAME` | 无 | 一键套用模板 + 默认选项。可选：`professional`、`technical`、`academic`、`business`、`report`、`wecom` |
-| `--template PATH` | 内置 reference | 自定义 `.docx` 模板（native 引擎）。`--preset wecom` 时忽略 |
+| `--preset NAME` | 无 | 一键套用模板 + 默认选项。可选：`professional`、`technical`、`academic`、`business`、`report` |
+| `--template PATH` | 内置 reference | 自定义 `.docx` 模板 |
 
 **各 preset 默认行为**（命令行显式指定的参数会覆盖 preset）：
 
@@ -172,15 +168,13 @@ md-to-docx report.md --skip-existing
 | `academic` | native | 有 | 有 |
 | `business` | native | 无 | 无 |
 | `report` | native | 有 | 无 |
-| `wecom` | pandoc | 无 | 无 |
 
 字体与样式细节见 [presets.md](presets.md)。
 
 ```bash
 md-to-docx report.md --preset technical
-md-to-docx report.md --preset wecom
 md-to-docx report.md --template templates/my-template/template.docx
-md-to-docx report.md --engine pandoc --template custom.docx
+md-to-docx report.md --template custom.docx
 ```
 
 ### 文档结构
@@ -279,12 +273,10 @@ md-to-docx reverse INPUT -o OUTPUT [选项]
 |-------------|--------|------|
 | `INPUT` | 必填 | 源 `.docx` 文件 |
 | `-o`, `--output PATH` | 必填 | 输出 `.md` 路径 |
-| `--engine native\|pandoc` | `native` | 解析引擎。`pandoc` 需系统安装 pandoc |
 | `--version` | — | 打印版本号并退出 |
 
 ```bash
 md-to-docx reverse report.docx -o report.md
-md-to-docx reverse report.docx -o report.md --engine pandoc
 ```
 
 支持范围与限制见 [roundtrip.md](roundtrip.md)。
@@ -320,17 +312,15 @@ md-to-docx diff a.md b.md --format md
 
 ```bash
 md-to-docx build presets      # assets/presets/*.docx + reference-native.docx
-md-to-docx build reference    # assets/reference-wecom.docx（需要 pandoc）
-md-to-docx build all          # 上面两个都执行
+md-to-docx build all          # 同 presets
 ```
 
-需要 `python-docx`（基础依赖已包含）。`build reference` 还需要系统安装 **pandoc**。
+需要 `python-docx`（基础依赖已包含）。
 
 等价的 module 调用（CI/Docker 仍可使用）：
 
 ```bash
 python -m md_to_docx.presets_build
-python -m md_to_docx.reference
 ```
 
 ---
@@ -339,7 +329,6 @@ python -m md_to_docx.reference
 
 | 变量 | 默认值 | 作用 |
 |------|--------|------|
-| `MD_TO_DOCX_ENGINE` | `native` | 未指定 `--engine` 时的默认引擎 |
 | `MD_TO_DOCX_MERMAID_SCALE` | `4` | Mermaid PNG 缩放（越大越清晰、文件越大） |
 | `MD_TO_DOCX_MERMAID_WIDTH` | 未设置 | mmdc 输出宽度（像素，如 `1200`） |
 | `MD_TO_DOCX_BROWSER` | 自动检测 | mmdc 使用的浏览器路径 |
@@ -347,7 +336,6 @@ python -m md_to_docx.reference
 
 ```bash
 MD_TO_DOCX_MERMAID_SCALE=5 md-to-docx report.md
-MD_TO_DOCX_ENGINE=pandoc md-to-docx report.md --preset wecom
 ```
 
 更多说明见 [configuration.md](configuration.md)。
@@ -373,7 +361,6 @@ MD_TO_DOCX_ENGINE=pandoc md-to-docx report.md --preset wecom
 | `no .md files found` | 目录为空或全被排除 | 用 `--dry-run` 查看；调整 `--exclude` |
 | `Template not found` | preset 模板缺失 | 运行 `md-to-docx build presets` |
 | Mermaid 显示为代码块 | 未安装 `mmdc` | `npm install -g @mermaid-js/mermaid-cli`，或加 `--strict-mermaid` 强制报错 |
-| pandoc 相关错误 | 系统未安装 pandoc | 安装 pandoc，或改用默认 `--engine native` |
 | `No module named md_to_docx` | 未安装也未设 PYTHONPATH | 用 `./bin/convert` 或 `pip install -e .` |
 
 完整安装指南：[installation.md](installation.md)。
@@ -386,7 +373,6 @@ MD_TO_DOCX_ENGINE=pandoc md-to-docx report.md --preset wecom
 - [文档校验](validation.md) — `--check` 规则代码表
 - [往返转换](roundtrip.md) — reverse / diff 支持矩阵
 - [插件](plugins.md) — 自定义 `--plugin` 转换
-- [MCP 服务](mcp.md) — AI 客户端用的 `md-to-docx-mcp`
-- [企微导入](wecom-import.md) — `--preset wecom` 工作流
+- [MCP 服务](mcp.md) — AI 客户端用的 `md-to-docx mcp`
 - [配置](configuration.md) — 环境变量与内置资源
 - [GitHub Action](../action/README.md) — CI 自动化

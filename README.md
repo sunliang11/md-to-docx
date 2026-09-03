@@ -165,7 +165,7 @@ md-to-docx ./docs --dry-run
 
 ## Document support
 
-- **Native AST engine** — default; no pandoc for most documents
+- **Native AST engine** — Document AST → professional DOCX
 - **Structure** — headings, lists, tables, code, blockquotes, images, footnotes, task lists
 - **CJK** — Microsoft YaHei / SimSun templates
 - **Mermaid** — PNG when `mmdc` is installed; degrades to code block otherwise
@@ -174,7 +174,6 @@ md-to-docx ./docs --dry-run
 - **TOC & page numbers** — Word-native fields, header/footer
 - **Page breaks** — `<!-- pagebreak -->` in Markdown
 - **Frontmatter** — YAML metadata (title, author, date, …)
-- **WeCom import** — `--preset wecom` (pandoc pipeline)
 
 See [presets](references/presets.md), [roundtrip](references/roundtrip.md), [plugins](references/plugins.md).
 
@@ -219,7 +218,6 @@ To contribute a template, see the PR checklist in [templates/README.md](template
 ### Requirements
 
 - **Python 3.10+**
-- **pandoc 3.x** — only for `--engine pandoc` / `--preset wecom`
 - **mmdc** — only if you need Mermaid rendered as images ([installation.md](references/installation.md))
 
 ### From source (development)
@@ -236,7 +234,7 @@ Install options and entry points: [CLI Reference — How to run commands](refere
 
 **Not on PyPI yet.** Planned package name: `md2docx-compiler` · CLI command: `md-to-docx`. Install from source or `pip install "git+https://github.com/sunliang11/md-to-docx.git"`.
 
-**Mermaid note:** Without `mmdc`, native engine still produces DOCX; diagrams appear as source code blocks. Use `--strict-mermaid` to fail instead. Full matrix: [installation.md](references/installation.md).
+**Mermaid note:** Without `mmdc`, diagrams appear as source code blocks. Use `--strict-mermaid` to fail instead. Full matrix: [installation.md](references/installation.md).
 
 ## Documentation
 
@@ -256,7 +254,7 @@ Install options and entry points: [CLI Reference — How to run commands](refere
 - [Examples gallery](examples/README.md)
 - [Example plugins](examples/plugins/)
 - [Environment variables](references/configuration.md)
-- [WeCom import](references/wecom-import.md)
+- [Contributing](CONTRIBUTING.md)
 - [Development & tests](references/development.md)
 - [Release process](references/release.md)
 - [Roadmap](references/roadmap.md)

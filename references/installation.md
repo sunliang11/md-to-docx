@@ -1,6 +1,6 @@
 # Installation
 
-**md-to-docx** is an open-source document compiler for the AI era — it turns Markdown and AI-generated content into professional Word documents. WeCom smart-doc import remains a supported workflow.
+**md-to-docx** is an open-source document compiler for the AI era — it turns Markdown and AI-generated content into professional Word documents.
 
 See [README.md](../README.md) for a project overview.
 
@@ -18,10 +18,9 @@ Agents and skill users should prefer **`bin/convert`** to avoid `No module named
 | Component | Version | Required when |
 |-----------|---------|---------------|
 | **Python** | **3.10+** | Always (see `requires-python` in `pyproject.toml`) |
-| **pandoc** | 3.x (Lua filters recommended) | Always |
 | **@mermaid-js/mermaid-cli** (`mmdc`) | Latest stable | Markdown files contain ` ```mermaid ` blocks |
 | **Chrome / Edge / Chromium** | Any recent version | Mermaid rendering (`mmdc` uses a browser) |
-| **python-docx** | 1.0+ | Rebuilding `reference-wecom.docx` only (auto-build on first run if missing) |
+| **python-docx** | 1.0+ | Always (runtime dependency) |
 
 ## Cursor skill (no pip)
 
@@ -44,7 +43,7 @@ Symlink example (folder name `md-to-docx` or `md_to_docx` both work):
 ln -sfn /path/to/md-to-docx ~/.cursor/skills/md-to-docx
 ```
 
-Bundled assets live in `assets/` (`reference-wecom.docx`, `wecom-layout.lua`). If `reference-wecom.docx` is missing, the converter tries to build it; that step needs `python-docx`.
+Bundled assets live in `assets/` (`reference-native.docx`, `presets/*.docx`). Rebuild with `md-to-docx build presets` if missing.
 
 ## Install the Python package (optional)
 
@@ -64,18 +63,15 @@ pip install "git+https://github.com/sunliang11/md-to-docx.git"
 
 > Not published on PyPI. The PyPI name `md-to-docx` is a different project.
 
-## Install system dependencies
+## Install optional Mermaid tools
 
 ### macOS
 
 ```bash
-brew install pandoc
 npm install -g @mermaid-js/mermaid-cli   # only if you use mermaid in .md
 ```
 
 ### Linux
-
-Install `pandoc` from your distribution or [pandoc.org](https://pandoc.org/installing.html), then:
 
 ```bash
 npm install -g @mermaid-js/mermaid-cli
@@ -87,24 +83,22 @@ Ensure a Chromium-based browser is installed, or set `MD_TO_DOCX_BROWSER` / `PUP
 
 ```bash
 python3 --version          # must be 3.10+
-which pandoc
 ./bin/convert --help       # from skill root, no pip
 ```
 
 Convert a sample file:
 
 ```bash
-./bin/convert tests/fixtures/sample.md
+./bin/convert tests/fixtures/sample.md --preset technical
 ```
 
 ## Common errors
 
 | Error | Fix |
 |-------|-----|
-| `` `pandoc` not found on PATH `` | Install pandoc and ensure it is on your `PATH` |
 | `No module named md_to_docx` | Use `./bin/convert` or `PYTHONPATH=<skill-root>/scripts python3 -m md_to_docx` |
 | `pip install -e` / hatchling timeout | Skip pip; use `bin/convert` |
 | `` `mmdc` not found `` | `npm install -g @mermaid-js/mermaid-cli` (only for mermaid blocks) |
 | `mmdc failed` / browser errors | Install Chrome/Chromium or set `MD_TO_DOCX_BROWSER` |
-| `reference doc missing` | Auto-build on run if `python-docx` installed; else `pip install python-docx` and `python3 -m md_to_docx.reference` |
+| Template missing | `PYTHONPATH=scripts python -m md_to_docx.presets_build` |
 | `Python 3.9` or older | Upgrade to Python 3.10+ |

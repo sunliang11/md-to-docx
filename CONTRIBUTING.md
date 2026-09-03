@@ -11,7 +11,7 @@ md-to-docx/
 ├── SKILL.md              # Agent entry point
 ├── bin/convert           # No-pip wrapper (sets PYTHONPATH)
 ├── scripts/md_to_docx/   # Python package
-├── assets/               # Bundled pandoc assets, branding, demo
+├── assets/               # Bundled templates, branding, demo
 ├── examples/             # Curated conversion examples
 ├── references/           # Detailed docs
 └── tests/
@@ -25,7 +25,7 @@ See `aim/` for the roadmap.
 
 ## Setup
 
-Requires **Python 3.10+** and **pandoc** on PATH.
+Requires **Python 3.10+**.
 
 **Skill checkout (no pip):**
 
@@ -54,14 +54,15 @@ python -m md_to_docx --help
 pytest tests/ -v
 ```
 
-Integration tests require `pandoc`. DOCX XML assertions also need `lxml` (included in `[dev]`).
+DOCX XML assertions need `lxml` (included in `[dev]`).
 
-## Rebuild reference template
+## Rebuild templates
 
 When changing Word styles:
 
 ```bash
-python3 -m md_to_docx.reference
+md-to-docx build presets
+# or: PYTHONPATH=scripts python3 -m md_to_docx.presets_build
 ```
 
-Regenerates `assets/reference-wecom.docx`.
+Regenerates `assets/presets/*.docx` and `assets/reference-native.docx`.

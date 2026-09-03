@@ -17,7 +17,6 @@ PRESET_DESCRIPTIONS: dict[str, str] = {
     "academic": "Academic papers (Times/SimSun)",
     "business": "Business summaries, no TOC",
     "report": "Meeting notes and reports",
-    "wecom": "WeCom smart-doc import (requires pandoc)",
 }
 
 
@@ -64,7 +63,6 @@ def handle_convert_markdown(args: dict[str, Any]) -> dict[str, Any]:
             output=output,
             preset=args.get("preset"),
             template=template_path,
-            engine=args.get("engine"),
             toc=args.get("toc"),
         )
     except MdToDocxError as exc:

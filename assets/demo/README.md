@@ -29,4 +29,4 @@ brew install vhs
 bash scripts/demo/record_hero.sh
 ```
 
-`after.png` — Human: replace with a real Word / WeCom screenshot when available.
+`after.png` — Human: replace with a real Word screenshot when available.
