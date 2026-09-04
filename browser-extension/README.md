@@ -1,38 +1,41 @@
 # Export AI to Word (md-to-docx)
 
-Chrome extension (Manifest V3) to export AI chat replies as professional Word DOCX.
+Chrome extension (Manifest V3) to export AI chats and web pages as professional Word DOCX.
 
-Conversion runs on your **local** md-to-docx Playground — not on a cloud service.
+Conversion runs on your **local** md-to-docx Playground — not on a cloud service. When Playground is offline, buttons show **Export MD** and download Markdown instead.
+
+## Features (v0.2)
+
+- **Full conversation export** on supported AI sites (user + assistant turns)
+- **Batch export** on ChatGPT / Claude / Doubao: checkbox sidebar threads → one combined file
+- **Floating button** (**on by default** as edge peek; hover to expand; × collapses again)
+- **Webpage export**: selection if present, otherwise `article` / `main` / largest content block, with cleaner Markdown spacing
+- Offline-aware labels: **Export to Word** vs **Export MD**
 
 ## Where the button appears
 
-**Important:** The **Export to Word** button is injected only on real AI chat websites opened in **Chrome** (or another Chromium browser). Starting the Playground does **not** add a button to the Playground page itself.
+### AI chat sites (message toolbar + floating + batch where supported)
 
-### Works — extension injects on these URLs only
+| Site | URL pattern | Batch sidebar |
+|------|-------------|---------------|
+| ChatGPT | `https://chatgpt.com/*` | Yes |
+| Claude | `https://claude.ai/*` | Yes |
+| Gemini | `https://gemini.google.com/*` | — |
+| DeepSeek | `https://chat.deepseek.com/*` | — |
+| Kimi | `https://kimi.moonshot.cn/*`, `https://www.kimi.com/*` | — |
+| Doubao (豆包) | `https://www.doubao.com/*` | Yes |
 
-Primary sites:
+### Floating button (any page, including AI sites)
 
-- **`https://chatgpt.com/*`**
-- **`https://claude.ai/*`**
-- **`https://gemini.google.com/*`**
+**On by default as a thin edge tab** — hover to expand. Drag to move. Click **×** to collapse again. Uncheck *Show floating export button* in Options to remove it completely.
 
-Full list (matches `manifest.json`):
+The extension requests broad host access for webpage export; content still goes only to your configured local endpoint.
 
-| Site | URL pattern |
-|------|-------------|
-| DeepSeek | `https://chat.deepseek.com/*` |
-| ChatGPT | `https://chatgpt.com/*` |
-| Claude | `https://claude.ai/*` |
-| Gemini | `https://gemini.google.com/*` |
+### Does NOT work
 
-The Playground and the AI site do **not** need to be in the same window — keep Playground running in the background on port 8080.
-
-### Does NOT work — no button will appear
-
-- Cursor / VS Code **embedded** AI chat panels or built-in browser
-- The local Playground page (`http://127.0.0.1:8080`) — that page is the *converter*, not an AI chat site
-- `chat.openai.com` (legacy URL; use `chatgpt.com`)
-- Any page whose URL is not in the table above
+- Cursor / VS Code **embedded** AI chat panels
+- `chrome://` and other non-http(s) pages
+- The local Playground page itself is excluded from the generic webpage script
 
 ## Setup
 
@@ -49,6 +52,7 @@ Default endpoint: `http://127.0.0.1:8080`
 1. Open `chrome://extensions`
 2. Enable **Developer mode**
 3. **Load unpacked** → select the `browser-extension/` folder
+4. Accept the expanded host permission (needed for the floating webpage button)
 
 ### 3. Options
 
@@ -56,42 +60,35 @@ Click extension → Options (or open `src/options.html`):
 
 - **Endpoint URL** — Playground base URL
 - **Preset** — default `technical`
-- **Fallback .md** — download markdown if convert fails
+- **Fallback .md** — download markdown if convert fails / offline
+- **Show floating button** — thin edge tab by default; hover to expand
 
 ## Usage
 
-1. Start the Playground and keep it running on port 8080
-2. Open **Chrome** (or Edge) in a **new tab** → go to `https://chatgpt.com` (or Claude, Gemini, etc.)
-3. Log in, start a chat, and wait for an **assistant reply**
-4. Click the blue **Export to Word** button on the **latest assistant message**
-5. Your browser downloads a `.docx` file
+1. Start the Playground (optional; offline → MD)
+2. Open a supported AI site or any webpage in Chrome
+3. **Current chat:** click **Export to Word** / **Export MD** on the last reply → exports the **full** open conversation
+4. **Batch:** tick checkboxes in the sidebar (ChatGPT / Claude / Doubao) → **Export selected (N)** → one combined document
+5. **Webpage / floating:** hover the edge tab to expand, then export (or select text first)
 
-After installing or updating the extension, **refresh** any AI chat tabs that were already open.
-
-If the Playground is not running, the extension downloads `.md` and shows a toast with Docker instructions.
+After installing or updating the extension, **refresh** open tabs. Reloading the extension without refreshing leaves a dead content script that cannot call `chrome.storage`.
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---------|-----|
-| Using Cursor side panel | Switch to a Chrome tab on a supported URL (see table above) |
-| Playground open but no button | Playground does not show the button — open an AI chat site |
-| Extension just installed | Refresh the AI chat page |
-| Wrong URL | Must be `chatgpt.com`, not an embedded or legacy view |
-| No assistant reply yet | Send a message and wait for the AI response |
-| Site DOM changed | Try another supported site; update selectors in `src/content/` |
-
-## Alternatives (Cursor / no extension)
-
-If you are chatting inside Cursor or another unsupported panel:
-
-- **Playground** — copy Markdown → paste into `http://127.0.0.1:8080` → **Generate DOCX**
-- **CLI** — `./bin/convert report.md --preset technical`
-- **Re-open in Chrome** — paste the content into `chatgpt.com` (or another supported site) and use **Export to Word**
+| Button says Export MD | Playground not reachable at the endpoint — start Docker or fix Options URL |
+| No floating button | Options → enable *Show floating export button*, Save, then refresh. If collapsed, hover the thin edge tab |
+| Floating only a thin strip | Hover it to expand; it was collapsed with × |
+| Doubao: no toolbar button | Enable floating button as fallback; refresh after update |
+| Batch missing threads | Scroll the sidebar so items are rendered, then tick them |
+| Using Cursor side panel | Switch to a Chrome tab |
+| Extension just installed | Refresh the page |
+| Extension context invalidated / export fails after reload | Reload the extension, then **refresh open tabs** so content scripts reconnect |
 
 ## Privacy
 
-Chat content is sent only to the endpoint you configure (default `127.0.0.1`). No third-party conversion API.
+Content is sent only to the endpoint you configure (default `127.0.0.1`). No third-party conversion API.
 
 ## Tests
 
@@ -109,4 +106,4 @@ Regenerate: `python scripts/generate_extension_icons.py`
 
 ## Demo narrative
 
-Open Claude → ask for a report → **Export to Word** → open `document.docx` in Word.
+Open Claude → ask for a report → **Export to Word** → open `document.docx` in Word. Or select several sidebar chats → **Export selected**.

@@ -6,14 +6,15 @@
   <style>
     body { font-family: system-ui, sans-serif; max-width: 520px; margin: 24px; }
     label { display: block; margin: 12px 0 4px; font-weight: 600; }
-    input, select { width: 100%; padding: 8px; font-size: 14px; }
+    label.row { font-weight: 400; display: flex; align-items: center; gap: 8px; }
+    input[type="url"], select { width: 100%; padding: 8px; font-size: 14px; box-sizing: border-box; }
     button { margin-top: 16px; padding: 8px 16px; }
     p.hint { color: #555; font-size: 13px; }
   </style>
 </head>
 <body>
   <h1>md-to-docx Export</h1>
-  <p class="hint">Conversion runs on your local Playground — chat text is sent only to the endpoint below.</p>
+  <p class="hint">Conversion runs on your local Playground — content is sent only to the endpoint below. When Playground is offline, buttons show <strong>Export MD</strong> and download Markdown (if fallback is enabled).</p>
 
   <label for="endpoint">Convert endpoint URL</label>
   <input id="endpoint" type="url" placeholder="http://127.0.0.1:8080">
@@ -27,10 +28,16 @@
     <option value="report">report</option>
   </select>
 
-  <label>
+  <label class="row">
     <input type="checkbox" id="fallbackMd" checked>
-    Download .md if convert fails
+    Download .md if convert fails / Playground offline
   </label>
+
+  <label class="row">
+    <input type="checkbox" id="showFloating" checked>
+    Show floating export button on pages
+  </label>
+  <p class="hint">On by default as a thin edge tab; hover to expand. Drag to move; click × to collapse again. Uncheck to remove entirely.</p>
 
   <button type="button" id="save">Save</button>
   <p id="status"></p>

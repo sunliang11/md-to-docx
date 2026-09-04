@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Export AI to Word (md-to-docx)",
-  "version": "0.1.0",
-  "description": "Export AI chat replies as professional Word DOCX via local md-to-docx Playground.",
+  "version": "0.2.0",
+  "description": "Export AI chats and web pages as Word DOCX via local md-to-docx Playground (falls back to Markdown offline).",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -12,13 +12,8 @@
   "host_permissions": [
     "http://127.0.0.1:8080/*",
     "http://localhost:8080/*",
-    "https://chatgpt.com/*",
-    "https://claude.ai/*",
-    "https://gemini.google.com/*",
-    "https://chat.deepseek.com/*",
-    "https://kimi.moonshot.cn/*",
-    "https://www.kimi.com/*",
-    "https://www.doubao.com/*"
+    "http://*/*",
+    "https://*/*"
   ],
   "background": {
     "service_worker": "src/background.js"
@@ -31,6 +26,7 @@
         "src/lib/html-to-md.js",
         "src/lib/extract.js",
         "src/lib/export.js",
+        "src/lib/batch.js",
         "src/content/chatgpt.js"
       ],
       "css": ["src/button.css"]
@@ -41,6 +37,7 @@
         "src/lib/html-to-md.js",
         "src/lib/extract.js",
         "src/lib/export.js",
+        "src/lib/batch.js",
         "src/content/claude.js"
       ],
       "css": ["src/button.css"]
@@ -81,7 +78,29 @@
         "src/lib/html-to-md.js",
         "src/lib/extract.js",
         "src/lib/export.js",
+        "src/lib/batch.js",
         "src/content/doubao.js"
+      ],
+      "css": ["src/button.css"]
+    },
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "exclude_matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://chat.deepseek.com/*",
+        "https://kimi.moonshot.cn/*",
+        "https://www.kimi.com/*",
+        "https://www.doubao.com/*",
+        "http://127.0.0.1:8080/*",
+        "http://localhost:8080/*"
+      ],
+      "js": [
+        "src/lib/html-to-md.js",
+        "src/lib/extract.js",
+        "src/lib/export.js",
+        "src/content/webpage.js"
       ],
       "css": ["src/button.css"]
     }

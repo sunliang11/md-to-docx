@@ -8,15 +8,94 @@
   color: #fff;
   cursor: pointer;
   vertical-align: middle;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.3;
 }
 
 .md-to-docx-export-btn:hover {
   background: #0550ae;
 }
 
+.md-to-docx-export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.md-to-docx-float {
+  position: fixed !important;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483646;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  border-radius: 8px;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+}
+
+.md-to-docx-float.md-to-docx-float-dragging {
+  cursor: grabbing;
+  opacity: 0.92;
+  transition: none;
+}
+
+.md-to-docx-float.md-to-docx-float-collapsed.md-to-docx-float-peek-right {
+  transform: translateX(calc(100% - 12px));
+  opacity: 0.9;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.12);
+  border-radius: 8px 0 0 8px;
+}
+
+.md-to-docx-float.md-to-docx-float-collapsed.md-to-docx-float-peek-left {
+  transform: translateX(calc(-100% + 12px));
+  opacity: 0.9;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.12);
+  border-radius: 0 8px 8px 0;
+}
+
+.md-to-docx-float.md-to-docx-float-collapsed:hover,
+.md-to-docx-float.md-to-docx-float-collapsed:focus-within {
+  transform: translateX(0);
+  opacity: 1;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.md-to-docx-float .md-to-docx-float-export {
+  margin: 0 !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  cursor: inherit;
+}
+
+.md-to-docx-float-close {
+  margin: 0;
+  padding: 0 10px;
+  border: none;
+  background: #0550ae;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.md-to-docx-float-close:hover {
+  background: #033d86;
+}
+
 .md-to-docx-toast {
   position: fixed;
-  bottom: 24px;
+  bottom: 72px;
   right: 24px;
   max-width: 360px;
   padding: 12px 16px;
@@ -26,4 +105,34 @@
   font-size: 13px;
   z-index: 2147483647;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.md-to-docx-batch-cb {
+  margin-right: 6px !important;
+  vertical-align: middle;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.md-to-docx-batch-bar {
+  position: fixed;
+  left: 16px;
+  bottom: 20px;
+  z-index: 2147483645;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  color: #24292f;
+}
+
+.md-to-docx-batch-label {
+  white-space: nowrap;
 }
