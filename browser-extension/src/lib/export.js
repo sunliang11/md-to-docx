@@ -14,13 +14,46 @@
   let probeCache = { at: 0, online: false, endpoint: "" };
   const trackedButtons = new Set();
 
-  function showToast(message) {
+  function positionToastNearAnchor(el, anchor) {
+    const pad = 8;
+    const gap = 12;
+    let rect = null;
+    if (anchor && anchor.getBoundingClientRect) {
+      rect = anchor.getBoundingClientRect();
+    } else {
+      const float = document.querySelector(".md-to-docx-float");
+      if (float) rect = float.getBoundingClientRect();
+    }
+    if (!rect) {
+      el.style.left = "";
+      el.style.top = "";
+      el.style.right = "24px";
+      el.style.bottom = "80px";
+      return;
+    }
+
+    // Measure after append so offsetWidth/Height are available
+    const tw = el.offsetWidth || 280;
+    const th = el.offsetHeight || 48;
+    let left = rect.right - tw;
+    let top = rect.top - th - gap;
+    if (top < pad) top = rect.bottom + gap;
+    left = Math.min(Math.max(pad, left), window.innerWidth - tw - pad);
+    top = Math.min(Math.max(pad, top), window.innerHeight - th - pad);
+    el.style.right = "auto";
+    el.style.bottom = "auto";
+    el.style.left = left + "px";
+    el.style.top = top + "px";
+  }
+
+  function showToast(message, anchor) {
     const existing = document.querySelector(".md-to-docx-toast");
     if (existing) existing.remove();
     const el = document.createElement("div");
     el.className = "md-to-docx-toast";
     el.textContent = message;
     document.body.appendChild(el);
+    positionToastNearAnchor(el, anchor);
     setTimeout(() => el.remove(), 6000);
   }
 
@@ -142,14 +175,54 @@
     return online ? LABEL_WORD : LABEL_MD;
   }
 
+  function exportHint(online) {
+    return online ? "Local Playground" : "Download Markdown";
+  }
+
+  const FLOAT_CLOSE_SVG =
+    '<svg class="md-to-docx-float-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+
+  function createMdBadge() {
+    const badge = document.createElement("span");
+    badge.className = "md-to-docx-md-badge";
+    badge.setAttribute("aria-hidden", "true");
+    badge.textContent = "MD";
+    return badge;
+  }
+
+  function setButtonLabel(btn, label) {
+    const labelEl = btn.querySelector(".md-to-docx-float-label, .md-to-docx-btn-label");
+    if (labelEl) {
+      labelEl.textContent = label;
+    } else {
+      btn.textContent = label;
+    }
+  }
+
+  function updateFloatChrome(online) {
+    const wrap = document.querySelector(".md-to-docx-float");
+    if (!wrap) return;
+    const status = wrap.querySelector(".md-to-docx-float-status");
+    if (status) status.dataset.online = online ? "1" : "0";
+    const hint = wrap.querySelector(".md-to-docx-float-hint");
+    if (hint) hint.textContent = exportHint(online);
+    const launcher = wrap.querySelector(".md-to-docx-float-launcher");
+    if (launcher) {
+      const tip = exportLabel(online) + " (drag to move)";
+      launcher.title = tip;
+      launcher.setAttribute("aria-label", tip);
+    }
+  }
+
   function refreshTrackedLabels(online) {
     const label = exportLabel(online);
     trackedButtons.forEach((btn) => {
       if (btn && btn.isConnected) {
-        btn.textContent = label;
+        setButtonLabel(btn, label);
         btn.dataset.mdToDocxMode = online ? "word" : "md";
       }
     });
+    updateFloatChrome(online);
   }
 
   async function probeEndpoint(force) {
@@ -161,6 +234,7 @@
       probeCache.endpoint === endpoint &&
       now - probeCache.at < PROBE_TTL_MS
     ) {
+      refreshTrackedLabels(probeCache.online);
       return probeCache.online;
     }
 
@@ -188,8 +262,9 @@
     probeEndpoint(false)
       .then((online) => {
         if (!btn || !btn.isConnected) return;
-        btn.textContent = exportLabel(online);
+        setButtonLabel(btn, exportLabel(online));
         btn.dataset.mdToDocxMode = online ? "word" : "md";
+        updateFloatChrome(online);
       })
       .catch(() => {});
   }
@@ -296,7 +371,13 @@
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "md-to-docx-export-btn";
-    btn.textContent = LABEL_WORD;
+
+    const label = document.createElement("span");
+    label.className = "md-to-docx-btn-label";
+    label.textContent = LABEL_WORD;
+
+    btn.appendChild(createMdBadge());
+    btn.appendChild(label);
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -309,8 +390,8 @@
 
   function clampFloatPosition(wrap, left, top) {
     const pad = 8;
-    const w = wrap.offsetWidth || 140;
-    const h = wrap.offsetHeight || 40;
+    const w = wrap.offsetWidth || 48;
+    const h = wrap.offsetHeight || 48;
     const maxL = Math.max(pad, window.innerWidth - w - pad);
     const maxT = Math.max(pad, window.innerHeight - h - pad);
     return {
@@ -325,7 +406,6 @@
       wrap.style.top = "";
       wrap.style.right = "20px";
       wrap.style.bottom = "20px";
-      updateFloatPeekSide(wrap);
       return;
     }
     const clamped = clampFloatPosition(wrap, pos.left, pos.top);
@@ -333,57 +413,70 @@
     wrap.style.bottom = "auto";
     wrap.style.left = clamped.left + "px";
     wrap.style.top = clamped.top + "px";
-    updateFloatPeekSide(wrap);
   }
 
-  function updateFloatPeekSide(wrap) {
-    const rect = wrap.getBoundingClientRect();
-    const mid = rect.left + rect.width / 2;
-    if (mid < window.innerWidth / 2) {
-      wrap.classList.add("md-to-docx-float-peek-left");
-      wrap.classList.remove("md-to-docx-float-peek-right");
-    } else {
-      wrap.classList.add("md-to-docx-float-peek-right");
-      wrap.classList.remove("md-to-docx-float-peek-left");
+  function positionFloatSheet(wrap) {
+    const sheet = wrap.querySelector(".md-to-docx-float-sheet");
+    const launcher = wrap.querySelector(".md-to-docx-float-launcher");
+    if (!sheet || !launcher) return;
+    sheet.classList.remove("md-to-docx-float-sheet-below");
+    const rect = launcher.getBoundingClientRect();
+    const sheetH = sheet.offsetHeight || 120;
+    const gap = 12;
+    const pad = 8;
+    if (rect.top - sheetH - gap < pad) {
+      sheet.classList.add("md-to-docx-float-sheet-below");
     }
   }
 
-  function setFloatCollapsed(wrap, collapsed) {
-    wrap.classList.toggle("md-to-docx-float-collapsed", !!collapsed);
-    updateFloatPeekSide(wrap);
-    storageLocalSet({ floatCollapsed: !!collapsed }).catch(() => {});
+  function setFloatOpen(wrap, open) {
+    const isOpen = !!open;
+    wrap.classList.toggle("md-to-docx-float-open", isOpen);
+    const launcher = wrap.querySelector(".md-to-docx-float-launcher");
+    if (launcher) launcher.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    if (isOpen) positionFloatSheet(wrap);
   }
 
-  function enableFloatDrag(wrap) {
+  function enableFloatDrag(wrap, onDragStart) {
+    let pending = false;
     let dragging = false;
     let moved = false;
     let startX = 0;
     let startY = 0;
     let origL = 0;
     let origT = 0;
+    let activePointerId = null;
 
     wrap.addEventListener("pointerdown", (e) => {
       if (e.button !== 0) return;
-      if (e.target.closest(".md-to-docx-float-close")) return;
+      if (!e.target.closest(".md-to-docx-float-launcher")) return;
+      if (e.target.closest(".md-to-docx-float-sheet")) return;
       const rect = wrap.getBoundingClientRect();
-      dragging = true;
+      pending = true;
+      dragging = false;
       moved = false;
+      activePointerId = e.pointerId;
       startX = e.clientX;
       startY = e.clientY;
       origL = rect.left;
       origT = rect.top;
-      wrap.classList.add("md-to-docx-float-dragging");
-      try {
-        wrap.setPointerCapture(e.pointerId);
-      } catch (_) {}
     });
 
     wrap.addEventListener("pointermove", (e) => {
-      if (!dragging) return;
+      if (!pending && !dragging) return;
+      if (activePointerId != null && e.pointerId !== activePointerId) return;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
-      if (!moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
-      moved = true;
+      if (!dragging) {
+        if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+        dragging = true;
+        moved = true;
+        wrap.classList.add("md-to-docx-float-dragging");
+        if (typeof onDragStart === "function") onDragStart();
+        try {
+          wrap.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      }
       const next = clampFloatPosition(wrap, origL + dx, origT + dy);
       wrap.style.right = "auto";
       wrap.style.bottom = "auto";
@@ -392,12 +485,18 @@
     });
 
     function endDrag(e) {
-      if (!dragging) return;
+      if (!pending && !dragging) return;
+      if (activePointerId != null && e.pointerId !== activePointerId) return;
+      const wasDragging = dragging;
+      pending = false;
       dragging = false;
+      activePointerId = null;
       wrap.classList.remove("md-to-docx-float-dragging");
-      try {
-        wrap.releasePointerCapture(e.pointerId);
-      } catch (_) {}
+      if (wasDragging) {
+        try {
+          wrap.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      }
       if (moved) {
         const rect = wrap.getBoundingClientRect();
         const pos = clampFloatPosition(wrap, rect.left, rect.top);
@@ -418,64 +517,129 @@
     const opts = options || {};
     const existing = document.querySelector(".md-to-docx-float");
     if (existing) {
-      const btn = existing.querySelector(".md-to-docx-float-export");
-      if (btn && !trackedButtons.has(btn)) trackButton(btn);
-      return btn || existing;
+      const action = existing.querySelector(".md-to-docx-float-action");
+      if (action && !trackedButtons.has(action)) trackButton(action);
+      return action || existing;
     }
 
     const wrap = document.createElement("div");
     wrap.className = "md-to-docx-float";
     wrap.style.display = "none";
 
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "md-to-docx-export-btn md-to-docx-float-export";
-    btn.textContent = LABEL_WORD;
-    btn.title = "Export page or selection (drag to move)";
+    const launcher = document.createElement("button");
+    launcher.type = "button";
+    launcher.className = "md-to-docx-float-launcher";
+    launcher.setAttribute("aria-expanded", "false");
+    launcher.setAttribute("aria-haspopup", "dialog");
+    launcher.title = LABEL_WORD + " (drag to move)";
+    launcher.setAttribute("aria-label", LABEL_WORD + " (drag to move)");
+    launcher.appendChild(createMdBadge());
+
+    const status = document.createElement("span");
+    status.className = "md-to-docx-float-status";
+    status.dataset.online = "0";
+    status.setAttribute("aria-hidden", "true");
+    launcher.appendChild(status);
+
+    const sheet = document.createElement("div");
+    sheet.className = "md-to-docx-float-sheet";
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-label", "Export");
+
+    const header = document.createElement("div");
+    header.className = "md-to-docx-float-sheet-header";
+
+    const title = document.createElement("span");
+    title.className = "md-to-docx-float-sheet-title";
+    title.textContent = "Export";
 
     const close = document.createElement("button");
     close.type = "button";
-    close.className = "md-to-docx-float-close";
-    close.setAttribute("aria-label", "Collapse floating button");
-    close.title = "Collapse to edge";
-    close.textContent = "×";
+    close.className = "md-to-docx-float-sheet-close";
+    close.setAttribute("aria-label", "Close");
+    close.title = "Close";
+    close.innerHTML = FLOAT_CLOSE_SVG;
 
-    wrap.appendChild(btn);
-    wrap.appendChild(close);
-    // Start collapsed until storage restore finishes
-    wrap.classList.add("md-to-docx-float-collapsed", "md-to-docx-float-peek-right");
+    header.appendChild(title);
+    header.appendChild(close);
 
-    btn.addEventListener("click", (e) => {
+    const action = document.createElement("button");
+    action.type = "button";
+    action.className = "md-to-docx-export-btn md-to-docx-float-action";
+
+    const actionLabel = document.createElement("span");
+    actionLabel.className = "md-to-docx-float-label";
+    actionLabel.textContent = LABEL_WORD;
+
+    action.appendChild(createMdBadge());
+    action.appendChild(actionLabel);
+
+    const hint = document.createElement("p");
+    hint.className = "md-to-docx-float-hint";
+    hint.textContent = exportHint(false);
+
+    sheet.appendChild(header);
+    sheet.appendChild(action);
+    sheet.appendChild(hint);
+
+    wrap.appendChild(launcher);
+    wrap.appendChild(sheet);
+
+    function closeSheet() {
+      setFloatOpen(wrap, false);
+    }
+
+    function toggleSheet() {
+      setFloatOpen(wrap, !wrap.classList.contains("md-to-docx-float-open"));
+    }
+
+    launcher.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       if (wrap.dataset.dragged === "1") return;
-      onClick();
+      toggleSheet();
     });
 
     close.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      setFloatCollapsed(wrap, true);
-      showToast("Collapsed to edge — hover to expand");
+      closeSheet();
     });
 
-    enableFloatDrag(wrap);
+    action.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeSheet();
+      onClick();
+    });
+
+    function onDocPointerDown(e) {
+      if (!wrap.classList.contains("md-to-docx-float-open")) return;
+      if (wrap.contains(e.target)) return;
+      closeSheet();
+    }
+
+    function onDocKeyDown(e) {
+      if (e.key !== "Escape") return;
+      if (!wrap.classList.contains("md-to-docx-float-open")) return;
+      closeSheet();
+    }
+
+    document.addEventListener("pointerdown", onDocPointerDown, true);
+    document.addEventListener("keydown", onDocKeyDown, true);
+
+    enableFloatDrag(wrap, closeSheet);
 
     function mount() {
       if (!document.body) return;
       if (document.querySelector(".md-to-docx-float")) return;
       document.body.appendChild(wrap);
-      trackButton(btn);
-      storageLocalGet(["floatPos", "floatCollapsed"])
+      trackButton(action);
+      storageLocalGet(["floatPos"])
         .then((items) => {
           applyFloatPosition(wrap, items.floatPos);
-          // Default collapsed (edge peek); only expand by default if user set floatCollapsed: false
-          const collapsed = items.floatCollapsed !== false;
-          setFloatCollapsed(wrap, collapsed);
         })
-        .catch(() => {
-          setFloatCollapsed(wrap, true);
-        });
+        .catch(() => {});
     }
 
     getSettings()
@@ -487,7 +651,7 @@
       })
       .catch(() => {});
 
-    return btn;
+    return action;
   }
 
   if (typeof document !== "undefined") {

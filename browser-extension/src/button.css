@@ -1,19 +1,42 @@
+.md-to-docx-export-btn,
+.md-to-docx-float,
+.md-to-docx-toast,
+.md-to-docx-batch-bar {
+  --md-blue: #0969da;
+  --md-blue-dark: #0550ae;
+  --md-ink: #111827;
+  --md-muted: #64748b;
+  --md-border: rgba(17, 24, 39, 0.08);
+  --md-shadow: 0 8px 24px rgba(17, 24, 39, 0.12);
+  --md-shadow-hover: 0 10px 28px rgba(17, 24, 39, 0.16);
+  --md-online: #22c55e;
+  --md-offline: #94a3b8;
+  --md-radius-btn: 8px;
+  --md-radius-sheet: 12px;
+  --md-font: system-ui, -apple-system, sans-serif;
+}
+
 .md-to-docx-export-btn {
   margin-left: 8px;
-  padding: 4px 10px;
+  padding: 4px 10px 4px 6px;
   font-size: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #0969da;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--md-radius-btn);
+  background: var(--md-blue);
   color: #fff;
   cursor: pointer;
   vertical-align: middle;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--md-font);
   line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease;
 }
 
 .md-to-docx-export-btn:hover {
-  background: #0550ae;
+  background: var(--md-blue-dark);
 }
 
 .md-to-docx-export-btn:disabled {
@@ -21,81 +44,221 @@
   cursor: not-allowed;
 }
 
+.md-to-docx-md-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-family: var(--md-font);
+  line-height: 1;
+}
+
+.md-to-docx-export-btn .md-to-docx-md-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.md-to-docx-float-launcher .md-to-docx-md-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--md-blue);
+  color: #fff;
+  font-size: 11px;
+}
+
 .md-to-docx-float {
   position: fixed !important;
   right: 20px;
   bottom: 20px;
   z-index: 2147483646;
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-  border-radius: 8px;
-  overflow: hidden;
-  user-select: none;
+  width: 48px;
+  height: 48px;
+  font-family: var(--md-font);
   touch-action: none;
-  cursor: grab;
-  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
-  will-change: transform;
 }
 
 .md-to-docx-float.md-to-docx-float-dragging {
-  cursor: grabbing;
   opacity: 0.92;
-  transition: none;
 }
 
-.md-to-docx-float.md-to-docx-float-collapsed.md-to-docx-float-peek-right {
-  transform: translateX(calc(100% - 12px));
-  opacity: 0.9;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.12);
-  border-radius: 8px 0 0 8px;
-}
-
-.md-to-docx-float.md-to-docx-float-collapsed.md-to-docx-float-peek-left {
-  transform: translateX(calc(-100% + 12px));
-  opacity: 0.9;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.12);
-  border-radius: 0 8px 8px 0;
-}
-
-.md-to-docx-float.md-to-docx-float-collapsed:hover,
-.md-to-docx-float.md-to-docx-float-collapsed:focus-within {
-  transform: translateX(0);
-  opacity: 1;
-  border-radius: 8px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-}
-
-.md-to-docx-float .md-to-docx-float-export {
-  margin: 0 !important;
-  padding: 10px 14px !important;
-  font-size: 13px !important;
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  cursor: inherit;
-}
-
-.md-to-docx-float-close {
+.md-to-docx-float-launcher {
+  position: relative;
+  width: 48px;
+  height: 48px;
   margin: 0;
-  padding: 0 10px;
-  border: none;
-  background: #0550ae;
-  color: #fff;
-  font-size: 16px;
-  line-height: 1;
-  cursor: pointer;
-  font-family: system-ui, -apple-system, sans-serif;
+  padding: 0;
+  border: 1px solid var(--md-border);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--md-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--md-ink);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.md-to-docx-float-close:hover {
-  background: #033d86;
+.md-to-docx-float-launcher:hover,
+.md-to-docx-float-launcher:focus-visible {
+  transform: scale(1.06);
+  box-shadow: var(--md-shadow-hover);
+  outline: none;
+}
+
+.md-to-docx-float.md-to-docx-float-dragging .md-to-docx-float-launcher {
+  cursor: grabbing;
+  transform: scale(1.02);
+}
+
+.md-to-docx-float-status {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--md-offline);
+  border: 1.5px solid #fff;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.md-to-docx-float-status[data-online="1"] {
+  background: var(--md-online);
+}
+
+.md-to-docx-float-sheet {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  width: 212px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--md-border);
+  border-radius: var(--md-radius-sheet);
+  box-shadow: var(--md-shadow);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s ease;
+  box-sizing: border-box;
+}
+
+.md-to-docx-float-sheet.md-to-docx-float-sheet-below {
+  bottom: auto;
+  top: calc(100% + 12px);
+  transform: translateY(-6px);
+}
+
+.md-to-docx-float.md-to-docx-float-open .md-to-docx-float-sheet {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.md-to-docx-float-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.md-to-docx-float-sheet-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--md-ink);
+  line-height: 1.2;
+}
+
+.md-to-docx-float-sheet-close {
+  margin: 0;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--md-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.md-to-docx-float-sheet-close:hover {
+  background: rgba(17, 24, 39, 0.06);
+  color: var(--md-ink);
+}
+
+.md-to-docx-float-action {
+  width: 100%;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: var(--md-radius-btn) !important;
+  background: var(--md-blue) !important;
+  color: #fff !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: var(--md-font);
+  line-height: 1.2 !important;
+  transition: background 0.15s ease;
+}
+
+.md-to-docx-float-action:hover {
+  background: var(--md-blue-dark) !important;
+}
+
+.md-to-docx-float-action .md-to-docx-md-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  font-size: 9px;
+}
+
+.md-to-docx-float-hint {
+  margin: 8px 0 0;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--md-muted);
+  text-align: center;
+}
+
+.md-to-docx-float-svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .md-to-docx-toast {
   position: fixed;
-  bottom: 72px;
+  bottom: 80px;
   right: 24px;
   max-width: 360px;
   padding: 12px 16px;
@@ -105,7 +268,8 @@
   font-size: 13px;
   z-index: 2147483647;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--md-font);
+  box-sizing: border-box;
 }
 
 .md-to-docx-batch-cb {
@@ -125,14 +289,18 @@
   gap: 10px;
   padding: 8px 12px;
   background: #fff;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--md-border);
   border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: var(--md-shadow);
+  font-family: var(--md-font);
   font-size: 12px;
-  color: #24292f;
+  color: var(--md-ink);
 }
 
 .md-to-docx-batch-label {
   white-space: nowrap;
+}
+
+.md-to-docx-batch-bar .md-to-docx-export-btn {
+  margin-left: 0;
 }

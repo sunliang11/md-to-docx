@@ -8,7 +8,7 @@ Conversion runs on your **local** md-to-docx Playground — not on a cloud servi
 
 - **Full conversation export** on supported AI sites (user + assistant turns)
 - **Batch export** on ChatGPT / Claude / Doubao: checkbox sidebar threads → one combined file
-- **Floating button** (**on by default** as edge peek; hover to expand; × collapses again)
+- **Floating button** (**on by default** as a framed circular launcher; click to open export sheet; drag to move)
 - **Webpage export**: selection if present, otherwise `article` / `main` / largest content block, with cleaner Markdown spacing
 - Offline-aware labels: **Export to Word** vs **Export MD**
 
@@ -27,7 +27,7 @@ Conversion runs on your **local** md-to-docx Playground — not on a cloud servi
 
 ### Floating button (any page, including AI sites)
 
-**On by default as a thin edge tab** — hover to expand. Drag to move. Click **×** to collapse again. Uncheck *Show floating export button* in Options to remove it completely.
+**On by default as a framed circular FAB** — click to open a light export sheet, then export. Drag to move. Click outside, Esc, or × to close the sheet. Uncheck *Show floating export button* in Options to remove it completely.
 
 The extension requests broad host access for webpage export; content still goes only to your configured local endpoint.
 
@@ -61,7 +61,7 @@ Click extension → Options (or open `src/options.html`):
 - **Endpoint URL** — Playground base URL
 - **Preset** — default `technical`
 - **Fallback .md** — download markdown if convert fails / offline
-- **Show floating button** — thin edge tab by default; hover to expand
+- **Show floating button** — framed circular launcher; click to open export sheet
 
 ## Usage
 
@@ -69,7 +69,7 @@ Click extension → Options (or open `src/options.html`):
 2. Open a supported AI site or any webpage in Chrome
 3. **Current chat:** click **Export to Word** / **Export MD** on the last reply → exports the **full** open conversation
 4. **Batch:** tick checkboxes in the sidebar (ChatGPT / Claude / Doubao) → **Export selected (N)** → one combined document
-5. **Webpage / floating:** hover the edge tab to expand, then export (or select text first)
+5. **Webpage / floating:** click the circular launcher → **Export to Word** / **Export MD** in the sheet (or select text first)
 
 After installing or updating the extension, **refresh** open tabs. Reloading the extension without refreshing leaves a dead content script that cannot call `chrome.storage`.
 
@@ -78,8 +78,8 @@ After installing or updating the extension, **refresh** open tabs. Reloading the
 | Symptom | Fix |
 |---------|-----|
 | Button says Export MD | Playground not reachable at the endpoint — start Docker or fix Options URL |
-| No floating button | Options → enable *Show floating export button*, Save, then refresh. If collapsed, hover the thin edge tab |
-| Floating only a thin strip | Hover it to expand; it was collapsed with × |
+| No floating button | Options → enable *Show floating export button*, Save, then refresh |
+| Floating is only a circle | Click the launcher to open the export sheet |
 | Doubao: no toolbar button | Enable floating button as fallback; refresh after update |
 | Batch missing threads | Scroll the sidebar so items are rendered, then tick them |
 | Using Cursor side panel | Switch to a Chrome tab |
