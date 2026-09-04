@@ -7,16 +7,19 @@ const { JSDOM } = require("jsdom");
 
 const ROOT = path.join(__dirname, "..");
 
-function createDom(html, url = "https://example.com") {
+function createDom(html, url = "https://example.com", options = {}) {
   const dom = new JSDOM(html, {
     url,
     pretendToBeVisual: true,
     runScripts: "outside-only",
   });
-  dom.window.MutationObserver = class {
-    observe() {}
-    disconnect() {}
-  };
+  if (!options.realMutationObserver) {
+    // Adapters observe body; a live observer can recurse during fixture setup.
+    dom.window.MutationObserver = class {
+      observe() {}
+      disconnect() {}
+    };
+  }
   // Stub chrome.storage for export.js
   dom.window.chrome = {
     storage: {
@@ -205,6 +208,48 @@ test("extractPageMarkdown strips nav from clone", () => {
   const md = dom.window.MdToDocxExtract.extractPageMarkdown(dom.window.document);
   assert.match(md, /Title/);
   assert.doesNotMatch(md, /SkipNav/);
+});
+
+test("floating button remounts after SPA removes it", async () => {
+  const dom = createDom("<body><div id='app'>content</div></body>", "https://example.com", {
+    realMutationObserver: true,
+  });
+  runInWindow(dom, "src/lib/html-to-md.js");
+  runInWindow(dom, "src/lib/extract.js");
+  runInWindow(dom, "src/lib/export.js");
+
+  dom.window.MdToDocxExport.injectFloatingButton(() => {});
+  await new Promise((r) => setTimeout(r, 30));
+
+  let float = dom.window.document.querySelector(".md-to-docx-float");
+  assert.ok(float, "float should mount initially");
+  assert.equal(float.isConnected, true);
+
+  float.remove();
+  assert.equal(dom.window.document.querySelector(".md-to-docx-float"), null);
+
+  await new Promise((r) => setTimeout(r, 150));
+
+  float = dom.window.document.querySelector(".md-to-docx-float");
+  assert.ok(float, "float should remount after SPA remove");
+  assert.equal(float.isConnected, true);
+  assert.ok(dom.window.document.body.contains(float));
+});
+
+test("injectFloatingButton builds close icon without innerHTML", async () => {
+  const dom = createDom("<body></body>");
+  runInWindow(dom, "src/lib/html-to-md.js");
+  runInWindow(dom, "src/lib/extract.js");
+  runInWindow(dom, "src/lib/export.js");
+
+  dom.window.MdToDocxExport.injectFloatingButton(() => {});
+  await new Promise((r) => setTimeout(r, 30));
+
+  const close = dom.window.document.querySelector(".md-to-docx-float-sheet-close");
+  assert.ok(close);
+  const svg = close.querySelector("svg.md-to-docx-float-svg");
+  assert.ok(svg);
+  assert.ok(svg.querySelector("path"));
 });
 
 test("getSettings degrades when extension context is dead", async () => {

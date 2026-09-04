@@ -179,8 +179,23 @@
     return online ? "Local Playground" : "Download Markdown";
   }
 
-  const FLOAT_CLOSE_SVG =
-    '<svg class="md-to-docx-float-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+  function createCloseSvg() {
+    const NS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "md-to-docx-float-svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "14");
+    svg.setAttribute("height", "14");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "2.5");
+    svg.setAttribute("stroke-linecap", "round");
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("d", "M18 6L6 18M6 6l12 12");
+    svg.appendChild(path);
+    return svg;
+  }
 
   function createMdBadge() {
     const badge = document.createElement("span");
@@ -522,129 +537,179 @@
       return action || existing;
     }
 
-    const wrap = document.createElement("div");
-    wrap.className = "md-to-docx-float";
-    wrap.style.display = "none";
+    let wrap;
+    let action;
+    let allowShow = true;
+    let remountTimer = null;
+    let remountObserver = null;
 
-    const launcher = document.createElement("button");
-    launcher.type = "button";
-    launcher.className = "md-to-docx-float-launcher";
-    launcher.setAttribute("aria-expanded", "false");
-    launcher.setAttribute("aria-haspopup", "dialog");
-    launcher.title = LABEL_WORD + " (drag to move)";
-    launcher.setAttribute("aria-label", LABEL_WORD + " (drag to move)");
-    launcher.appendChild(createMdBadge());
+    try {
+      wrap = document.createElement("div");
+      wrap.className = "md-to-docx-float";
+      wrap.style.display = "none";
 
-    const status = document.createElement("span");
-    status.className = "md-to-docx-float-status";
-    status.dataset.online = "0";
-    status.setAttribute("aria-hidden", "true");
-    launcher.appendChild(status);
+      const launcher = document.createElement("button");
+      launcher.type = "button";
+      launcher.className = "md-to-docx-float-launcher";
+      launcher.setAttribute("aria-expanded", "false");
+      launcher.setAttribute("aria-haspopup", "dialog");
+      launcher.title = LABEL_WORD + " (drag to move)";
+      launcher.setAttribute("aria-label", LABEL_WORD + " (drag to move)");
+      launcher.appendChild(createMdBadge());
 
-    const sheet = document.createElement("div");
-    sheet.className = "md-to-docx-float-sheet";
-    sheet.setAttribute("role", "dialog");
-    sheet.setAttribute("aria-label", "Export");
+      const status = document.createElement("span");
+      status.className = "md-to-docx-float-status";
+      status.dataset.online = "0";
+      status.setAttribute("aria-hidden", "true");
+      launcher.appendChild(status);
 
-    const header = document.createElement("div");
-    header.className = "md-to-docx-float-sheet-header";
+      const sheet = document.createElement("div");
+      sheet.className = "md-to-docx-float-sheet";
+      sheet.setAttribute("role", "dialog");
+      sheet.setAttribute("aria-label", "Export");
 
-    const title = document.createElement("span");
-    title.className = "md-to-docx-float-sheet-title";
-    title.textContent = "Export";
+      const header = document.createElement("div");
+      header.className = "md-to-docx-float-sheet-header";
 
-    const close = document.createElement("button");
-    close.type = "button";
-    close.className = "md-to-docx-float-sheet-close";
-    close.setAttribute("aria-label", "Close");
-    close.title = "Close";
-    close.innerHTML = FLOAT_CLOSE_SVG;
+      const title = document.createElement("span");
+      title.className = "md-to-docx-float-sheet-title";
+      title.textContent = "Export";
 
-    header.appendChild(title);
-    header.appendChild(close);
+      const close = document.createElement("button");
+      close.type = "button";
+      close.className = "md-to-docx-float-sheet-close";
+      close.setAttribute("aria-label", "Close");
+      close.title = "Close";
+      close.appendChild(createCloseSvg());
 
-    const action = document.createElement("button");
-    action.type = "button";
-    action.className = "md-to-docx-export-btn md-to-docx-float-action";
+      header.appendChild(title);
+      header.appendChild(close);
 
-    const actionLabel = document.createElement("span");
-    actionLabel.className = "md-to-docx-float-label";
-    actionLabel.textContent = LABEL_WORD;
+      action = document.createElement("button");
+      action.type = "button";
+      action.className = "md-to-docx-export-btn md-to-docx-float-action";
 
-    action.appendChild(createMdBadge());
-    action.appendChild(actionLabel);
+      const actionLabel = document.createElement("span");
+      actionLabel.className = "md-to-docx-float-label";
+      actionLabel.textContent = LABEL_WORD;
 
-    const hint = document.createElement("p");
-    hint.className = "md-to-docx-float-hint";
-    hint.textContent = exportHint(false);
+      action.appendChild(createMdBadge());
+      action.appendChild(actionLabel);
 
-    sheet.appendChild(header);
-    sheet.appendChild(action);
-    sheet.appendChild(hint);
+      const hint = document.createElement("p");
+      hint.className = "md-to-docx-float-hint";
+      hint.textContent = exportHint(false);
 
-    wrap.appendChild(launcher);
-    wrap.appendChild(sheet);
+      sheet.appendChild(header);
+      sheet.appendChild(action);
+      sheet.appendChild(hint);
 
-    function closeSheet() {
-      setFloatOpen(wrap, false);
+      wrap.appendChild(launcher);
+      wrap.appendChild(sheet);
+
+      function closeSheet() {
+        setFloatOpen(wrap, false);
+      }
+
+      function toggleSheet() {
+        setFloatOpen(wrap, !wrap.classList.contains("md-to-docx-float-open"));
+      }
+
+      launcher.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (wrap.dataset.dragged === "1") return;
+        toggleSheet();
+      });
+
+      close.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSheet();
+      });
+
+      action.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSheet();
+        onClick();
+      });
+
+      function onDocPointerDown(e) {
+        if (!wrap.classList.contains("md-to-docx-float-open")) return;
+        if (wrap.contains(e.target)) return;
+        closeSheet();
+      }
+
+      function onDocKeyDown(e) {
+        if (e.key !== "Escape") return;
+        if (!wrap.classList.contains("md-to-docx-float-open")) return;
+        closeSheet();
+      }
+
+      document.addEventListener("pointerdown", onDocPointerDown, true);
+      document.addEventListener("keydown", onDocKeyDown, true);
+
+      enableFloatDrag(wrap, closeSheet);
+    } catch (_) {
+      return null;
     }
 
-    function toggleSheet() {
-      setFloatOpen(wrap, !wrap.classList.contains("md-to-docx-float-open"));
+    function remountIfDetached() {
+      if (!allowShow || !wrap || !document.body) return;
+      if (wrap.isConnected) return;
+      if (document.querySelector(".md-to-docx-float")) return;
+      try {
+        document.body.appendChild(wrap);
+      } catch (_) {}
     }
 
-    launcher.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (wrap.dataset.dragged === "1") return;
-      toggleSheet();
-    });
-
-    close.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      closeSheet();
-    });
-
-    action.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      closeSheet();
-      onClick();
-    });
-
-    function onDocPointerDown(e) {
-      if (!wrap.classList.contains("md-to-docx-float-open")) return;
-      if (wrap.contains(e.target)) return;
-      closeSheet();
+    function scheduleRemountCheck() {
+      if (remountTimer != null) return;
+      remountTimer = setTimeout(() => {
+        remountTimer = null;
+        remountIfDetached();
+      }, 80);
     }
 
-    function onDocKeyDown(e) {
-      if (e.key !== "Escape") return;
-      if (!wrap.classList.contains("md-to-docx-float-open")) return;
-      closeSheet();
+    function ensureRemountObserver() {
+      if (remountObserver || typeof MutationObserver === "undefined") return;
+      try {
+        remountObserver = new MutationObserver(() => {
+          if (!allowShow) return;
+          if (wrap && !wrap.isConnected) scheduleRemountCheck();
+        });
+        remountObserver.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+        });
+      } catch (_) {
+        remountObserver = null;
+      }
     }
-
-    document.addEventListener("pointerdown", onDocPointerDown, true);
-    document.addEventListener("keydown", onDocKeyDown, true);
-
-    enableFloatDrag(wrap, closeSheet);
 
     function mount() {
-      if (!document.body) return;
-      if (document.querySelector(".md-to-docx-float")) return;
-      document.body.appendChild(wrap);
-      trackButton(action);
-      storageLocalGet(["floatPos"])
-        .then((items) => {
-          applyFloatPosition(wrap, items.floatPos);
-        })
-        .catch(() => {});
+      try {
+        if (!document.body) return;
+        if (document.querySelector(".md-to-docx-float")) return;
+        document.body.appendChild(wrap);
+        trackButton(action);
+        ensureRemountObserver();
+        storageLocalGet(["floatPos"])
+          .then((items) => {
+            applyFloatPosition(wrap, items.floatPos);
+          })
+          .catch(() => {});
+      } catch (_) {}
     }
 
     getSettings()
       .then((settings) => {
-        if (opts.requireSetting !== false && settings.showFloating === false) return;
+        if (opts.requireSetting !== false && settings.showFloating === false) {
+          allowShow = false;
+          return;
+        }
+        allowShow = true;
         wrap.style.display = "";
         if (document.body) mount();
         else document.addEventListener("DOMContentLoaded", mount, { once: true });

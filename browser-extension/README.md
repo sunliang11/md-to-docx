@@ -78,7 +78,7 @@ After installing or updating the extension, **refresh** open tabs. Reloading the
 | Symptom | Fix |
 |---------|-----|
 | Button says Export MD | Playground not reachable at the endpoint — start Docker or fix Options URL |
-| No floating button | Options → enable *Show floating export button*, Save, then refresh |
+| No floating button | Options → enable *Show floating export button*, Save, then refresh. On generic sites (e.g. Zhihu) only the circular **MD** FAB appears — set extension Site access to **On all sites**, refresh the tab. After this version, SPA pages that wipe the DOM remount the FAB automatically. |
 | Floating is only a circle | Click the launcher to open the export sheet |
 | Doubao: no toolbar button | Enable floating button as fallback; refresh after update |
 | Batch missing threads | Scroll the sidebar so items are rendered, then tick them |

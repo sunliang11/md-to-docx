@@ -19,6 +19,11 @@
     setup();
   }
 
+  // SPA pages (e.g. Zhihu) may wipe body after idle; retry covers the race
+  // before the shared remount observer is attached.
+  setTimeout(setup, 1000);
+  setTimeout(setup, 3000);
+
   if (typeof module !== "undefined" && module.exports) {
     module.exports = { exportPage };
   }
