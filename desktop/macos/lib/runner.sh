@@ -35,7 +35,7 @@ die_notify() {
 
 load_conf() {
   CLI=""
-  PRESET="technical"
+  PRESET=""
   EXTRA_ARGS=""
   if [[ -f "$CONF_FILE" ]]; then
     # shellcheck disable=SC1090
@@ -117,8 +117,14 @@ for raw in "$@"; do
       fail_names+=("${base} (not .md)")
       continue
     fi
+    status=0
     # shellcheck disable=SC2086
-    if "$CLI" "$f" --preset "$PRESET" $EXTRA_ARGS; then
+    if [[ -n "$PRESET" ]]; then
+      "$CLI" "$f" --preset "$PRESET" $EXTRA_ARGS || status=$?
+    else
+      "$CLI" "$f" $EXTRA_ARGS || status=$?
+    fi
+    if [[ "$status" -eq 0 ]]; then
       ok=$((ok + 1))
     else
       fail=$((fail + 1))

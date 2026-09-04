@@ -26,7 +26,7 @@ function Show-Notify {
 
 function Read-Conf {
     $cli = $env:MD_TO_DOCX_CLI
-    $preset = "technical"
+    $preset = ""
     $extraArgs = @()
 
     if (Test-Path -LiteralPath $ConfFile) {
@@ -91,7 +91,11 @@ foreach ($f in $Files) {
                 $failNames.Add("$base (not .md)")
                 continue
             }
-            $argList = @($f, "--preset", $cfg.Preset) + $cfg.ExtraArgs
+            if ($cfg.Preset) {
+                $argList = @($f, "--preset", $cfg.Preset) + $cfg.ExtraArgs
+            } else {
+                $argList = @($f) + $cfg.ExtraArgs
+            }
             & $cfg.Cli @argList
             if ($LASTEXITCODE -ne 0) { throw "exit $LASTEXITCODE" }
             $ok++

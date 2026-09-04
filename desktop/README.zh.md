@@ -4,8 +4,10 @@
 
 | 文件 | 操作 |
 |------|------|
-| `.md` / `.markdown` | **Convert to Word (md-to-docx)** → `md-to-docx <file> --preset technical` |
+| `.md` / `.markdown` | **Convert to Word (md-to-docx)** → `md-to-docx <file>`（与裸 CLI 相同，黑标题） |
 | `.docx` | **Reverse to Markdown (md-to-docx)** → `md-to-docx reverse <file>` |
+
+每种类型只显示对应操作（Markdown → 转 Word，DOCX → 转 MD）。文件夹与其它文件类型不会出现这些菜单项。
 
 输出写在源文件同目录（与 CLI 一致）。
 
@@ -29,7 +31,7 @@ where md-to-docx          # Windows
 bash desktop/macos/install.sh
 ```
 
-然后在 Finder 中：右键 `.md` 或 `.docx`，在菜单**底部**查找 **Convert to Word (md-to-docx)** / **Reverse to Markdown (md-to-docx)**。服务项较少时直接出现在主菜单；较多时在 **服务** 子菜单里。
+然后在 Finder 中：右键 `.md` 或 `.docx`，在菜单**底部**查找对应操作（Markdown 为 **Convert to Word**，DOCX 为 **Reverse to Markdown**）。服务项较少时直接出现在主菜单；较多时在 **服务** 子菜单里。
 
 若看不到菜单：
 
@@ -68,13 +70,13 @@ powershell -ExecutionPolicy Bypass -File desktop/windows/uninstall.ps1
 
 ```bash
 CLI="/absolute/path/to/md-to-docx"
-PRESET="technical"
+PRESET=""
 EXTRA_ARGS=""
 ```
 
 - **CLI** — 安装时写入的绝对路径（GUI 启动的菜单通常没有你的 shell `PATH`）
   macOS 安装脚本会通过 **Homebrew 或 root pyenv** 解析到 `~/.pyenv/versions/<ver>/bin/md-to-docx`（不要把 conf 写成 `shims/` 路径，Finder 无法运行 shim）。
-- **PRESET** — 正向转换的 `--preset`（默认 `technical`）
+- **PRESET** — 若设置则作为正向转换的 `--preset`。默认空（与裸 CLI 一致，黑标题）。需要蓝标题可设 `PRESET="technical"`。
 - **EXTRA_ARGS** — 可选额外 CLI 参数（空格分隔）
 - **`MD_TO_DOCX_CLI`** — 安装或运行时可覆盖配置中的 `CLI`
 

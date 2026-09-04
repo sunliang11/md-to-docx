@@ -4,8 +4,10 @@ One-click install of **system right-click** actions for **md-to-docx** (current 
 
 | File | Action |
 |------|--------|
-| `.md` / `.markdown` | **Convert to Word (md-to-docx)** → `md-to-docx <file> --preset technical` |
+| `.md` / `.markdown` | **Convert to Word (md-to-docx)** → `md-to-docx <file>` (same as bare CLI; black headings) |
 | `.docx` | **Reverse to Markdown (md-to-docx)** → `md-to-docx reverse <file>` |
+
+Only the matching action appears for each type (Convert on Markdown, Reverse on DOCX). Folders and other file types do not show these menu items.
 
 Output is written beside the source file (same as the CLI).
 
@@ -29,7 +31,7 @@ where md-to-docx          # Windows
 bash desktop/macos/install.sh
 ```
 
-Then in Finder: right-click a `.md` or `.docx` and look near the **bottom** of the menu for **Convert to Word (md-to-docx)** / **Reverse to Markdown (md-to-docx)**. With few Services enabled they appear inline; with many they sit under **Services**.
+Then in Finder: right-click a `.md` or `.docx` and look near the **bottom** of the menu for the matching action (**Convert to Word** for Markdown, **Reverse to Markdown** for DOCX). With few Services enabled they appear inline; with many they sit under **Services**.
 
 If the items are missing:
 
@@ -68,13 +70,13 @@ Uninstall removes only the context-menu hooks and local runner/config. It does *
 
 ```bash
 CLI="/absolute/path/to/md-to-docx"
-PRESET="technical"
+PRESET=""
 EXTRA_ARGS=""
 ```
 
 - **CLI** — absolute path baked in at install time (GUI launchers often lack your shell `PATH`).
   On macOS the installer resolves **Homebrew or root pyenv** to `~/.pyenv/versions/<ver>/bin/md-to-docx` (never write a `shims/` path into the config — Finder cannot run shims).
-- **PRESET** — passed as `--preset` for convert (default `technical`).
+- **PRESET** — if set, passed as `--preset` for convert. Default empty (matches bare CLI / black headings). Example: `PRESET="technical"` for the blue technical style.
 - **EXTRA_ARGS** — optional extra CLI flags (space-separated).
 - **`MD_TO_DOCX_CLI`** — if set at install or run time, overrides the config `CLI`.
 
