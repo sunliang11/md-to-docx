@@ -30,6 +30,7 @@ English | [中文](README.zh.md)
 - ✓ **MCP** — convert, validate, apply_template, list_presets ([mcp](references/mcp.md))
 - ✓ **Cursor / Claude / Codex / Gemini** — [SKILL.md](SKILL.md) · [skills/](skills/)
 - ✓ **Browser Extension** — export ChatGPT / Claude / Gemini chats ([extension](browser-extension/README.md))
+- ✓ **Desktop context menu** — Finder / Explorer right-click `.md` ↔ `.docx` ([desktop](desktop/README.md))
 - ✓ **GitHub Action** — CI builds DOCX from Markdown ([action](action/README.md))
 - ✓ **Local & Private** — no API keys, self-host with Docker or Codespaces
 
@@ -77,7 +78,7 @@ See the full [examples gallery](examples/README.md).
 
 ### Ecosystem
 
-[CLI](references/cli.md) · [MCP](references/mcp.md) · [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) · [Browser](browser-extension/README.md) · [GitHub Action](action/README.md) · [Docker](web/README.md)
+[CLI](references/cli.md) · [MCP](references/mcp.md) · [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) · [Browser](browser-extension/README.md) · [Desktop](desktop/README.md) · [GitHub Action](action/README.md) · [Docker](web/README.md)
 
 ---
 
@@ -113,6 +114,20 @@ uvicorn web.app:app --reload --port 8080
 
 Modes: **Convert** (presets, TOC, numbering, community templates, ODM syntax inserts, validate, engine preview, export DOCX), **Reverse** (DOCX → Markdown), **Diff** (structural compare). MCP / editors / GitHub Action stay in their own docs.
 
+**Option E — Desktop context menu (Finder / Explorer)**
+
+Requires `md-to-docx` on your `PATH` (see [Install](#install)). Then:
+
+```bash
+# macOS
+bash desktop/macos/install.sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy Bypass -File desktop/windows/install.ps1
+```
+
+Right-click `.md` → Word; right-click `.docx` → Markdown. Details and uninstall: [desktop/README.md](desktop/README.md).
+
 ## Commands
 
 ```bash
@@ -145,6 +160,7 @@ md-to-docx ./docs --dry-run
 | **Extend** | Hook custom transforms with a small Python plugin | `md-to-docx report.md --plugin my_plugin.py` |
 | **Automate (CI)** | Build DOCX in GitHub Actions; keep `.md` in Git | `uses: sunliang11/md-to-docx/action@v1.1.0` |
 | **Editor export** | Right-click in VS Code or Obsidian → export Word | [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) |
+| **Desktop context menu** | Finder / Explorer right-click `.md` ↔ `.docx` | [desktop/README.md](desktop/README.md) |
 | **AI agents** | Cursor / MCP / browser — local, no API keys | [SKILL.md](SKILL.md) · [MCP](references/mcp.md) |
 
 **Pipeline:** Markdown / AI output → Document AST → Professional DOCX (and back).
@@ -163,6 +179,7 @@ md-to-docx ./docs --dry-run
 | Browser extension | Export ChatGPT / Claude / Gemini chats to Word | [browser-extension/README.md](browser-extension/README.md) |
 | VS Code | Command `MD: Export to DOCX` on Markdown files | [editors/vscode/README.md](editors/vscode/README.md) |
 | Obsidian | `Export to Professional Word` (desktop only) | [editors/obsidian/README.md](editors/obsidian/README.md) |
+| Finder / Explorer | One-click system context menu for `.md` / `.docx` | [desktop/README.md](desktop/README.md) |
 | GitHub Action | CI builds DOCX from Markdown | [action/README.md](action/README.md) |
 
 ## Document support
@@ -251,6 +268,7 @@ Install options and entry points: [CLI Reference — How to run commands](refere
 - [GitHub Action](action/README.md)
 - [Web Playground](web/README.md)
 - [Browser extension](browser-extension/README.md)
+- [Desktop context menu](desktop/README.md)
 - [VS Code extension](editors/vscode/README.md)
 - [Obsidian plugin](editors/obsidian/README.md)
 - [Examples gallery](examples/README.md)

@@ -30,6 +30,7 @@
 - ✓ **MCP** — convert、validate、apply_template、list_presets（[mcp](references/mcp.md)）
 - ✓ **Cursor / Claude / Codex / Gemini** — [SKILL.md](SKILL.md) · [skills/](skills/)
 - ✓ **浏览器扩展** — 从 ChatGPT / Claude / Gemini 对话导出 Word（[extension](browser-extension/README.md)）
+- ✓ **桌面右键** — Finder / 资源管理器对 `.md` ↔ `.docx` 一键转换（[desktop](desktop/README.zh.md)）
 - ✓ **GitHub Action** — CI 从 Markdown 构建 DOCX（[action](action/README.md)）
 - ✓ **本地 & 私有** — 无需 API Key，Docker 或 Codespaces 自托管
 
@@ -77,7 +78,7 @@ ChatGPT · Claude · Cursor · Codex · Gemini
 
 ### 生态
 
-[CLI](references/cli.zh.md) · [MCP](references/mcp.md) · [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) · [Browser](browser-extension/README.md) · [GitHub Action](action/README.md) · [Docker](web/README.md)
+[CLI](references/cli.zh.md) · [MCP](references/mcp.md) · [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) · [Browser](browser-extension/README.md) · [Desktop](desktop/README.zh.md) · [GitHub Action](action/README.md) · [Docker](web/README.md)
 
 ---
 
@@ -113,6 +114,20 @@ uvicorn web.app:app --reload --port 8080
 
 模式：**转换**（预设、目录、编号、社区模板、ODM 语法插入、校验、引擎预览、导出 DOCX）、**反向**（DOCX → Markdown）、**对比**（结构 diff）。MCP / 编辑器 / GitHub Action 仍见各自文档。
 
+**方式 E — 桌面右键菜单（Finder / 资源管理器）**
+
+需先将 `md-to-docx` 装到 `PATH`（见 [安装](#安装)），然后：
+
+```bash
+# macOS
+bash desktop/macos/install.sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy Bypass -File desktop/windows/install.ps1
+```
+
+右键 `.md` → Word；右键 `.docx` → Markdown。详情与卸载见 [desktop/README.zh.md](desktop/README.zh.md)。
+
 ## 命令
 
 ```bash
@@ -145,6 +160,7 @@ md-to-docx ./docs --dry-run
 | **自定义插件** | 用小型 Python 插件改写转换逻辑 | `md-to-docx report.md --plugin my_plugin.py` |
 | **CI 自动化** | GitHub Actions 构建 DOCX，仓库里只留 .md | `uses: sunliang11/md-to-docx/action@v1.1.0` |
 | **编辑器导出** | VS Code / Obsidian 右键一键导出 Word | [VS Code](editors/vscode/README.md) · [Obsidian](editors/obsidian/README.md) |
+| **桌面右键** | Finder / 资源管理器右键 `.md` ↔ `.docx` | [desktop/README.zh.md](desktop/README.zh.md) |
 | **AI 接入** | Cursor / MCP / 浏览器 — 全本地，无需 API Key | [SKILL.md](SKILL.md) · [MCP](references/mcp.md) |
 
 **处理流程：** Markdown / AI 输出 → Document AST → 专业 DOCX（亦可反向）。
@@ -163,6 +179,7 @@ md-to-docx ./docs --dry-run
 | 浏览器扩展 | 从 ChatGPT / Claude / Gemini 对话导出 Word | [browser-extension/README.md](browser-extension/README.md) |
 | VS Code | 命令 `MD: Export to DOCX`，Markdown 右键菜单 | [editors/vscode/README.md](editors/vscode/README.md) |
 | Obsidian | `Export to Professional Word`（仅桌面端） | [editors/obsidian/README.md](editors/obsidian/README.md) |
+| Finder / 资源管理器 | 一键安装系统右键菜单（`.md` / `.docx`） | [desktop/README.zh.md](desktop/README.zh.md) |
 | GitHub Action | CI 从 Markdown 构建 DOCX | [action/README.md](action/README.md) |
 
 ## 文档格式支持
@@ -251,6 +268,7 @@ md-to-docx report.md         # 或 ./bin/convert report.md（免 pip）
 - [GitHub Action](action/README.md)
 - [Web Playground](web/README.md)
 - [浏览器扩展](browser-extension/README.md)
+- [桌面右键菜单](desktop/README.zh.md)
 - [VS Code 扩展](editors/vscode/README.md)
 - [Obsidian 插件](editors/obsidian/README.md)
 - [示例库](examples/README.md)

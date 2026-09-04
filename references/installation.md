@@ -92,6 +92,18 @@ Convert a sample file:
 ./bin/convert tests/fixtures/sample.md --preset technical
 ```
 
+## Desktop context menu
+
+Install Finder / Explorer right-click actions (current user only). Requires `md-to-docx` on `PATH` first — see [Quick Start Option E](../README.md#quick-start) and [desktop/README.md](../desktop/README.md).
+
+```bash
+# macOS
+bash desktop/macos/install.sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy Bypass -File desktop/windows/install.ps1
+```
+
 ## Common errors
 
 | Error | Fix |
@@ -102,3 +114,4 @@ Convert a sample file:
 | `mmdc failed` / browser errors | Install Chrome/Chromium or set `MD_TO_DOCX_BROWSER` |
 | Template missing | `PYTHONPATH=scripts python -m md_to_docx.presets_build` |
 | `Python 3.9` or older | Upgrade to Python 3.10+ |
+| Context menu “CLI not found” | Re-run `desktop/*/install.*` from a shell where `md-to-docx` is on PATH, or set `MD_TO_DOCX_CLI` |
