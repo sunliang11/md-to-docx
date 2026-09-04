@@ -94,7 +94,7 @@ Convert a sample file:
 
 ## Desktop context menu
 
-Install Finder / Explorer right-click actions (current user only). Requires `md-to-docx` on `PATH` first — see [Quick Start Option E](../README.md#quick-start) and [desktop/README.md](../desktop/README.md).
+Install Finder / Explorer right-click actions (current user only). Requires `md-to-docx` on `PATH` first — see [Quick Start Option D](../README.md#quick-start) and [desktop/README.md](../desktop/README.md).
 
 ```bash
 # macOS

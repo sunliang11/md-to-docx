@@ -2,10 +2,6 @@
 
 Try md-to-docx in your browser — convert AI Markdown to DOCX without installing Python locally.
 
-## Quick start (GitHub Codespaces)
-
-From the [README](../README.md), click **Open in GitHub Codespaces**. The devcontainer installs web dependencies, builds presets, and starts the playground on port **8080** (forwarded automatically).
-
 ## Quick start (Docker)
 
 From the repository root:

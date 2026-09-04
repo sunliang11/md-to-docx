@@ -14,8 +14,7 @@
     Professional DOCX
 ```
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sunliang11/md-to-docx?quickstart=1)
-· [安装](#安装)
+[安装](#安装)
 · [GitHub](https://github.com/sunliang11/md-to-docx)
 
 ---
@@ -32,7 +31,7 @@
 - ✓ **浏览器扩展** — 从 ChatGPT / Claude / Gemini 对话导出 Word（[extension](browser-extension/README.md)）
 - ✓ **桌面右键** — Finder / 资源管理器对 `.md` ↔ `.docx` 一键转换（[desktop](desktop/README.zh.md)）
 - ✓ **GitHub Action** — CI 从 Markdown 构建 DOCX（[action](action/README.md)）
-- ✓ **本地 & 私有** — 无需 API Key，Docker 或 Codespaces 自托管
+- ✓ **本地 & 私有** — 无需 API Key，Docker 自托管
 
 ---
 
@@ -99,11 +98,7 @@ docker compose -f web/docker-compose.yml up --build
 # 浏览器打开 http://localhost:8080
 ```
 
-**方式 C — GitHub Codespaces（零本地安装）**
-
-在 [GitHub 仓库页](https://github.com/sunliang11/md-to-docx) 点击 **Open in GitHub Codespaces**（已打开的 Codespaces 内再点徽章无效）。首次创建需等待依赖安装；完成后 Web Playground 在 **8080** 启动。若浏览器未自动打开，打开 **Ports** 面板 → **Web Playground**。
-
-**方式 D — 本地 Web Playground（pip + uvicorn）**
+**方式 C — 本地 Web Playground（pip + uvicorn）**
 
 ```bash
 pip install -e ".[web]"
@@ -114,7 +109,7 @@ uvicorn web.app:app --reload --port 8080
 
 模式：**转换**（预设、目录、编号、社区模板、ODM 语法插入、校验、引擎预览、导出 DOCX）、**反向**（DOCX → Markdown）、**对比**（结构 diff）。MCP / 编辑器 / GitHub Action 仍见各自文档。
 
-**方式 E — 桌面右键菜单（Finder / 资源管理器）**
+**方式 D — 桌面右键菜单（Finder / 资源管理器）**
 
 需先将 `md-to-docx` 装到 `PATH`（见 [安装](#安装)），然后：
 
@@ -175,7 +170,7 @@ md-to-docx ./docs --dry-run
 | Cursor Skill | Agent 自动选 preset 并转换 | [SKILL.md](SKILL.md) |
 | Claude / Codex / Gemini | 各平台 Skill 副本 | [skills/](skills/) |
 | MCP | 四个工具：convert、validate、apply_template、list_presets | [mcp.md](references/mcp.md) |
-| Web Playground | 浏览器编辑并下载 DOCX（Docker / Codespaces） | [web/README.md](web/README.md) |
+| Web Playground | 浏览器编辑并下载 DOCX（Docker） | [web/README.md](web/README.md) |
 | 浏览器扩展 | 从 ChatGPT / Claude / Gemini 对话导出 Word | [browser-extension/README.md](browser-extension/README.md) |
 | VS Code | 命令 `MD: Export to DOCX`，Markdown 右键菜单 | [editors/vscode/README.md](editors/vscode/README.md) |
 | Obsidian | `Export to Professional Word`（仅桌面端） | [editors/obsidian/README.md](editors/obsidian/README.md) |

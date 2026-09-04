@@ -14,8 +14,7 @@ English | [中文](README.zh.md)
     Professional DOCX
 ```
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sunliang11/md-to-docx?quickstart=1)
-· [Install](#install)
+[Install](#install)
 · [GitHub](https://github.com/sunliang11/md-to-docx)
 
 ---
@@ -32,7 +31,7 @@ English | [中文](README.zh.md)
 - ✓ **Browser Extension** — export ChatGPT / Claude / Gemini chats ([extension](browser-extension/README.md))
 - ✓ **Desktop context menu** — Finder / Explorer right-click `.md` ↔ `.docx` ([desktop](desktop/README.md))
 - ✓ **GitHub Action** — CI builds DOCX from Markdown ([action](action/README.md))
-- ✓ **Local & Private** — no API keys, self-host with Docker or Codespaces
+- ✓ **Local & Private** — no API keys, self-host with Docker
 
 ---
 
@@ -99,11 +98,7 @@ docker compose -f web/docker-compose.yml up --build
 # open http://localhost:8080
 ```
 
-**Option C — GitHub Codespaces (zero local install)**
-
-Click **Open in GitHub Codespaces** on the [GitHub repo page](https://github.com/sunliang11/md-to-docx) (not inside an already-open Codespace). First create waits for dependency install; then the Web Playground starts on port **8080**. If the browser does not open, use the **Ports** panel → **Web Playground**.
-
-**Option D — Local Web Playground (pip + uvicorn)**
+**Option C — Local Web Playground (pip + uvicorn)**
 
 ```bash
 pip install -e ".[web]"
@@ -114,7 +109,7 @@ uvicorn web.app:app --reload --port 8080
 
 Modes: **Convert** (presets, TOC, numbering, community templates, ODM syntax inserts, validate, engine preview, export DOCX), **Reverse** (DOCX → Markdown), **Diff** (structural compare). MCP / editors / GitHub Action stay in their own docs.
 
-**Option E — Desktop context menu (Finder / Explorer)**
+**Option D — Desktop context menu (Finder / Explorer)**
 
 Requires `md-to-docx` on your `PATH` (see [Install](#install)). Then:
 
@@ -175,7 +170,7 @@ md-to-docx ./docs --dry-run
 | Cursor Skill | Agent picks a preset and converts for you | [SKILL.md](SKILL.md) |
 | Claude / Codex / Gemini | Platform-specific skill copies | [skills/](skills/) |
 | MCP | Four tools: convert, validate, apply_template, list_presets | [mcp.md](references/mcp.md) |
-| Web Playground | Edit in browser, download DOCX (Docker / Codespaces) | [web/README.md](web/README.md) |
+| Web Playground | Edit in browser, download DOCX (Docker) | [web/README.md](web/README.md) |
 | Browser extension | Export ChatGPT / Claude / Gemini chats to Word | [browser-extension/README.md](browser-extension/README.md) |
 | VS Code | Command `MD: Export to DOCX` on Markdown files | [editors/vscode/README.md](editors/vscode/README.md) |
 | Obsidian | `Export to Professional Word` (desktop only) | [editors/obsidian/README.md](editors/obsidian/README.md) |
