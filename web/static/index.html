@@ -15,7 +15,7 @@
   <header class="app-header">
     <div class="app-header__brand">
       <h1 class="app-header__title">md-to-docx</h1>
-      <span class="app-header__hint" id="i18n-header-hint">Markdown → DOCX playground</span>
+      <span class="app-header__hint" id="i18n-header-hint">Markdown → Word in the browser</span>
     </div>
     <div class="app-header__actions">
       <div class="lang-switch" role="group" id="lang-switch" aria-label="Language">
@@ -28,13 +28,19 @@
   </header>
 
   <nav class="mode-nav" aria-label="Playground mode">
-    <button type="button" class="mode-nav__btn mode-nav__btn--active" data-mode="convert" id="mode-convert">Convert</button>
-    <button type="button" class="mode-nav__btn" data-mode="reverse" id="mode-reverse">Reverse</button>
-    <button type="button" class="mode-nav__btn" data-mode="diff" id="mode-diff">Diff</button>
+    <button type="button" class="mode-nav__btn mode-nav__btn--active" data-mode="convert" id="mode-convert">To Word</button>
+    <button type="button" class="mode-nav__btn" data-mode="batch" id="mode-batch">Batch</button>
+    <button type="button" class="mode-nav__btn" data-mode="reverse" id="mode-reverse">From Word</button>
+    <button type="button" class="mode-nav__btn" data-mode="diff" id="mode-diff">Compare</button>
   </nav>
 
+  <!-- ── Convert toolbar ── -->
   <div class="toolbar" id="toolbar-convert" data-mode-panel="convert">
     <div class="toolbar__group">
+      <div class="segmented" role="group" id="convert-input-mode" aria-label="Input mode">
+        <button type="button" class="segmented__btn segmented__btn--active" data-input-mode="upload" id="input-mode-upload">Upload</button>
+        <button type="button" class="segmented__btn" data-input-mode="paste" id="input-mode-paste">Paste</button>
+      </div>
       <label class="field">
         <span class="field__label" id="i18n-label-example">Example</span>
         <select id="example" class="field__control">
@@ -49,10 +55,9 @@
         </select>
       </label>
     </div>
-
     <div class="toolbar__group toolbar__group--settings">
       <label class="field">
-        <span class="field__label" id="i18n-label-preset">Preset</span>
+        <span class="field__label" id="i18n-label-preset">Style</span>
         <select id="preset" class="field__control"></select>
       </label>
       <label class="field field--checkbox">
@@ -63,45 +68,108 @@
         <input type="checkbox" id="numbering">
         <span id="i18n-label-numbering">Heading numbers</span>
       </label>
-      <button type="button" id="toggle-options" class="btn btn--ghost" aria-expanded="false">Options</button>
+      <button type="button" id="toggle-options" class="btn btn--ghost" aria-expanded="false">More options</button>
     </div>
-
     <div class="toolbar__spacer"></div>
-
     <div class="toolbar__group toolbar__group--actions">
       <button type="button" id="validate" class="btn btn--ghost">
-        <span class="btn__label" id="i18n-btn-validate">Validate</span>
+        <span class="btn__label" id="i18n-btn-validate">Check</span>
       </button>
       <button type="button" id="copy-cli" class="btn btn--ghost">Copy CLI</button>
       <button type="button" id="generate" class="btn btn--primary">
-        <span class="btn__label" id="i18n-btn-export">Export Word (.docx)</span>
+        <span class="btn__label" id="i18n-btn-export">Export Word</span>
       </button>
     </div>
   </div>
 
   <div class="options-panel hidden" id="options-panel" data-mode-panel="convert">
-    <label class="field">
-      <span class="field__label" id="i18n-label-title">Title</span>
-      <input type="text" id="doc-title" class="field__control" autocomplete="off">
-    </label>
-    <label class="field">
-      <span class="field__label" id="i18n-label-author">Author</span>
-      <input type="text" id="doc-author" class="field__control" autocomplete="off">
-    </label>
-    <label class="field">
-      <span class="field__label" id="i18n-label-date">Date</span>
-      <input type="text" id="doc-date" class="field__control" autocomplete="off">
-    </label>
-    <label class="field">
-      <span class="field__label" id="i18n-label-template">Community template</span>
-      <select id="community-template" class="field__control">
-        <option value="" id="i18n-template-none">Preset default</option>
-      </select>
-    </label>
-    <label class="field field--checkbox field--checkbox-inline">
-      <input type="checkbox" id="page-numbers" checked>
-      <span id="i18n-label-page-numbers">Page numbers</span>
-    </label>
+    <div class="options-group">
+      <h3 class="options-group__title" id="i18n-opt-doc">Document info</h3>
+      <div class="options-group__fields">
+        <label class="field">
+          <span class="field__label" id="i18n-label-title">Title</span>
+          <input type="text" id="doc-title" class="field__control" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-author">Author</span>
+          <input type="text" id="doc-author" class="field__control" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-date">Date</span>
+          <input type="text" id="doc-date" class="field__control" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-version">Version</span>
+          <input type="text" id="doc-version" class="field__control" autocomplete="off">
+        </label>
+      </div>
+    </div>
+    <div class="options-group">
+      <h3 class="options-group__title" id="i18n-opt-structure">Contents &amp; pages</h3>
+      <div class="options-group__fields">
+        <label class="field">
+          <span class="field__label" id="i18n-label-toc-title">TOC title</span>
+          <input type="text" id="toc-title" class="field__control" placeholder="Contents" autocomplete="off">
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="page-numbers" checked>
+          <span id="i18n-label-page-numbers">Page numbers</span>
+        </label>
+      </div>
+    </div>
+    <div class="options-group">
+      <h3 class="options-group__title" id="i18n-opt-captions">Caption labels</h3>
+      <div class="options-group__fields">
+        <label class="field">
+          <span class="field__label" id="i18n-label-figure">Figure</span>
+          <input type="text" id="figure-label" class="field__control" placeholder="Figure" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-table">Table</span>
+          <input type="text" id="table-label" class="field__control" placeholder="Table" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-section">Section</span>
+          <input type="text" id="section-label" class="field__control" placeholder="Section" autocomplete="off">
+        </label>
+      </div>
+    </div>
+    <div class="options-group">
+      <h3 class="options-group__title" id="i18n-opt-behavior">Conversion</h3>
+      <div class="options-group__fields">
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="normalize" checked>
+          <span id="i18n-label-normalize">Auto-fix Markdown</span>
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="no-plugins">
+          <span id="i18n-label-no-plugins">Disable built-in plugins</span>
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="strict-mermaid">
+          <span id="i18n-label-strict-mermaid">Fail if Mermaid unavailable</span>
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="validate-strict">
+          <span id="i18n-label-validate-strict">Strict check (warnings as errors)</span>
+        </label>
+      </div>
+    </div>
+    <div class="options-group">
+      <h3 class="options-group__title" id="i18n-opt-template">Template</h3>
+      <div class="options-group__fields">
+        <label class="field">
+          <span class="field__label" id="i18n-label-template">Community template</span>
+          <select id="community-template" class="field__control">
+            <option value="" id="i18n-template-none">Preset default</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-template-upload">Or upload my template</span>
+          <input type="file" id="template-file" class="field__control field__control--file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+        </label>
+      </div>
+    </div>
   </div>
 
   <div class="snippet-bar" id="snippet-bar" data-mode-panel="convert">
@@ -114,34 +182,95 @@
     <button type="button" class="chip" data-snippet="math">Math</button>
   </div>
 
-  <div class="toolbar hidden" id="toolbar-reverse" data-mode-panel="reverse">
-    <div class="toolbar__group">
+  <!-- ── Batch toolbar ── -->
+  <div class="toolbar hidden" id="toolbar-batch" data-mode-panel="batch">
+    <div class="toolbar__group toolbar__group--settings">
       <label class="field">
-        <span class="field__label" id="i18n-label-docx">Word file</span>
-        <input type="file" id="reverse-file" class="field__control field__control--file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+        <span class="field__label" id="i18n-label-batch-preset">Style</span>
+        <select id="batch-preset" class="field__control"></select>
       </label>
+      <button type="button" id="toggle-batch-options" class="btn btn--ghost" aria-expanded="false">More options</button>
     </div>
     <div class="toolbar__spacer"></div>
     <div class="toolbar__group toolbar__group--actions">
-      <button type="button" id="copy-cli-reverse" class="btn btn--ghost">Copy CLI</button>
-      <button type="button" id="send-to-convert" class="btn btn--ghost" disabled>Send to Convert</button>
-      <button type="button" id="run-reverse" class="btn btn--primary">
-        <span class="btn__label" id="i18n-btn-reverse">Reverse to Markdown</span>
+      <button type="button" id="batch-dry-run" class="btn btn--ghost">
+        <span class="btn__label" id="i18n-btn-dry-run">Preview list</span>
+      </button>
+      <button type="button" id="copy-cli-batch" class="btn btn--ghost">Copy CLI</button>
+      <button type="button" id="run-batch" class="btn btn--primary">
+        <span class="btn__label" id="i18n-btn-batch">Download ZIP</span>
       </button>
     </div>
   </div>
 
+  <div class="options-panel hidden" id="batch-options-panel" data-mode-panel="batch">
+    <div class="options-group">
+      <h3 class="options-group__title" id="i18n-batch-opt-rules">Which files</h3>
+      <div class="options-group__fields options-group__fields--wide">
+        <label class="field field--grow">
+          <span class="field__label" id="i18n-label-exclude">Exclude patterns (one per line)</span>
+          <textarea id="batch-exclude" class="field__control field__control--area" rows="3" placeholder="*.draft.md"></textarea>
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="batch-skip-existing">
+          <span id="i18n-label-skip-existing">Skip if output already exists</span>
+        </label>
+      </div>
+    </div>
+    <div class="options-group">
+      <h3 class="options-group__title" id="i18n-batch-opt-style">Style extras</h3>
+      <div class="options-group__fields">
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="batch-toc" checked>
+          <span id="i18n-label-batch-toc">Table of contents</span>
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="batch-numbering">
+          <span id="i18n-label-batch-numbering">Heading numbers</span>
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="batch-page-numbers" checked>
+          <span id="i18n-label-batch-page-numbers">Page numbers</span>
+        </label>
+        <label class="field field--checkbox field--checkbox-inline">
+          <input type="checkbox" id="batch-normalize" checked>
+          <span id="i18n-label-batch-normalize">Auto-fix Markdown</span>
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-batch-template">Community template</span>
+          <select id="batch-template" class="field__control">
+            <option value="" id="i18n-batch-template-none">Preset default</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label" id="i18n-label-batch-template-upload">Or upload my template</span>
+          <input type="file" id="batch-template-file" class="field__control field__control--file" accept=".docx">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Reverse toolbar ── -->
+  <div class="toolbar hidden" id="toolbar-reverse" data-mode-panel="reverse">
+    <div class="toolbar__spacer"></div>
+    <div class="toolbar__group toolbar__group--actions">
+      <button type="button" id="copy-cli-reverse" class="btn btn--ghost">Copy CLI</button>
+      <button type="button" id="send-to-convert" class="btn btn--ghost" disabled>Send to Word</button>
+      <button type="button" id="run-reverse" class="btn btn--primary">
+        <span class="btn__label" id="i18n-btn-reverse">Convert to Markdown</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Diff toolbar ── -->
   <div class="toolbar hidden" id="toolbar-diff" data-mode-panel="diff">
     <div class="toolbar__group">
-      <label class="field">
-        <span class="field__label" id="i18n-label-diff-format">Format</span>
-        <select id="diff-format" class="field__control">
-          <option value="md">Markdown</option>
-          <option value="text">Text</option>
-          <option value="json">JSON</option>
-        </select>
-      </label>
+      <div class="segmented" role="group" id="diff-input-mode" aria-label="Diff input">
+        <button type="button" class="segmented__btn segmented__btn--active" data-diff-mode="upload" id="diff-mode-upload">Upload</button>
+        <button type="button" class="segmented__btn" data-diff-mode="paste" id="diff-mode-paste">Paste</button>
+      </div>
       <button type="button" id="load-diff-sample" class="btn btn--ghost">Load sample</button>
+      <button type="button" id="toggle-diff-options" class="btn btn--ghost" aria-expanded="false">More options</button>
     </div>
     <div class="toolbar__spacer"></div>
     <div class="toolbar__group toolbar__group--actions">
@@ -152,7 +281,18 @@
     </div>
   </div>
 
-  <div id="preset-hint" class="preset-hint" aria-live="polite"></div>
+  <div class="options-panel hidden" id="diff-options-panel" data-mode-panel="diff">
+    <label class="field">
+      <span class="field__label" id="i18n-label-diff-format">Output format</span>
+      <select id="diff-format" class="field__control">
+        <option value="md">Markdown</option>
+        <option value="text">Text</option>
+        <option value="json">JSON</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="preset-hint" class="preset-hint" aria-live="polite" data-mode-panel="convert"></div>
 
   <div id="error" class="error-panel hidden" role="alert">
     <div class="error-panel__body">
@@ -165,21 +305,32 @@
 
   <div id="validate-panel" class="validate-panel hidden" data-mode-panel="convert" aria-live="polite">
     <div class="validate-panel__head">
-      <h2 class="validate-panel__title" id="i18n-validate-title">Validation</h2>
+      <h2 class="validate-panel__title" id="i18n-validate-title">Check results</h2>
       <span class="validate-panel__meta" id="validate-meta"></span>
     </div>
     <ul id="validate-list" class="validate-list"></ul>
   </div>
 
+  <!-- ── Convert workspace ── -->
   <main class="workspace" id="workspace-convert" data-mode-panel="convert">
-    <section class="pane pane--editor">
+    <section class="pane pane--editor" id="convert-pane-upload">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-upload">Upload Markdown</h2>
+      </div>
+      <div class="dropzone dropzone--active" id="convert-dropzone">
+        <input type="file" id="convert-file" class="dropzone__input" accept=".md,text/markdown,text/plain">
+        <p class="dropzone__title" id="i18n-convert-drop-title">Drop a .md file here</p>
+        <p class="dropzone__hint" id="i18n-convert-drop-hint">or click to choose · max 400KB</p>
+      </div>
+    </section>
+    <section class="pane pane--editor hidden" id="convert-pane-editor">
       <div class="pane__header">
         <h2 class="pane__title" id="i18n-pane-markdown">Markdown</h2>
         <span class="pane__meta" id="char-count">0 B</span>
       </div>
       <textarea id="markdown" placeholder="# Technical Report&#10;&#10;Paste AI-generated Markdown here…" spellcheck="false"></textarea>
     </section>
-    <section class="pane pane--preview">
+    <section class="pane pane--preview" id="convert-pane-preview">
       <div class="pane__header">
         <h2 class="pane__title" id="i18n-pane-preview">Preview</h2>
         <div class="pane__badges">
@@ -191,13 +342,39 @@
     </section>
   </main>
 
+  <!-- ── Batch workspace ── -->
+  <div class="workspace hidden" id="workspace-batch" data-mode-panel="batch" hidden>
+    <section class="pane pane--editor">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-batch-in">Files</h2>
+        <button type="button" id="batch-clear" class="btn btn--ghost btn--small" hidden>Clear</button>
+      </div>
+      <div class="dropzone dropzone--active" id="batch-dropzone">
+        <input type="file" id="batch-files" class="dropzone__input" accept=".md,.zip" multiple>
+        <p class="dropzone__title" id="i18n-batch-drop-title">Drop .md files or a .zip</p>
+        <p class="dropzone__hint" id="i18n-batch-drop-hint">Multiple Markdown files, or one zip folder · max 10MB</p>
+      </div>
+      <ul id="batch-file-list" class="file-list hidden"></ul>
+    </section>
+    <section class="pane pane--preview">
+      <div class="pane__header">
+        <h2 class="pane__title" id="i18n-pane-batch-out">Plan</h2>
+      </div>
+      <pre id="batch-out" class="diff-out"></pre>
+    </section>
+  </div>
+
+  <!-- ── Reverse workspace ── -->
   <div class="workspace hidden" id="workspace-reverse" data-mode-panel="reverse" hidden>
     <section class="pane pane--editor">
       <div class="pane__header">
-        <h2 class="pane__title" id="i18n-pane-reverse-in">Upload</h2>
+        <h2 class="pane__title" id="i18n-pane-reverse-in">Upload Word</h2>
       </div>
-      <div class="dropzone" id="reverse-empty">
-        <p id="i18n-reverse-empty">Choose a .docx file (max 2MB). Output stays in memory and is deleted after reverse.</p>
+      <div class="dropzone dropzone--active" id="reverse-dropzone">
+        <input type="file" id="reverse-file" class="dropzone__input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+        <p class="dropzone__title" id="i18n-reverse-drop-title">Drop a .docx file here</p>
+        <p class="dropzone__hint" id="i18n-reverse-empty">or click to choose · max 2MB · stays in memory only</p>
+        <p class="dropzone__file" id="reverse-file-name" hidden></p>
       </div>
     </section>
     <section class="pane pane--preview">
@@ -209,26 +386,31 @@
     </section>
   </div>
 
+  <!-- ── Diff workspace ── -->
   <div class="workspace hidden" id="workspace-diff" data-mode-panel="diff" hidden>
-    <section class="pane pane--editor">
+    <section class="pane pane--editor" id="diff-pane-upload-a">
       <div class="pane__header">
         <h2 class="pane__title" id="i18n-pane-diff-a">Version A</h2>
-        <label class="file-mini">
-          <input type="file" id="diff-file-a" accept=".md,.docx">
-          <span id="i18n-upload-a">Upload</span>
-        </label>
       </div>
-      <textarea id="diff-a" class="diff-input" spellcheck="false"></textarea>
+      <div class="dropzone dropzone--active dropzone--compact" id="diff-drop-a">
+        <input type="file" id="diff-file-a" class="dropzone__input" accept=".md,.docx">
+        <p class="dropzone__title" id="i18n-diff-drop-a">Drop version A</p>
+        <p class="dropzone__hint">.md or .docx</p>
+        <p class="dropzone__file" id="diff-file-a-name" hidden></p>
+      </div>
+      <textarea id="diff-a" class="diff-input hidden" spellcheck="false"></textarea>
     </section>
-    <section class="pane pane--editor">
+    <section class="pane pane--editor" id="diff-pane-upload-b">
       <div class="pane__header">
         <h2 class="pane__title" id="i18n-pane-diff-b">Version B</h2>
-        <label class="file-mini">
-          <input type="file" id="diff-file-b" accept=".md,.docx">
-          <span id="i18n-upload-b">Upload</span>
-        </label>
       </div>
-      <textarea id="diff-b" class="diff-input" spellcheck="false"></textarea>
+      <div class="dropzone dropzone--active dropzone--compact" id="diff-drop-b">
+        <input type="file" id="diff-file-b" class="dropzone__input" accept=".md,.docx">
+        <p class="dropzone__title" id="i18n-diff-drop-b">Drop version B</p>
+        <p class="dropzone__hint">.md or .docx</p>
+        <p class="dropzone__file" id="diff-file-b-name" hidden></p>
+      </div>
+      <textarea id="diff-b" class="diff-input hidden" spellcheck="false"></textarea>
     </section>
     <section class="pane pane--preview pane--diff-out">
       <div class="pane__header">

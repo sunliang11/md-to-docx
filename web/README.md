@@ -24,11 +24,25 @@ PYTHONPATH=scripts python -m md_to_docx.presets_build
 uvicorn web.app:app --reload --port 8080
 ```
 
+## Modules
+
+Four top-level tasks (each has its own toolbar + workspace):
+
+| Module | Job | Main input |
+|--------|-----|------------|
+| **To Word** | One Markdown → one DOCX | Upload `.md` (default) or paste; style preset; export |
+| **Batch** | Many Markdown / zip → ZIP of DOCX | Drop multiple `.md` or one `.zip`; preview list or download |
+| **From Word** | DOCX → Markdown | Drop `.docx` |
+| **Compare** | Structural diff | Upload A/B (`.md` / `.docx`) or paste |
+
+Advanced convert options (metadata, caption labels, normalize, plugins, community or uploaded Word template, strict check) live under **More options** — not on the first screen.
+
 ## Features
 
-- **Convert** — Markdown editor, engine HTML preview (callouts, math, page breaks, Mermaid source), presets, TOC / numbering / metadata, community Word templates, ODM syntax inserts, **Validate**, export DOCX, Copy CLI
-- **Reverse** — upload `.docx` (max 2MB) → Markdown; copy or send to Convert
-- **Diff** — two Markdown (or uploaded `.md` / `.docx`) documents, output `md` / `text` / `json`
+- Upload-first flows with drag-and-drop; paste as a secondary path
+- Presets, TOC / numbering, community templates **or** upload your own `.docx` template
+- Validate / check (optional strict mode) on To Word
+- Batch: exclude globs, skip-existing, dry-run (“Preview list”), ZIP download
 - Example documents from `examples/`
 - Footer links to MCP, GitHub Action, and editor integrations (not run in the browser)
 
@@ -37,8 +51,9 @@ Preview is an AST HTML approximation, not Word layout.
 ## Limits
 
 - Markdown body max **400KB**
-- Upload (reverse / diff files) max **2MB**
-- Conversion timeout **30 seconds**
+- Single upload (reverse / template / diff file) max **2MB**
+- Batch upload total max **10MB**, up to **50** Markdown files
+- Conversion timeout **30s** (batch **90s**)
 - Documents converted in temp storage and not persisted
 
 ## Mermaid
